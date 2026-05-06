@@ -1,6 +1,8 @@
 'use client'
 import {getYearOptions, healthOptions, regionOptions} from "@/register/Options";
+import { on } from "events";
 import { useState } from "react";
+import { ControllerRenderProps } from "react-hook-form";
 
 type RegionKey = keyof typeof regionOptions;
 export type RegionValue = {
@@ -11,24 +13,27 @@ export type RegionValue = {
 type RegionProps ={
   className?: string;
   required?: boolean;
-  value: RegionValue;
-  onChange: (value: RegionValue) => void;
+  value: string;
+  onChange: (value: string) => void;
 }
 
 export default function RegionSelect({className, required=false, value, onChange}: RegionProps) {
+  const [location, setLocation] = useState<RegionValue>({do: '', si: ''});
+  
   const doList = Object.keys(regionOptions);
-  const siList = value.do ? regionOptions[value.do] : [];
+  const siList = location.do ? regionOptions[location.do] : [];
 
   return (
     <div className="flex gap-4">
       <select
-        value={value.do} className={className} required={required}
+        value={location.do} className={className} required={required}
         onChange={(e)=>{
           const newDo = e.target.value as RegionKey;
-          onChange({
+          setLocation({
             do: newDo,
             si: '' // 도가 변경되면 시는 초기화
           })
+          onChange('')
         }}
       >
         <option value="">도</option>
@@ -40,12 +45,13 @@ export default function RegionSelect({className, required=false, value, onChange
       </select>
 
       <select
-        value={value.si} disabled={!value.do} className={className} required={required}
+        value={location.si} disabled={!location.do} className={className} required={required}
         onChange={(e) => {
-          onChange({
-            ...value,
+          setLocation({
+            ...location,
             si: e.target.value
           })
+          onChange(e.target.value)
         }}
       >
         <option value="">시</option>

@@ -4,14 +4,14 @@ import { useEffect, useState, useRef } from "react";
 
 type Option = {
   label: string;
-  value: string;
+  value: number;
 };
 
 type MultiSelectProps = {
   className?: string;
   options: Option[];
-  value: string[];
-  onChange: (value: string[]) => void;
+  value: number[];
+  onChange: (value: number[]) => void;
   placeholder?: string;
 };
 
@@ -36,7 +36,7 @@ export default function MultiSelect({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const toggleOption = (val: string) => {
+  const toggleOption = (val: number) => {
     const newValue = value.includes(val)
       ? value.filter((v) => v !== val) : [...value, val];
 
@@ -45,15 +45,6 @@ export default function MultiSelect({
 
   return (
     <div className={className} ref={ref}>
-      <input
-        type="text"
-        name="multi"
-        className="absolute inset-0 opacity-0 pointer-events-none"
-        value={value.length > 0 ? "valid" : ""}
-        required
-        onChange={() => {}}
-      />
-
       {/* 선택된 값 표시 */}
       <div
         className="border p-2 cursor-pointer"

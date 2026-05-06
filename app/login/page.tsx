@@ -1,6 +1,7 @@
 'use client'
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { login } from "@/service/auth";
+
 
 export default function Login() {
   const router = useRouter()
@@ -8,6 +9,25 @@ export default function Login() {
   const gotoRegister = () => {
     router.push(`/register`)
   }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.currentTarget);
+    const id = formData.get("id")?.toString() ?? "";
+    const password = formData.get("password")?.toString() ?? "";
+
+    try {
+      const data = await login(id, password);
+      console.log("로그인 성공:", data);
+
+      router.push("/"); // 로그인 성공 후 홈으로 이동
+      // TODO: 토큰 저장 or 페이지 이동
+    } catch (err) {
+      console.error("로그인 실패", err);
+    }
+  }
+
   return(
     <>
       <header className="border-b-2 px-4 py-2">
@@ -15,7 +35,7 @@ export default function Login() {
       </header>
       
       <form id="loginForm" className="flex flex-col gap-4"
-      onSubmit={()=>{}}
+      onSubmit={(e) => handleSubmit(e)}
       >
         <div className="grid grid-cols-[max-content_1fr] items-center px-4 py-2 my-12 gap-x-3 gap-y-4">
           <label htmlFor="id" className="text-sm font-semibold">

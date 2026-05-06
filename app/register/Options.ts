@@ -8,12 +8,12 @@ export function getYearOptions(startYear = 1900): number[] {
 }
 
 export const healthOptions = [
-  { value: 'default', label: '질병없음' },
-  { value: 'asthma', label: '천식' },
-  { value: 'hypertension', label: '고혈압' },
-  { value: 'dryeyes', label: '안구건조증' },
-  { value: 'sunlightAllergy', label: '햇빛알러지' },
-  { value: 'pollenAllergy', label: '꽃가루알러지' }
+  { value: 1, label: '질병없음' },
+  { value: 2, label: '천식' },
+  { value: 3, label: '고혈압' },
+  { value: 4, label: '안구건조증' },
+  { value: 5, label: '햇빛알러지' },
+  { value: 6, label: '꽃가루알러지' }
 ];
 
 export const regionOptions = {
@@ -44,7 +44,7 @@ export const regionOptions = {
   "제주특별자치도": ["제주행정시","서귀포행정시"],
 };
 
-export const alarmOptions = [
+export const commuteOptions = [
   '00:00', '01:00', '02:00', '03:00', '04:00',
   '05:00', '06:00', '07:00', '08:00', '09:00',
   '10:00', '11:00', '12:00', '13:00', '14:00',
