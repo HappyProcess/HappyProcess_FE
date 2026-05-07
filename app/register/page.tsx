@@ -7,6 +7,8 @@ import { registerSchema } from "./schema";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { signup } from "@/service/auth";
+import toast from "react-hot-toast";
+import { parseError } from "@/lib/parseError";
 
 const LOCATION_TYPES = ["HOME", "WORK"] as const;
 type LocationType = typeof LOCATION_TYPES[number];
@@ -50,12 +52,11 @@ export default function Register() {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      const res = await signup(data);
-      console.log("회원가입 성공", res);
-      alert("회원가입이 완료되었습니다.");
+      await signup(data);
+      toast.success("회원가입이 완료되었습니다.");
       router.push("/login");
     } catch (err) {
-      console.log("회원가입 실패", err);
+      toast.error(parseError(err));
     }
   };
 
