@@ -2,17 +2,14 @@
 import { useRouter } from "next/navigation";
 import { login } from "@/service/auth";
 
+const inputClass = "w-full border border-[rgba(0,0,0,0.08)] rounded-full px-5 py-[10px] text-[17px] text-[#1d1d1f] leading-[1.47] tracking-[-0.374px] bg-white focus:outline-2 focus:outline-[#0071e3] focus:outline-none focus:ring-2 focus:ring-[#0071e3]"
+const labelClass = "text-[14px] font-semibold tracking-[-0.224px] text-[#1d1d1f]"
 
 export default function Login() {
   const router = useRouter()
 
-  const gotoRegister = () => {
-    router.push(`/register`)
-  }
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const formData = new FormData(e.currentTarget);
     const id = formData.get("id")?.toString() ?? "";
     const password = formData.get("password")?.toString() ?? "";
@@ -20,58 +17,50 @@ export default function Login() {
     try {
       const data = await login(id, password);
       console.log("로그인 성공:", data);
-
-      router.push("/"); // 로그인 성공 후 홈으로 이동
-      // TODO: 토큰 저장 or 페이지 이동
+      router.push("/");
     } catch (err) {
       console.error("로그인 실패", err);
     }
   }
 
-  return(
-    <>
-      <header className="border-b-2 px-4 py-2">
-        <h1 className="text-2xl font-bold">로그인 ※</h1>
-      </header>
-      
-      <form id="loginForm" className="flex flex-col gap-4"
-      onSubmit={(e) => handleSubmit(e)}
-      >
-        <div className="grid grid-cols-[max-content_1fr] items-center px-4 py-2 my-12 gap-x-3 gap-y-4">
-          <label htmlFor="id" className="text-sm font-semibold">
-            아이디:
-          </label>
-          <input
-          type="id" id="id" name="id" required
-          className="border-2 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+  return (
+    <div className="w-full max-w-sm bg-white rounded-[18px] border border-[#e0e0e0] px-8 py-10 flex flex-col gap-6">
+      <h1 className="text-[28px] font-semibold leading-[1.14] tracking-[-0.374px] text-[#1d1d1f] text-center">
+        로그인
+      </h1>
 
-          <label htmlFor="password" className="text-sm font-semibold">
-            비밀번호:
-          </label>
-          <input
-          type="password" id="password" name="password" required
-          className="border-2 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+      <form id="loginForm" className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="id" className={labelClass}>아이디</label>
+          <input type="text" id="id" name="id" required className={inputClass} />
         </div>
 
-        
-        <div className="flex flex-col items-center gap-3 border-t-2 py-14">
-          <button
-          type="submit" form="loginForm"
-          className="bg-blue-500 text-white px-3 py-2 rounded-lg cursor-pointer hover:bg-blue-600 hover:shadow"
-          >
-            로그인
-          </button>
-          <p>또는</p>
-          <button
-          type="button" onClick={gotoRegister}
-          className="bg-blue-500 text-white px-3 py-2 rounded-lg cursor-pointer hover:bg-blue-600 hover:shadow"
-          >
-            회원가입
-          </button>
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="password" className={labelClass}>비밀번호</label>
+          <input type="password" id="password" name="password" required className={inputClass} />
         </div>
+
+        <button
+          type="submit"
+          className="w-full bg-[#0066cc] text-white rounded-full py-[11px] text-[17px] leading-none cursor-pointer active:scale-95 transition-transform focus:outline-2 focus:outline-[#0071e3] mt-2"
+        >
+          로그인
+        </button>
       </form>
-    </>
+
+      <div className="flex items-center gap-3">
+        <div className="flex-1 h-px bg-[#e0e0e0]" />
+        <span className="text-[14px] text-[#7a7a7a]">또는</span>
+        <div className="flex-1 h-px bg-[#e0e0e0]" />
+      </div>
+
+      <button
+        type="button"
+        onClick={() => router.push('/register')}
+        className="w-full border border-[#0066cc] text-[#0066cc] rounded-full py-[11px] text-[17px] leading-none cursor-pointer active:scale-95 transition-transform"
+      >
+        회원가입
+      </button>
+    </div>
   )
 }
