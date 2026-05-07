@@ -52,6 +52,7 @@ export default function Register() {
       const res = await signup(data);
       console.log("회원가입 성공", res);
 
+      alert("회원가입이 완료되었습니다.");
       router.push("/login");
       // 👉 여기서 페이지 이동 or 로그인 처리
     } catch (err) {

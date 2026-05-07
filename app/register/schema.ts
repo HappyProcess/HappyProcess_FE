@@ -5,12 +5,7 @@ export const registerSchema = z.object({
     .string()
     .regex(/^[a-zA-Z0-9]{4,20}$/, "아이디 형식 오류"),
 
-  password: z
-    .string()
-    .regex(
-      /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,20}$/,
-      "비밀번호 형식 오류"
-    ),
+  password: z.string().min(1),
 
   name: z.string().min(2).max(10),
 

@@ -9,7 +9,7 @@ export default function Navigation() {
         className="text-xl sm:text-2xl font-bold hover:underline"
         onClick={() => router.push('/')}
       >
-        <span className="hidden sm:inline"></span>HappyProcess
+       HappyProcess
       </h1>
     </nav>
   )

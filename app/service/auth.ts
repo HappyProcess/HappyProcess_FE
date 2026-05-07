@@ -1,7 +1,7 @@
 import {api} from "@/lib/api";
 
-export const login = async (id: string, password: string) => {
-  const res = await api.post("/auth/login", { id, password });
+export const login = async (loginId: string, password: string) => {
+  const res = await api.post("/auth/login", { loginId, password });
   return res.data;
 };
 
