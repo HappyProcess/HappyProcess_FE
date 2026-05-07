@@ -18,8 +18,9 @@ export default function Login() {
 
     try {
       const data = await login(id, password);
-      console.log("로그인 성공:", data);
-      router.push("/");
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      router.push("/home");
     } catch (err) {
       toast.error(parseError(err));
     }
