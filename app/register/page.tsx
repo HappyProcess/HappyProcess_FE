@@ -28,6 +28,10 @@ type FormValues = {
   conditionIds: number[];
 };
 
+const inputClass = "w-full border border-[rgba(0,0,0,0.08)] rounded-full px-5 py-[10px] text-[17px] text-[#1d1d1f] leading-[1.47] tracking-[-0.374px] bg-white focus:outline-none focus:ring-2 focus:ring-[#0071e3]"
+const selectClass = "border border-[rgba(0,0,0,0.08)] rounded-full px-5 py-[10px] text-[17px] text-[#1d1d1f] bg-white focus:outline-none focus:ring-2 focus:ring-[#0071e3] cursor-pointer"
+const labelClass = "text-[14px] font-semibold tracking-[-0.224px] text-[#1d1d1f]"
+
 export default function Register() {
   const {
     register,
@@ -44,147 +48,125 @@ export default function Register() {
   });
   const router = useRouter();
 
-  const LOCATION_TYPES = ["HOME", "WORK"] as const;
-
   const onSubmit = async (data: FormValues) => {
-    console.log("회원가입 데이터:", data);
     try {
       const res = await signup(data);
       console.log("회원가입 성공", res);
-
       alert("회원가입이 완료되었습니다.");
       router.push("/login");
-      // 👉 여기서 페이지 이동 or 로그인 처리
     } catch (err) {
       console.log("회원가입 실패", err);
     }
   };
 
   return (
-    <>
-      <header className="border-b-2 px-4 py-2">
-        <h1 className="text-2xl font-bold">회원가입 ※</h1>
-      </header>
-      
-      <form id="registerForm" className="flex flex-col gap-4"
-      onSubmit={handleSubmit(onSubmit, console.log)}
-      >
-        <div className="grid grid-cols-[max-content_1fr] items-center px-4 py-2 my-12 gap-x-3 gap-y-4">
-          <label htmlFor="name" className="text-sm font-semibold">
-            이름<span className="text-red-500">*</span>:
-          </label>
-          <div className="relative group">
-            <input
-            type="text" id="name"
-            {...register("name")}
-            className="border-2 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            
-            {errors.name && <Tooltip content={errors.name.message ?? ""} xAnchor="right" alwaysFocus isOuter/>}
-          </div>
+    <div className="w-full max-w-lg bg-white rounded-[18px] border border-[#e0e0e0] px-8 py-10 flex flex-col gap-6">
+      <h1 className="text-[28px] font-semibold leading-[1.14] tracking-[-0.374px] text-[#1d1d1f] text-center">
+        회원가입
+      </h1>
 
-          <label htmlFor="id" className="text-sm font-semibold">
-            아이디<span className="text-red-500">*</span>:
+      <form id="registerForm" className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit, console.log)}>
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="name" className={labelClass}>
+            이름 <span className="text-red-500">*</span>
           </label>
           <div className="relative group">
-            <input
-            type="id" id="id"
-            {...register("loginId")}
-            className="border-2 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors.loginId && <Tooltip content={errors.loginId.message ?? ""} xAnchor="right" alwaysFocus isOuter/>}
+            <input type="text" id="name" {...register("name")} className={inputClass} />
+            {errors.name && <Tooltip content={errors.name.message ?? ""} xAnchor="right" alwaysFocus isOuter />}
           </div>
+        </div>
 
-          <label htmlFor="password" className="text-sm font-semibold">
-            비밀번호<span className="text-red-500">*</span>:
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="loginId" className={labelClass}>
+            아이디 <span className="text-red-500">*</span>
           </label>
           <div className="relative group">
-            <input
-            type="password" id="password"
-            {...register("password")}
-            className="border-2 rounded-lg px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            {errors.password && <Tooltip content={errors.password.message ?? ""} xAnchor="right" alwaysFocus isOuter/>}
+            <input type="text" id="loginId" {...register("loginId")} className={inputClass} />
+            {errors.loginId && <Tooltip content={errors.loginId.message ?? ""} xAnchor="right" alwaysFocus isOuter />}
           </div>
+        </div>
 
-          <label className="text-sm font-semibold">
-            나이<span className="text-red-500">*</span>:
+        <div className="flex flex-col gap-1.5">
+          <label htmlFor="password" className={labelClass}>
+            비밀번호 <span className="text-red-500">*</span>
           </label>
           <div className="relative group">
-            <select {...register("birth")}
-            className="border w-28 rounded-lg px-3 py-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="">출생연도</option>
+            <input type="password" id="password" {...register("password")} className={inputClass} />
+            {errors.password && <Tooltip content={errors.password.message ?? ""} xAnchor="right" alwaysFocus isOuter />}
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className={labelClass}>
+            출생연도 <span className="text-red-500">*</span>
+          </label>
+          <div className="relative group">
+            <select {...register("birth")} className={selectClass}>
+              <option value="">출생연도 선택</option>
               {getYearOptions().map((item) => (
-                <option key={item} value={`${item}-01-01`}>
-                  {item}
-                </option>
+                <option key={item} value={`${item}-01-01`}>{item}</option>
               ))}
             </select>
-            {errors.birth && <Tooltip content={errors.birth.message ?? ""} xAnchor="right" alwaysFocus isOuter/>}
+            {errors.birth && <Tooltip content={errors.birth.message ?? ""} xAnchor="right" alwaysFocus isOuter />}
           </div>
+        </div>
 
-          <label className="text-sm font-semibold">
-            건강상태<span className="text-red-500">*</span>:
+        <div className="flex flex-col gap-1.5">
+          <label className={labelClass}>
+            건강상태 <span className="text-red-500">*</span>
           </label>
           <Controller
-          control={control}
-          name="conditionIds"
-          render={({ field }) => (
-            <MultiSelect
-            options={healthOptions}
-            value={field.value}
-            onChange={field.onChange}
-            />
-          )}/>
-            
-          {LOCATION_TYPES.map((type, index) => (<React.Fragment key={type}>
-            <label className="text-sm font-semibold">
-              {LOCATION_LABEL[type]}<span className="text-red-500">*</span>:
-            </label>
-            <input
-              key={type}
-              type="hidden"
-              value={type}
-              {...register(`locations.${index}.locationType` as const)}
-            />
-            <Controller
             control={control}
-            name={`locations.${index}.city`}
+            name="conditionIds"
             render={({ field }) => (
-              <RegionSelect
-              className="border rounded-lg px-3 py-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
-              value={field.value}
-              onChange={field.onChange}
+              <MultiSelect
+                options={healthOptions}
+                value={field.value}
+                onChange={field.onChange}
               />
-            )}/>
-          </React.Fragment>))}
+            )}
+          />
+        </div>
 
-          <label className="text-sm font-semibold">
-            알림시간:
-          </label>
-          <select {...register("commuteTime")}
-          className="border w-28 rounded-lg px-3 py-1 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">알림시간</option>
+        {LOCATION_TYPES.map((type, index) => (
+          <React.Fragment key={type}>
+            <div className="flex flex-col gap-1.5">
+              <label className={labelClass}>
+                {LOCATION_LABEL[type]} <span className="text-red-500">*</span>
+              </label>
+              <input type="hidden" value={type} {...register(`locations.${index}.locationType` as const)} />
+              <Controller
+                control={control}
+                name={`locations.${index}.city`}
+                render={({ field }) => (
+                  <RegionSelect
+                    className={selectClass}
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                )}
+              />
+            </div>
+          </React.Fragment>
+        ))}
+
+        <div className="flex flex-col gap-1.5">
+          <label className={labelClass}>알림시간</label>
+          <select {...register("commuteTime")} className={selectClass}>
+            <option value="">알림시간 선택</option>
             {commuteOptions.map((item) => (
-              <option key={item} value={item}>
-                {item}
-              </option>
+              <option key={item} value={item}>{item}</option>
             ))}
           </select>
         </div>
 
-        
-        <div className="flex flex-col items-center gap-3 border-t-2 py-14">
-          <button
-          type="submit" form="registerForm"
-          className="bg-blue-500 text-white px-3 py-2 rounded-lg cursor-pointer hover:bg-blue-600 hover:shadow"
-          >
-            회원가입
-          </button>
-        </div>
+        <button
+          type="submit"
+          className="w-full bg-[#0066cc] text-white rounded-full py-[11px] text-[17px] leading-none cursor-pointer active:scale-95 transition-transform focus:outline-2 focus:outline-[#0071e3] mt-2"
+        >
+          회원가입
+        </button>
       </form>
-    </>
+    </div>
   );
 }
