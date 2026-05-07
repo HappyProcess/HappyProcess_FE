@@ -1,6 +1,8 @@
 'use client'
 import { useRouter } from "next/navigation";
 import { login } from "@/service/auth";
+import toast from "react-hot-toast";
+import { parseError } from "@/lib/parseError";
 
 const inputClass = "w-full border border-[rgba(0,0,0,0.08)] rounded-full px-5 py-[10px] text-[17px] text-[#1d1d1f] leading-[1.47] tracking-[-0.374px] bg-white focus:outline-2 focus:outline-[#0071e3] focus:outline-none focus:ring-2 focus:ring-[#0071e3]"
 const labelClass = "text-[14px] font-semibold tracking-[-0.224px] text-[#1d1d1f]"
@@ -16,10 +18,11 @@ export default function Login() {
 
     try {
       const data = await login(id, password);
-      console.log("로그인 성공:", data);
-      router.push("/");
+      localStorage.setItem("accessToken", data.accessToken);
+      localStorage.setItem("refreshToken", data.refreshToken);
+      router.push("/home");
     } catch (err) {
-      console.error("로그인 실패", err);
+      toast.error(parseError(err));
     }
   }
 
