@@ -1,8 +1,8 @@
 'use client'
 import { useRouter } from "next/navigation";
-import { login } from "@/service/auth";
+import { login } from "#/service/auth";
 import toast from "react-hot-toast";
-import { parseError } from "@/lib/parseError";
+import { parseError } from "#/lib/parseError";
 
 const inputClass = "w-full border border-[rgba(0,0,0,0.08)] rounded-full px-5 py-[10px] text-[17px] text-[#1d1d1f] leading-[1.47] tracking-[-0.374px] bg-white focus:outline-2 focus:outline-[#0071e3] focus:outline-none focus:ring-2 focus:ring-[#0071e3]"
 const labelClass = "text-[14px] font-semibold tracking-[-0.224px] text-[#1d1d1f]"
@@ -45,7 +45,7 @@ export default function Login() {
 
         <button
           type="submit"
-          className="w-full bg-[#0066cc] text-white rounded-full py-[11px] text-[17px] leading-none cursor-pointer active:scale-95 transition-transform focus:outline-2 focus:outline-[#0071e3] mt-2"
+          className="w-full bg-[#0066cc] text-white rounded-full py-2.75 text-[17px] leading-none cursor-pointer active:scale-95 transition-transform focus:outline-2 focus:outline-[#0071e3] mt-2"
         >
           로그인
         </button>
@@ -60,7 +60,7 @@ export default function Login() {
       <button
         type="button"
         onClick={() => router.push('/register')}
-        className="w-full border border-[#0066cc] text-[#0066cc] rounded-full py-[11px] text-[17px] leading-none cursor-pointer active:scale-95 transition-transform"
+        className="w-full border border-[#0066cc] text-[#0066cc] rounded-full py-2.75 text-[17px] leading-none cursor-pointer active:scale-95 transition-transform"
       >
         회원가입
       </button>

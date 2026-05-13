@@ -1,14 +1,14 @@
 'use client'
 import { RegionSelect, MultiSelect, Tooltip } from "@/components";
-import { getYearOptions, healthOptions, commuteOptions } from "./Options";
+import { getYearOptions, healthOptions, commuteOptions } from "@/register/Options";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { registerSchema } from "./schema";
+import { registerSchema } from "@/register/schema";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { signup } from "#/service/auth";
 import toast from "react-hot-toast";
-import { parseError } from "#/lib/parseError";
+import { parseError } from "../../lib/parseError";
 
 const LOCATION_TYPES = ["HOME", "WORK"] as const;
 type LocationType = typeof LOCATION_TYPES[number];
@@ -34,7 +34,7 @@ const inputClass = "w-full border border-[rgba(0,0,0,0.08)] rounded-full px-5 py
 const selectClass = "border border-[rgba(0,0,0,0.08)] rounded-full px-5 py-[10px] text-[17px] text-[#1d1d1f] bg-white focus:outline-none focus:ring-2 focus:ring-[#0071e3] cursor-pointer"
 const labelClass = "text-[14px] font-semibold tracking-[-0.224px] text-[#1d1d1f]"
 
-export default function Register() {
+export default function profile() {
   const {
     register,
     handleSubmit,
@@ -63,7 +63,7 @@ export default function Register() {
   return (
     <div className="w-full max-w-lg bg-white rounded-[18px] border border-[#e0e0e0] px-8 py-10 flex flex-col gap-6">
       <h1 className="text-[28px] font-semibold leading-[1.14] tracking-[-0.374px] text-[#1d1d1f] text-center">
-        회원가입
+        프로필
       </h1>
 
       <form id="registerForm" className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit, console.log)}>

@@ -15,7 +15,7 @@ export default function Home() {
       <button
         type="button"
         onClick={() => router.push('/login')}
-        className="bg-[#0066cc] text-white rounded-full px-[22px] py-[11px] text-[17px] leading-none cursor-pointer active:scale-95 transition-transform focus:outline-2 focus:outline-[#0071e3]"
+        className="bg-[#0066cc] text-white rounded-full px-5.5 py-2.75 text-[17px] leading-none cursor-pointer active:scale-95 transition-transform focus:outline-2 focus:outline-[#0071e3]"
       >
         로그인
       </button>

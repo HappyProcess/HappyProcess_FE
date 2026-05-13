@@ -1,8 +1,6 @@
 'use client'
-import {getYearOptions, healthOptions, regionOptions} from "@/register/Options";
-import { on } from "events";
+import { regionOptions} from "@/register/Options";
 import { useState } from "react";
-import { ControllerRenderProps } from "react-hook-form";
 
 type RegionKey = keyof typeof regionOptions;
 export type RegionValue = {
