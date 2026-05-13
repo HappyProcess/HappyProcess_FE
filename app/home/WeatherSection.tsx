@@ -17,10 +17,10 @@ export default function WeatherSection({
 
   return (
     <>
-      <section className="flex flex-col items-center justify-center">
-        {/* <p>맑음</p> */}
-        <div className="flex flex-row items-center">
-          <span className="text-amber-300 text-5xl -mx-4"><WeatherIcon index={0} /></span>
+      <section className="flex flex-row items-center justify-center">
+        <span className=""><WeatherIcon index={0} isOnlyIcon={true} /></span>
+        <div className="flex flex-col">
+          <p>맑음</p>
           <h1 className="text-3xl font-bold">{weather?.temperature ?? 20}℃</h1>
         </div>
       </section>

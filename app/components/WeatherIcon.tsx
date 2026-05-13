@@ -1,6 +1,7 @@
 type Props = {
   index: number;
   scale?: number;
+  isOnlyIcon?: boolean;
 };
 
 const spriteSheets = [
@@ -12,7 +13,8 @@ const spriteSheets = [
 
 export default function WeatherIcon({
   index,
-  scale = 1
+  scale = 1,
+  isOnlyIcon = false
 }: Props) {
   const sheetIndex = Math.floor(index / 12);
   const localIndex = index % 12;
@@ -32,7 +34,7 @@ export default function WeatherIcon({
     <div
       style={{
         width: xSize * scale,
-        height: ySize * scale,
+        height: (isOnlyIcon ? xSize : ySize) * scale,
         backgroundImage: `url(${spriteSheets[sheetIndex]})`,
         backgroundRepeat: "no-repeat",
         backgroundPosition: `${x-1}px ${y-1}px`,
