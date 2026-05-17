@@ -13,7 +13,15 @@ export const healthOptions = [
   { value: 3, label: '고혈압' },
   { value: 4, label: '안구건조증' },
   { value: 5, label: '햇빛알러지' },
-  { value: 6, label: '꽃가루알러지' }
+  { value: 6, label: '꽃가루알러지' },
+  { value: 7, label: '비염' },
+  { value: 8, label: '당뇨' },
+  { value: 9, label: '심장질환' },
+  { value: 10, label: '피부염/아토피' },
+  { value: 11, label: '관절염' },
+  { value: 12, label: '뇌졸중' },
+  { value: 13, label: '어린이' },
+  { value: 14, label: '고령' },
 ];
 
 export const regionOptions = {

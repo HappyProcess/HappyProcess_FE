@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import WeatherIcon from "./WeatherIcon";
+import WeatherIcon from "./IconComponents/WeatherIcon";
 
 export default function futureWeather() {
   const [weatherList, setWeatherList] = useState<number[]>([]);

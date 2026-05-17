@@ -1,27 +1,32 @@
 import { api } from "#/lib/api";
 import { type Location } from "./types"
 
-export const getMe = async () => {
-  const res = await api.get("members/me");
+export const getMyInformation = async () => {
+  const res = await api.get("/members/me");
   return res.data;
 };
 
-export const patchMe = async (data: any) => {
-  const res = await api.patch("members/me", data);
+export const modifyMyInformation = async (data: any) => {
+  const res = await api.patch("/members/me", data);
   return res;
 };
 
-export const getLocations = async(): Promise<Location[]> => {
-  const res = await api.get("members/me/locations");
+export const deleteAccount = async (data: any) => {
+  const res = await api.delete("/members/me", data);
+  return res;
+};
+
+export const getMyLocations = async(): Promise<Location[]> => {
+  const res = await api.get("/members/me/locations");
   return res.data;
 };
 
-export const patchLocations = async (): Promise<Location[]> => {
-  const res = await api.patch("members/me/locations");
+export const modifyMyLocations = async (): Promise<Location[]> => {
+  const res = await api.post("/members/me/locations");
   return res.data;
 };
 
-export const deleteLocations = async (): Promise<Location[]> => {
-  const res = await api.delete("members/me/locations");
+export const deleteMyLocations = async (): Promise<Location[]> => {
+  const res = await api.delete("/members/me/locations");
   return res.data;
 };

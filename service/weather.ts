@@ -2,6 +2,7 @@ import { api } from "#/lib/api";
 import { Weather } from "./types";
 
 export const getWeather = async (lat: number, lon: number): Promise<Weather> => {
-  const res = await api.get("weather");
+  const data: any = { lat, lon }
+  const res = await api.get("/weather", data);
   return res.data;
 };
