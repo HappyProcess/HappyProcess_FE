@@ -1,4 +1,4 @@
-import { getDangerSummary } from "#/service/recommandation";
+import { getDangerSummary, getRecommandation } from "#/service/recommandation";
 import { Weather, DangerSummary, Location } from "#/service/types";
 import { getWeather } from "#/service/weather";
 import { WeatherIcon, IllnessIcon, ConditionIcon, RecommandIcon } from "@/components"
@@ -13,12 +13,14 @@ export default function WeatherSection({
 }: Props) {
   const [weather, setWeather] = useState<Weather>();
   const [summary, setSummary] = useState<DangerSummary>();
+  const [actions, setActions] = useState([]);
 
   useEffect(()=>{
     const startFunc = async () => {
       if (!loc) return;
       setWeather(await getWeather(loc.lat, loc.lon));
       setSummary(await getDangerSummary(loc.lat, loc.lon));
+      setActions(await getRecommandation(loc.lat, loc.lon));
     };
 
     startFunc()
@@ -71,6 +73,15 @@ export default function WeatherSection({
       <section className="flex flex-col w-full">
         <h1>✅ 오늘의 행동 추천</h1>
         <div className="w-full flex flex-row items-center gap-2.5">
+          {/* {actions.map(()=>{
+            return(
+              <div className="flex flex-col items-center">
+                <RecommandIcon index={0} scale={0.3125} />
+                <h1 className="font-bold text-sm ">!이름!</h1>
+                <p className="text-xs text-center">!설명!</p>
+              </div>
+            )
+          })} */}
           <div className="flex flex-col items-center">
             <RecommandIcon index={0} scale={0.3125} />
             <h1 className="font-bold text-sm ">마스크 착용</h1>
