@@ -1,14 +1,15 @@
 'use client'
 import { getMyLocations } from "#/service/member";
-import { Location, Weather } from "#/service/types";
+import { Location } from "#/service/types";
 import { useEffect, useState } from "react";
 import FooterLogo from "@/components/FooterLogo"
 import { Line } from "@/components"
 import WeatherSection from "./WeatherSection";
+import AlarmSection from "./AlramSection";
 
 export default function Home() {
   const [location, setLocation] = useState<Location>();
-  const [tab, setTab] = useState<"weather" | "setting" | "profile">("weather");
+  const [tab, setTab] = useState<"weather" | "alram" | "profile">("weather");
 
   useEffect(() => {
     const getLocation = async () => {
@@ -34,7 +35,7 @@ export default function Home() {
         >프로필</span>
         <span
         className="text-[12px] font-normal tracking-[-0.12px] cursor-pointer hover:underline"
-        onClick={() => setTab("setting")}
+        onClick={() => setTab("alram")}
         >🔔</span>
       </header>
       <h1 className="font-semibold tracking-[-0.374px] text-[#1d1d1f]">
@@ -43,8 +44,8 @@ export default function Home() {
       <Line/>
       <main className="flex flex-col items-center justify-center gap-5">
         {tab === "weather" && <WeatherSection loc={location} />}
-        {/* {tab === "setting" && <SettingSection />} */}
         {/* {tab === "profile" && <ProfileSection />} */}
+        {tab === "alram" && <AlarmSection /> }
       </main>
       <Line />
       <FooterLogo />
