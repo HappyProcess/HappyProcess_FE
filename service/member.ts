@@ -1,5 +1,5 @@
 import { api } from "#/lib/api";
-import { type Location } from "./types"
+import { AlertSetting, Location } from "./types"
 
 export const getMyInformation = async () => {
   const res = await api.get("/members/me");
@@ -30,3 +30,13 @@ export const deleteMyLocations = async (): Promise<Location[]> => {
   const res = await api.delete("/members/me/locations");
   return res.data;
 };
+
+export const getMyAlerts = async (): Promise<AlertSetting> => {
+  const res = await api.get("/members/me/alert-settings");
+  return res.data;
+}
+
+export const modifyMyAlerts = async (setting: AlertSetting) => {
+  const res = await api.put("/members/me/alert-settings", setting);
+  return res.data;
+}

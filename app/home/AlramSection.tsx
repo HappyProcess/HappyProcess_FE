@@ -1,6 +1,8 @@
-import { IllnessIcon, SwitchIcon } from "@/components";
+import { IllnessIcon, TimeSelect } from "@/components";
 
 export default function alram() {
+  
+
   return (
     <>
       <section className="flex flex-col items-center w-full p-3 gap-5">
@@ -9,15 +11,8 @@ export default function alram() {
           <p className="text-2xl cursor-pointer">⊕</p>
         </div>
         <div className="h-0 border-gray-300 w-full border-y" />
-        {<>
-          <div className="w-full grid grid-cols-2 gap-3">
-            <h1 className="font-bold text-3xl">08:00</h1>
-            <div className='flex flex-row items-center justify-between'>
-              <SwitchIcon scale={5/32} className="cursor-pointer"/>
-              <p className="cursor-pointer">편집</p>
-            </div>
-          </div>
-          <div className="h-0 border-gray-300 w-full border-y" />
+        {/* 알림 설정 개수대로 반복문 */ <>
+          <TimeSelect index={0} time={"07:00"} />
         </>}
         
       </section>
@@ -25,7 +20,7 @@ export default function alram() {
         <h1 className="w-full font-bold text-2xl">알림 센터</h1>
         <div className="w-full max-h-72 overflow-y-auto flex flex-col items-center 
          scollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent">
-          {
+          { /* 알림 개수대로 반복문 */
             <section className="flex flex-col w-full">
               <h1 className="w-full text-right font-bold text-sm">오늘의 날짜</h1>
               <div className="flex flex-row items-center border-2 border-red-100 rounded-2xl bg-red-50 w-full p-3 gap-5">
