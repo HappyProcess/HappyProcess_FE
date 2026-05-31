@@ -1,14 +1,15 @@
 'use client'
 import { RegionSelect, MultiSelect, Tooltip } from "@/components";
-import { getYearOptions, healthOptions, commuteOptions } from "./Options";
+import { getYearOptions, healthOptions, NO_CONDITION_ID } from "./Options";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "./schema";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { signup } from "#/service/auth";
 import toast from "react-hot-toast";
 import { parseError } from "#/lib/parseError";
+import { getSido } from "#/service/region";
 
 const LOCATION_TYPES = ["HOME", "WORK"] as const;
 type LocationType = typeof LOCATION_TYPES[number];
@@ -22,10 +23,9 @@ type FormValues = {
   password: string;
   name: string;
   birth: string;
-  commuteTime: string | null;
   locations: {
     locationType: LocationType;
-    city: string;
+    areaNo: string;
   }[];
   conditionIds: number[];
 };
@@ -35,6 +35,12 @@ const selectClass = "border border-[rgba(0,0,0,0.08)] rounded-full px-5 py-[10px
 const labelClass = "text-[14px] font-semibold tracking-[-0.224px] text-[#1d1d1f]"
 
 export default function Register() {
+  const [sidoList, setSidoList] = useState<string[]>([]);
+
+  useEffect(() => {
+    getSido().then(setSidoList);
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -43,7 +49,6 @@ export default function Register() {
   } = useForm<FormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      commuteTime: null,
       locations: [],
       conditionIds: [],
     },
@@ -66,7 +71,7 @@ export default function Register() {
         회원가입
       </h1>
 
-      <form id="registerForm" className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit, console.log)}>
+      <form id="registerForm" className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-1.5">
           <label htmlFor="name" className={labelClass}>
             이름 <span className="text-red-500">*</span>
@@ -124,6 +129,7 @@ export default function Register() {
                 options={healthOptions}
                 value={field.value}
                 onChange={field.onChange}
+                exclusiveValue={NO_CONDITION_ID}
               />
             )}
           />
@@ -138,28 +144,19 @@ export default function Register() {
               <input type="hidden" value={type} {...register(`locations.${index}.locationType` as const)} />
               <Controller
                 control={control}
-                name={`locations.${index}.city`}
+                name={`locations.${index}.areaNo`}
                 render={({ field }) => (
                   <RegionSelect
                     className={selectClass}
                     value={field.value}
                     onChange={field.onChange}
+                    sidoList={sidoList}
                   />
                 )}
               />
             </div>
           </React.Fragment>
         ))}
-
-        <div className="flex flex-col gap-1.5">
-          <label className={labelClass}>알림시간</label>
-          <select {...register("commuteTime")} className={selectClass}>
-            <option value="">알림시간 선택</option>
-            {commuteOptions.map((item) => (
-              <option key={item} value={item}>{item}</option>
-            ))}
-          </select>
-        </div>
 
         <button
           type="submit"

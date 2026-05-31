@@ -1,44 +1,98 @@
 export type Location = {
   locationId: number;
   locationType: "HOME" | "WORK";
-  city: string;
-  lat: number;
-  lon: number;
+  areaNo: string;
+  sido: string;
+  sigungu: string;
+  dong: string;
+}
+
+export type Profile = {
+  loginId: string;
+  name: string;
+  birth: string;
+  commuteTime: string;
+}
+
+export type Condition = {
+  conditionId: number;
+  conditionName: string;
+}
+
+// 알림 설정 (매일 N시 알림)
+export type Alert = {
+  alertId: number;
+  alertTime: string; // "HH:mm"
+  isEnable: boolean;
+  locationType: "HOME" | "WORK" | null;
+}
+
+// 알림 발송 기록 (알림함)
+export type NotificationHistory = {
+  historyId: number;
+  diseaseNames: string; // 쉼표 구분 문자열
+  factorNames: string | null; // 쉼표 구분 문자열. 과거 알림은 null 가능
+  isRead: boolean;
+  createdAt: string; // 서버 포맷 문자열 "MM월 dd일 HH:mm" — Date 파싱 금지, 그대로 표시
+  locationType: "HOME" | "WORK" | null;
+  relativeName: string | null;
+}
+
+export type HourlyForecast = {
+  time: string;
+  temperature: string;
+  condition: string;
+  humidity: string;
 }
 
 export type Weather = {
-  temperature: number;
-  humidity: number;
-  fineDust: string;
+  regionName: string;
+  temperature: string;
+  humidity: string;
+  weatherCondition: string;
+  pm10Value: string;
+  pm10Grade: string;
+  pm25Value: string;
+  pm25Grade: string;
+  pollenRiskLevel: string;
+  uvRiskLevel: string;
+  hourlyForecasts: HourlyForecast[];
 }
 
-export type DangerSummary = {
-  dangerLevel: "위험" | "안전",
-  warningMessage: string,
-  targetConditionName: Illness
+export type LocationType = "HOME" | "WORK";
+
+export type RiskFactorGuide = {
+  factorName: string;
+  guide: string;
 }
 
-export type AlertSetting = {
-  isEnabled: boolean;
-  alertTime: AlertTimes;
-  dustAlert: any;
-  humidityAlert: any;
-  uvAlert: any;
-  tempAlert: any;
+export type RiskDetail = {
+  diseaseId: number;
+  diseaseName: string;
+  factorGuides: RiskFactorGuide[];
 }
 
-enum Illness {
-  '천식', '고혈압', '안구건조증',
-  '햇빛알러지', '꽃가루알러지',
-  '비염', '당뇨', '심장질환',
-  '피부염/아토피', '관절염',
-  '뇌졸중', '어린이', '고령',
+export type RiskStatus = {
+  isRisk: boolean;
+  risk?: boolean;
+  regionName?: string;
+  riskDetails?: RiskDetail[];
 }
 
-enum AlertTimes {
-  '00:00', '01:00', '02:00', '03:00', '04:00',
-  '05:00', '06:00', '07:00', '08:00', '09:00',
-  '10:00', '11:00', '12:00', '13:00', '14:00',
-  '15:00', '16:00', '17:00', '18:00', '19:00',
-  '20:00', '21:00', '22:00', '23:00'
+export type FamilySummary = {
+  familyId: number;
+  name: string;
+  healthConditionNames: string[];
+  alertTimes: string[];
+}
+
+export type Family = {
+  familyId: number;
+  relativeId: number;
+  name: string;
+  age: number;
+  alertEnabled: boolean;
+  healthConditionNames: string[];
+  locations: Location[];
+  alerts: Alert[];
 }

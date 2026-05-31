@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navigation from "./components/Navigation";
 import MainSection from "./components/MainSection";
+import Navigation from "./components/Navigation";
+import AlertPoller from "./components/AlertPoller";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
@@ -11,12 +12,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {
   return (
-    <html lang="ko" className="h-full">
-      <body className="min-h-full flex flex-col">
-        <Navigation/>
+    <html lang="ko" className="h-full overflow-hidden">
+      <body className="h-full flex flex-col bg-[#f5f5f7] overflow-hidden">
         <MainSection>
+          <Navigation />
           {children}
         </MainSection>
+        <AlertPoller />
         <Toaster
           position="top-center"
           toastOptions={{
