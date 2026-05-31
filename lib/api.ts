@@ -2,12 +2,12 @@
 import axios from "axios";
 
 export const api = axios.create({
-  baseURL: "http://34.50.23.177:8080/api/v1",
+  baseURL: "/api/v1",
 });
 
 // reissue 전용 인스턴스 — 무한루프 방지
 const authApi = axios.create({
-  baseURL: "http://34.50.23.177:8080/api/v1",
+  baseURL: "/api/v1",
 });
 
 api.interceptors.request.use((config) => {
