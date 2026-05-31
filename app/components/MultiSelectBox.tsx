@@ -13,6 +13,7 @@ type MultiSelectProps = {
   value: number[];
   onChange: (value: number[]) => void;
   placeholder?: string;
+  exclusiveValue?: number;
 };
 
 export default function MultiSelect({
@@ -20,7 +21,8 @@ export default function MultiSelect({
   options,
   value,
   onChange,
-  placeholder = "선택하세요"
+  placeholder = "선택하세요",
+  exclusiveValue,
 }: MultiSelectProps) {
   const [isOpen, setIsOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -38,7 +40,10 @@ export default function MultiSelect({
 
   const toggleOption = (val: number) => {
     const newValue = value.includes(val)
-      ? value.filter((v) => v !== val) : [...value, val];
+      ? value.filter((v) => v !== val)
+      : val === exclusiveValue
+        ? [val]
+        : [...value.filter((v) => v !== exclusiveValue), val];
 
     onChange(newValue);
   };

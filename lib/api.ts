@@ -37,7 +37,8 @@ api.interceptors.response.use(
       } catch {
         localStorage.removeItem("accessToken");
         localStorage.removeItem("refreshToken");
-        if (typeof window !== "undefined" && !window.location.pathname.startsWith("/login")) {
+        const path = window.location.pathname;
+        if (typeof window !== "undefined" && !path.startsWith("/login") && !path.startsWith("/register")) {
           window.location.href = "/login";
         }
       }

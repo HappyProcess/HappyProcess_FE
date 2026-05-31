@@ -1,6 +1,6 @@
 'use client'
 import { RegionSelect, MultiSelect, Tooltip } from "@/components";
-import { getYearOptions, healthOptions, commuteOptions } from "./Options";
+import { getYearOptions, healthOptions, NO_CONDITION_ID } from "./Options";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "./schema";
@@ -23,7 +23,6 @@ type FormValues = {
   password: string;
   name: string;
   birth: string;
-  commuteTime: string | null;
   locations: {
     locationType: LocationType;
     areaNo: string;
@@ -50,7 +49,6 @@ export default function Register() {
   } = useForm<FormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      commuteTime: null,
       locations: [],
       conditionIds: [],
     },
@@ -73,7 +71,7 @@ export default function Register() {
         회원가입
       </h1>
 
-      <form id="registerForm" className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit, console.log)}>
+      <form id="registerForm" className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-1.5">
           <label htmlFor="name" className={labelClass}>
             이름 <span className="text-red-500">*</span>
@@ -131,6 +129,7 @@ export default function Register() {
                 options={healthOptions}
                 value={field.value}
                 onChange={field.onChange}
+                exclusiveValue={NO_CONDITION_ID}
               />
             )}
           />
@@ -158,16 +157,6 @@ export default function Register() {
             </div>
           </React.Fragment>
         ))}
-
-        <div className="flex flex-col gap-1.5">
-          <label className={labelClass}>알림시간</label>
-          <select {...register("commuteTime")} className={selectClass}>
-            <option value="">알림시간 선택</option>
-            {commuteOptions.map((item) => (
-              <option key={item} value={item}>{item}</option>
-            ))}
-          </select>
-        </div>
 
         <button
           type="submit"

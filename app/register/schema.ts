@@ -11,8 +11,6 @@ export const registerSchema = z.object({
 
   birth: z.string(),
 
-  commuteTime: z.string().nullable(),
-
   locations: z.array(
     z.object({
       locationType: z.enum(["HOME", "WORK"]),

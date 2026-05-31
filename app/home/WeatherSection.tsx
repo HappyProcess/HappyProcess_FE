@@ -68,14 +68,6 @@ function uvText(level: string): string {
   return "text-red-700";
 }
 
-function humidityLabel(humidity: string): { label: string; color: string } {
-  const n = Number(humidity);
-  if (isNaN(n)) return { label: "-", color: "text-gray-400" };
-  if (n <= 39) return { label: "건조", color: "text-orange-400" };
-  if (n <= 60) return { label: "적정", color: "text-green-500" };
-  return { label: "다습", color: "text-blue-400" };
-}
-
 function gradeIcon(grade: string): number {
   return grade === "3" || grade === "4" ? 1 : 0;
 }
@@ -150,7 +142,6 @@ export default function WeatherSection({ weather, loading }: Props) {
   }
 
   const humidity = weather?.humidity ?? "";
-  const hLabel = humidityLabel(humidity);
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -168,11 +159,6 @@ export default function WeatherSection({ weather, loading }: Props) {
           </h2>
           <div className="flex items-center gap-1.5 mt-0.5">
             <span className="text-[13px] text-[#7a7a7a]">습도 {humidity || "--"}%</span>
-            {humidity && (
-              <span className={`text-[12px] font-semibold ${hLabel.color}`}>
-                · {hLabel.label}
-              </span>
-            )}
           </div>
         </div>
       </div>

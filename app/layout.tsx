@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import MainSection from "./components/MainSection";
 import Navigation from "./components/Navigation";
+import AlertPoller from "./components/AlertPoller";
 import { Toaster } from "react-hot-toast";
 
 export const metadata: Metadata = {
@@ -17,6 +18,7 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
           <Navigation />
           {children}
         </MainSection>
+        <AlertPoller />
         <Toaster
           position="top-center"
           toastOptions={{
