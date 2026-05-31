@@ -4,6 +4,7 @@ import { Location, Weather, Condition } from "#/service/types";
 import { getWeather } from "#/service/weather";
 import { useEffect, useState } from "react";
 import WeatherSection from "./WeatherSection";
+import AlarmSection from "./AlramSection";
 
 export default function Home() {
   const [locations, setLocations] = useState<{ home?: Location; work?: Location }>({});
@@ -18,7 +19,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    getCachedConditions().then(setConditions).catch(() => {});
+    getCachedConditions().then(setConditions).catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -83,21 +84,19 @@ export default function Home() {
           <div className="flex items-center self-start gap-1 bg-[#f5f5f7] rounded-full p-0.5">
             <button
               onClick={() => setLocType("HOME")}
-              className={`px-4 py-1.5 rounded-full text-[13px] transition-all cursor-pointer ${
-                locType === "HOME"
-                  ? "bg-white text-[#1d1d1f] shadow-sm font-semibold"
-                  : "text-[#7a7a7a] font-normal"
-              }`}
+              className={`px-4 py-1.5 rounded-full text-[13px] transition-all cursor-pointer ${locType === "HOME"
+                ? "bg-white text-[#1d1d1f] shadow-sm font-semibold"
+                : "text-[#7a7a7a] font-normal"
+                }`}
             >
               집
             </button>
             <button
               onClick={() => setLocType("WORK")}
-              className={`px-4 py-1.5 rounded-full text-[13px] transition-all cursor-pointer ${
-                locType === "WORK"
-                  ? "bg-white text-[#1d1d1f] shadow-sm font-semibold"
-                  : "text-[#7a7a7a] font-normal"
-              }`}
+              className={`px-4 py-1.5 rounded-full text-[13px] transition-all cursor-pointer ${locType === "WORK"
+                ? "bg-white text-[#1d1d1f] shadow-sm font-semibold"
+                : "text-[#7a7a7a] font-normal"
+                }`}
             >
               직장
             </button>
