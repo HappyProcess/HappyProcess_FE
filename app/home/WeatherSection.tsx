@@ -1,99 +1,221 @@
-import { getDangerSummary, getRecommandation } from "#/service/recommandation";
-import { Weather, DangerSummary, Location } from "#/service/types";
-import { getWeather } from "#/service/weather";
-import { WeatherIcon, IllnessIcon, ConditionIcon, RecommandIcon } from "@/components"
-import { useEffect, useState } from "react";
+import { Weather } from "#/service/types";
+import { WeatherIcon, ConditionIcon } from "@/components"
 
-type Props = {
-  loc?: Location;
+const weatherIconIndex: Record<string, [number, number]> = {
+  "맑음":     [0,  1],
+  "구름많음": [4,  5],
+  "흐림":     [6,  6],
+  "비":       [8,  8],
+  "비/눈":    [13, 13],
+  "눈":       [11, 11],
 };
 
-export default function WeatherSection({
-  loc,
-}: Props) {
-  const [weather, setWeather] = useState<Weather>();
-  const [summary, setSummary] = useState<DangerSummary>();
-  const [actions, setActions] = useState([]);
+function getWeatherIconIndex(condition: string): number {
+  const isDay = new Date().getHours() >= 6 && new Date().getHours() < 18;
+  const pair = weatherIconIndex[condition] ?? [0, 0];
+  return isDay ? pair[0] : pair[1];
+}
 
-  useEffect(()=>{
-    const startFunc = async () => {
-      if (!loc) return;
-      setWeather(await getWeather(loc.lat, loc.lon));
-      setSummary(await getDangerSummary(loc.lat, loc.lon));
-      setActions(await getRecommandation(loc.lat, loc.lon));
-    };
+const gradeLabel: Record<string, string> = { "1": "좋음", "2": "보통", "3": "나쁨", "4": "매우나쁨" };
+const gradeDot: Record<string, string> = {
+  "1": "bg-blue-400",
+  "2": "bg-green-500",
+  "3": "bg-orange-400",
+  "4": "bg-red-500",
+};
+const gradeText: Record<string, string> = {
+  "1": "text-blue-400",
+  "2": "text-green-500",
+  "3": "text-orange-400",
+  "4": "text-red-500",
+};
 
-    startFunc()
-  },[]);
+const pollenLabel: Record<string, string> = { "0": "낮음", "1": "낮음", "2": "보통", "3": "높음", "4": "매우높음" };
+const pollenDot: Record<string, string> = {
+  "0": "bg-blue-400", "1": "bg-blue-400", "2": "bg-green-500", "3": "bg-orange-400", "4": "bg-red-500",
+};
+const pollenText: Record<string, string> = {
+  "0": "text-blue-400", "1": "text-blue-400", "2": "text-green-500", "3": "text-orange-400", "4": "text-red-500",
+};
+
+function uvLabel(level: string): string {
+  const n = Number(level);
+  if (isNaN(n)) return "-";
+  if (n <= 2) return "낮음";
+  if (n <= 5) return "보통";
+  if (n <= 7) return "높음";
+  if (n <= 10) return "매우높음";
+  return "위험";
+}
+
+function uvDot(level: string): string {
+  const n = Number(level);
+  if (isNaN(n)) return "bg-gray-300";
+  if (n <= 2) return "bg-blue-400";
+  if (n <= 5) return "bg-green-500";
+  if (n <= 7) return "bg-orange-400";
+  if (n <= 10) return "bg-red-500";
+  return "bg-red-700";
+}
+
+function uvText(level: string): string {
+  const n = Number(level);
+  if (isNaN(n)) return "text-gray-400";
+  if (n <= 2) return "text-blue-400";
+  if (n <= 5) return "text-green-500";
+  if (n <= 7) return "text-orange-400";
+  if (n <= 10) return "text-red-500";
+  return "text-red-700";
+}
+
+function humidityLabel(humidity: string): { label: string; color: string } {
+  const n = Number(humidity);
+  if (isNaN(n)) return { label: "-", color: "text-gray-400" };
+  if (n <= 39) return { label: "건조", color: "text-orange-400" };
+  if (n <= 60) return { label: "적정", color: "text-green-500" };
+  return { label: "다습", color: "text-blue-400" };
+}
+
+function gradeIcon(grade: string): number {
+  return grade === "3" || grade === "4" ? 1 : 0;
+}
+function uvIcon(level: string): number {
+  return Number(level) >= 6 ? 1 : 0;
+}
+function pollenIcon(level: string): number {
+  return level === "3" || level === "4" ? 1 : 0;
+}
+
+type Props = {
+  weather?: Weather;
+  loading?: boolean;
+};
+
+const Skeleton = ({ className }: { className: string }) => (
+  <div className={`bg-[#e8e8ea] rounded-xl animate-pulse ${className}`} />
+);
+
+type AirCardProps = {
+  title: string;
+  sub?: string;
+  label: string;
+  value: string;
+  dotColor: string;
+  textColor: string;
+  iconIndex: number;
+};
+
+function AirCard({ title, sub, label, value, dotColor, textColor, iconIndex }: AirCardProps) {
+  return (
+    <div className="flex flex-col justify-between bg-[#f5f5f7] rounded-2xl p-3 gap-3 flex-1">
+      <div>
+        <p className="text-[11px] font-semibold text-[#1d1d1f] leading-tight">{title}</p>
+        {sub && <p className="text-[10px] text-[#7a7a7a]">{sub}</p>}
+      </div>
+      <div className="flex items-center gap-1.5">
+        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${dotColor}`} />
+        <span className={`text-[13px] font-semibold ${textColor}`}>{label}</span>
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="text-[10px] text-[#7a7a7a]">{value}</span>
+        <ConditionIcon index={iconIndex} scale={0.1875} />
+      </div>
+    </div>
+  );
+}
+
+export default function WeatherSection({ weather, loading }: Props) {
+  if (loading) {
+    return (
+      <div className="flex flex-col gap-4 w-full">
+        <div className="bg-[#f5f5f7] rounded-3xl p-6 flex items-center gap-6">
+          <Skeleton className="w-16 h-16 rounded-full" />
+          <div className="flex flex-col gap-2 flex-1">
+            <Skeleton className="w-20 h-4" />
+            <Skeleton className="w-28 h-12" />
+            <Skeleton className="w-24 h-3" />
+          </div>
+        </div>
+        <div className="flex gap-2">
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="flex-1 bg-[#f5f5f7] rounded-2xl p-3 flex flex-col gap-3">
+              <Skeleton className="w-full h-3" />
+              <Skeleton className="w-12 h-4" />
+              <Skeleton className="w-full h-3" />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+  const humidity = weather?.humidity ?? "";
+  const hLabel = humidityLabel(humidity);
 
   return (
-    <>
-      <section className="flex flex-row items-center border-2 border-red-100 rounded-2xl bg-red-50 w-full p-3 gap-5">
-        <IllnessIcon index={1} scale={0.25}/>
+    <div className="flex flex-col gap-4 w-full">
+      {/* 메인 날씨 카드 */}
+      <div className="bg-[#f5f5f7] rounded-3xl p-6 flex items-center gap-6">
+        <div className="flex-shrink-0">
+          <WeatherIcon index={getWeatherIconIndex(weather?.weatherCondition ?? "")} isOnlyIcon={true} />
+        </div>
         <div className="flex flex-col">
-          <p className="font-bold">{summary?.targetConditionName ?? "천식"} 위험도</p>
-          <h1 className="text-red-500 font-bold text-2xl">{summary?.dangerLevel ?? "높음"}</h1>
-          <p className="font-semibold text-sm">{summary?.warningMessage ?? "외출 시 주의가 필요해요!"}</p>
-        </div>
-      </section>
-      <section className="flex flex-row items-center border-2 border-gray-300 rounded-2xl w-full p-3 gap-5">
-        <WeatherIcon index={0} isOnlyIcon={true} />
-        <div className="flex flex-col">
-          <p className="">{"맑음"}</p>
-          <h1 className="text-5xl font-bold -mt-2">{weather?.temperature ?? 20.1}˚</h1>
-          <p className="text-sm">체감 {19.8} | 습도 {weather?.humidity ?? 0}%</p>
-        </div>
-      </section>
-      <section className="flex flex-row gap-2 justify-between w-full">
-        <div className="flex flex-col justify-between w-1/3 border-2 border-gray-300 border-t-blue-600 rounded-2xl gap-2 p-2">
-          <h1  className="text-sm">미세먼지<span className="text-xs">{"(PM10)"}</span></h1>
-          <p className="text-blue-400">좋음</p>
-          <div className="flex flex-row justify-between items-center gap-2">
-            <p>{weather?.fineDust ?? 0}㎍/㎡</p>
-            <ConditionIcon index={0} scale={0.1875} />
+          <p className="text-[13px] text-[#7a7a7a] tracking-[-0.224px]">
+            {weather?.weatherCondition ?? "날씨 정보 없음"}
+          </p>
+          <h2 className="text-[56px] font-semibold leading-[1.07] tracking-[-0.28px] text-[#1d1d1f] -mt-1">
+            {weather?.temperature ?? "--"}°
+          </h2>
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <span className="text-[13px] text-[#7a7a7a]">습도 {humidity || "--"}%</span>
+            {humidity && (
+              <span className={`text-[12px] font-semibold ${hLabel.color}`}>
+                · {hLabel.label}
+              </span>
+            )}
           </div>
         </div>
-        <div className="flex flex-col justify-between w-1/3 border-2 border-gray-300 border-t-blue-600 rounded-2xl gap-2 p-2">
-          <h1 className="text-sm">초미세먼지<span className="text-xs">{"(PM2.5)"}</span></h1>
-          <p className="text-blue-400">좋음</p>
-          <div className="flex flex-row justify-between items-center gap-2">
-            <p>{weather?.fineDust ?? 0}㎍/㎡</p>
-            <ConditionIcon index={0} scale={0.1875} />
-          </div>
-        </div>
-        <div className="flex flex-col justify-between w-1/3 border-2 border-gray-300 border-t-blue-600 rounded-2xl gap-2 p-2">
-          <h1 className="text-sm">자외선<span className="text-xs">{"(UV)"}</span></h1>
-          <p className="text-blue-400">좋음</p>
-          <div className="flex flex-row justify-between items-center gap-2">
-            <p>{weather?.fineDust ?? 0}</p>
-            <ConditionIcon index={0} scale={0.1875} />
-          </div>
-        </div>
-      </section>
-      <section className="flex flex-col w-full">
-        <h1>✅ 오늘의 행동 추천</h1>
-        <div className="w-full flex flex-row items-center gap-2.5">
-          {/* {actions.map(()=>{
-            return(
-              <div className="flex flex-col items-center">
-                <RecommandIcon index={0} scale={0.3125} />
-                <h1 className="font-bold text-sm ">!이름!</h1>
-                <p className="text-xs text-center">!설명!</p>
-              </div>
-            )
-          })} */}
-          <div className="flex flex-col items-center">
-            <RecommandIcon index={0} scale={0.3125} />
-            <h1 className="font-bold text-sm ">마스크 착용</h1>
-            <p className="text-xs text-center">외출 시 마스크를<br/>착용해 주세요</p>
-          </div>
-          <div className="flex flex-col items-center">
-            <RecommandIcon index={1} scale={0.3125} />
-            <h1 className="font-bold text-sm ">운동 자제</h1>
-            <p className="text-xs text-center">격한 운동은<br />피해주세요</p>
-          </div>
-        </div>
-      </section>
-    </>
-  )
+      </div>
+
+      {/* 대기 정보 카드 4종 */}
+      <div className="flex gap-2">
+        <AirCard
+          title="미세먼지"
+          sub="PM10"
+          label={gradeLabel[weather?.pm10Grade ?? ""] ?? "-"}
+          value={weather?.pm10Value ? `${weather.pm10Value}㎍/㎥` : "-"}
+          dotColor={gradeDot[weather?.pm10Grade ?? ""] ?? "bg-gray-300"}
+          textColor={gradeText[weather?.pm10Grade ?? ""] ?? "text-gray-400"}
+          iconIndex={gradeIcon(weather?.pm10Grade ?? "")}
+        />
+        <AirCard
+          title="초미세먼지"
+          sub="PM2.5"
+          label={gradeLabel[weather?.pm25Grade ?? ""] ?? "-"}
+          value={weather?.pm25Value ? `${weather.pm25Value}㎍/㎥` : "-"}
+          dotColor={gradeDot[weather?.pm25Grade ?? ""] ?? "bg-gray-300"}
+          textColor={gradeText[weather?.pm25Grade ?? ""] ?? "text-gray-400"}
+          iconIndex={gradeIcon(weather?.pm25Grade ?? "")}
+        />
+        <AirCard
+          title="자외선"
+          sub="UV"
+          label={weather?.uvRiskLevel ? uvLabel(weather.uvRiskLevel) : "-"}
+          value={weather?.uvRiskLevel ?? "-"}
+          dotColor={uvDot(weather?.uvRiskLevel ?? "")}
+          textColor={uvText(weather?.uvRiskLevel ?? "")}
+          iconIndex={uvIcon(weather?.uvRiskLevel ?? "")}
+        />
+        <AirCard
+          title="꽃가루"
+          label={pollenLabel[weather?.pollenRiskLevel ?? ""] ?? "-"}
+          value="위험도"
+          dotColor={pollenDot[weather?.pollenRiskLevel ?? ""] ?? "bg-gray-300"}
+          textColor={pollenText[weather?.pollenRiskLevel ?? ""] ?? "text-gray-400"}
+          iconIndex={pollenIcon(weather?.pollenRiskLevel ?? "")}
+        />
+      </div>
+    </div>
+  );
 }
+ 

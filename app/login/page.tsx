@@ -1,6 +1,7 @@
 'use client'
 import { useRouter } from "next/navigation";
 import { login } from "#/service/auth";
+import { getMyInformation } from "#/service/member";
 import toast from "react-hot-toast";
 import { parseError } from "#/lib/parseError";
 
@@ -20,6 +21,8 @@ export default function Login() {
       const data = await login(id, password);
       localStorage.setItem("accessToken", data.accessToken);
       localStorage.setItem("refreshToken", data.refreshToken);
+      const profile = await getMyInformation();
+      localStorage.setItem("userName", profile.name);
       router.push("/home");
     } catch (err) {
       toast.error(parseError(err));
@@ -27,6 +30,7 @@ export default function Login() {
   }
 
   return (
+    <div className="flex-1 flex items-center justify-center px-6 py-10">
     <div className="w-full max-w-sm bg-white rounded-[18px] border border-[#e0e0e0] px-8 py-10 flex flex-col gap-6">
       <h1 className="text-[28px] font-semibold leading-[1.14] tracking-[-0.374px] text-[#1d1d1f] text-center">
         로그인
@@ -64,6 +68,7 @@ export default function Login() {
       >
         회원가입
       </button>
+    </div>
     </div>
   )
 }

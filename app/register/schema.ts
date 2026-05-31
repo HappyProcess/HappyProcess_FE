@@ -16,7 +16,7 @@ export const registerSchema = z.object({
   locations: z.array(
     z.object({
       locationType: z.enum(["HOME", "WORK"]),
-      city: z.string().min(1),
+      areaNo: z.string().min(1),
     })
   ).min(1),
 

@@ -1,35 +1,42 @@
 export type Location = {
   locationId: number;
   locationType: "HOME" | "WORK";
-  city: string;
-  lat: number;
-  lon: number;
+  areaNo: string;
+  sido: string;
+  sigungu: string;
+  dong: string;
+}
+
+export type Profile = {
+  loginId: string;
+  name: string;
+  birth: string;
+  commuteTime: string;
+}
+
+export type Condition = {
+  conditionId: number;
+  conditionName: string;
+}
+
+export type HourlyForecast = {
+  time: string;
+  temperature: string;
+  condition: string;
+  humidity: string;
 }
 
 export type Weather = {
-  temperature: number;
-  humidity: number;
-  fineDust: string;
+  regionName: string;
+  temperature: string;
+  humidity: string;
+  weatherCondition: string;
+  pm10Value: string;
+  pm10Grade: string;
+  pm25Value: string;
+  pm25Grade: string;
+  pollenRiskLevel: string;
+  uvRiskLevel: string;
+  hourlyForecasts: HourlyForecast[];
 }
 
-export type DangerSummary = {
-  dangerLevel: "위험" | "중간" | "안전",
-  warningMessage: string,
-  targetConditionName: Illness
-}
-
-enum Illness {
-  '천식',
-  '고혈압',
-  '안구건조증',
-  '햇빛알러지',
-  '꽃가루알러지',
-  '비염',
-  '당뇨',
-  '심장질환',
-  '피부염/아토피',
-  '관절염',
-  '뇌졸중',
-  '어린이',
-  '고령',
-}

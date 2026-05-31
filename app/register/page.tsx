@@ -5,10 +5,11 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { registerSchema } from "./schema";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { signup } from "#/service/auth";
 import toast from "react-hot-toast";
 import { parseError } from "#/lib/parseError";
+import { getSido } from "#/service/region";
 
 const LOCATION_TYPES = ["HOME", "WORK"] as const;
 type LocationType = typeof LOCATION_TYPES[number];
@@ -25,7 +26,7 @@ type FormValues = {
   commuteTime: string | null;
   locations: {
     locationType: LocationType;
-    city: string;
+    areaNo: string;
   }[];
   conditionIds: number[];
 };
@@ -35,6 +36,12 @@ const selectClass = "border border-[rgba(0,0,0,0.08)] rounded-full px-5 py-[10px
 const labelClass = "text-[14px] font-semibold tracking-[-0.224px] text-[#1d1d1f]"
 
 export default function Register() {
+  const [sidoList, setSidoList] = useState<string[]>([]);
+
+  useEffect(() => {
+    getSido().then(setSidoList);
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -138,12 +145,13 @@ export default function Register() {
               <input type="hidden" value={type} {...register(`locations.${index}.locationType` as const)} />
               <Controller
                 control={control}
-                name={`locations.${index}.city`}
+                name={`locations.${index}.areaNo`}
                 render={({ field }) => (
                   <RegionSelect
                     className={selectClass}
                     value={field.value}
                     onChange={field.onChange}
+                    sidoList={sidoList}
                   />
                 )}
               />
