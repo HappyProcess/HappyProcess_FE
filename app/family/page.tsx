@@ -172,7 +172,7 @@ export default function FamilyPage() {
               value={relativeLoginId}
               onChange={(event) => setRelativeLoginId(event.target.value)}
               placeholder="papa123"
-              className="min-w-0 flex-1 rounded-full border border-[rgba(0,0,0,0.08)] bg-white px-5 py-[10px] text-[17px] leading-[1.47] tracking-[-0.374px] text-[#1d1d1f] focus:outline-none focus:ring-2 focus:ring-[#0071e3]"
+              className="min-w-0 flex-1 rounded-full border border-[rgba(0,0,0,0.08)] bg-white px-5 py-2.5 text-[17px] leading-[1.47] tracking-[-0.374px] text-[#1d1d1f] focus:outline-none focus:ring-2 focus:ring-[#0071e3]"
             />
             <button
               type="button"
@@ -218,7 +218,7 @@ function FamilyMemberCard({
   const primaryCondition = family.healthConditionNames?.[0] ?? "건강";
 
   return (
-    <article className="rounded-[8px] border border-[#e0e0e0] bg-white p-3">
+    <article className="rounded-lg border border-[#e0e0e0] bg-white p-3">
       <div className="grid grid-cols-[56px_1fr_auto] items-center gap-3">
         <Avatar />
         <div className="min-w-0">
@@ -240,7 +240,7 @@ function FamilyMemberCard({
           type="button"
           aria-label={`${family.name} 프로필 보기`}
           onClick={onOpen}
-          className="grid h-9 w-9 place-items-center rounded-[8px] border border-[#0066cc] text-[20px] leading-none text-[#0066cc] transition-transform active:scale-95"
+          className="grid h-9 w-9 place-items-center rounded-lg border border-[#0066cc] text-[20px] leading-none text-[#0066cc] transition-transform active:scale-95"
         >
           ✎
         </button>
@@ -272,7 +272,7 @@ function FamilyProfileSkeleton({ onBack }: { onBack: () => void }) {
       </section>
       <div className="mt-5 space-y-3">
         {[0, 1, 2].map((item) => (
-          <div key={item} className="h-20 animate-pulse rounded-[12px] bg-[#f5f5f7]" />
+          <div key={item} className="h-20 animate-pulse rounded-xl bg-[#f5f5f7]" />
         ))}
       </div>
     </div>
@@ -529,7 +529,7 @@ function FamilyProfileView({
               type="time"
               value={newAlertTime}
               onChange={(event) => setNewAlertTime(event.target.value)}
-              className="w-[110px] shrink-0 bg-transparent text-[28px] font-semibold leading-none tracking-[-0.28px] text-[#1d1d1f] outline-none"
+              className="w-27.5 shrink-0 bg-transparent text-[28px] font-semibold leading-none tracking-[-0.28px] text-[#1d1d1f] outline-none"
             />
             <LocationToggle value={newAlertLocationType} onChange={setNewAlertLocationType} />
             <div className="flex items-center gap-2">
@@ -647,7 +647,7 @@ function FamilyLocationRow({
           type="button"
           aria-label={`${label} 수정`}
           onClick={editing ? onCancel : onEdit}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-[8px] border border-[#0066cc] text-[20px] leading-none text-[#0066cc] transition-transform active:scale-95"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-[#0066cc] text-[20px] leading-none text-[#0066cc] transition-transform active:scale-95"
         >
           {editing ? "×" : "✎"}
         </button>
@@ -706,7 +706,7 @@ function FamilyAlertRow({
               type="time"
               value={editingTime}
               onChange={(event) => onTimeChange(event.target.value)}
-              className="w-[110px] shrink-0 bg-transparent text-[28px] font-semibold leading-none tracking-[-0.28px] text-[#1d1d1f] outline-none"
+              className="w-27.5 shrink-0 bg-transparent text-[28px] font-semibold leading-none tracking-[-0.28px] text-[#1d1d1f] outline-none"
             />
             <LocationToggle value={editingLocationType} onChange={onLocationChange} />
           </div>
@@ -823,21 +823,21 @@ function ConditionCard({
       type="button"
       onClick={onClick}
       className={[
-        "relative flex aspect-square min-h-[106px] flex-col items-center justify-center rounded-[8px] border bg-white p-2 text-center transition-transform active:scale-95",
+        "relative flex aspect-square min-h-26.5 flex-col items-center justify-center rounded-lg border bg-white p-2 text-center transition-transform active:scale-95",
         selected ? "border-[#0066cc]" : "border-[#e0e0e0]",
       ].join(" ")}
     >
       <span
         className={[
-          "absolute right-2 top-2 grid h-5 w-5 place-items-center rounded-[4px] border text-[16px] leading-none",
+          "absolute right-2 top-2 grid h-5 w-5 place-items-center rounded-sm border text-[16px] leading-none",
           selected ? "border-[#0066cc] text-[#0066cc]" : "border-[#7a7a7a] text-transparent",
         ].join(" ")}
       >
         ✓
       </span>
-      <div className="mb-1 grid h-[54px] w-[54px] place-items-center">
+      <div className="mb-1 grid h-13.5 w-13.5 place-items-center">
         {isNoCondition ? (
-          <span className="grid h-[48px] w-[48px] place-items-center rounded-full bg-[#f5f5f7] text-[24px] font-semibold leading-none text-[#7a7a7a]">
+          <span className="grid h-12 w-12 place-items-center rounded-full bg-[#f5f5f7] text-[24px] font-semibold leading-none text-[#7a7a7a]">
             0
           </span>
         ) : (
@@ -874,7 +874,7 @@ function Switch({
       aria-checked={checked}
       onClick={onClick}
       className={`relative shrink-0 rounded-full border-2 transition-colors active:scale-95 ${
-        compact ? "h-7 w-[52px]" : "h-10 w-[74px]"
+        compact ? "h-7 w-13" : "h-10 w-18.5"
       } ${checked ? "border-[#1d1d1f] bg-[#1d1d1f]" : "border-[#d2d2d7] bg-white"}`}
     >
       <span

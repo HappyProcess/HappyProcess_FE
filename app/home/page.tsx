@@ -192,7 +192,7 @@ export default function Home() {
 
         <section className="rounded-[14px] border border-[#e0e0e0] bg-white p-4">
           {loading ? (
-            <div className="h-24 animate-pulse rounded-[12px] bg-[#f5f5f7]" />
+            <div className="h-24 animate-pulse rounded-xl bg-[#f5f5f7]" />
           ) : (
             <div className="flex items-center justify-center gap-5">
               <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-full bg-[#fff8dc]">
@@ -206,7 +206,7 @@ export default function Home() {
                 <p className="text-[18px] font-normal leading-none tracking-[-0.374px] text-[#1d1d1f]">
                   {weather?.weatherCondition ?? "날씨 정보 없음"}
                 </p>
-                <p className="mt-1 text-[52px] font-semibold leading-none tracking-[-0.28px] text-[#000] max-[360px]:text-[44px]">
+                <p className="mt-1 text-[52px] font-semibold leading-none tracking-[-0.28px] text-black max-[360px]:text-[44px]">
                   {weather?.temperature ?? "--"}°
                 </p>
                 <p className="mt-1 text-[14px] font-normal leading-[1.24] tracking-[-0.224px] text-[#1d1d1f]">
@@ -428,8 +428,8 @@ function TodayRecommendationSection({
       </div>
 
       {loading ? (
-        <div className="min-h-[184px] rounded-[12px] border border-[#e0e0e0] p-4">
-          <div className="mx-auto h-16 w-16 animate-pulse rounded-[12px] bg-[#f5f5f7]" />
+        <div className="min-h-46 rounded-xl border border-[#e0e0e0] p-4">
+          <div className="mx-auto h-16 w-16 animate-pulse rounded-xl bg-[#f5f5f7]" />
           <div className="mx-auto mt-4 h-5 w-24 animate-pulse rounded bg-[#f5f5f7]" />
           <div className="mx-auto mt-3 h-4 w-full animate-pulse rounded bg-[#f5f5f7]" />
           <div className="mx-auto mt-2 h-4 w-5/6 animate-pulse rounded bg-[#f5f5f7]" />
@@ -437,10 +437,10 @@ function TodayRecommendationSection({
       ) : recommendations.length > 0 ? (
         <div>
           <div className="relative">
-            <div className="min-h-[196px] overflow-hidden rounded-[18px] border border-[#e0e0e0] bg-white">
+            <div className="min-h-49 overflow-hidden rounded-[18px] border border-[#e0e0e0] bg-white">
               <div
                 key={`${activeRecommendation.diseaseId}-${activeRecommendation.factorName}-${safeIndex}`}
-                className={`flex min-h-[196px] flex-col px-12 py-5 transition-all duration-200 ease-out ${
+                className={`flex min-h-49 flex-col px-12 py-5 transition-all duration-200 ease-out ${
                   slideReady
                     ? "translate-x-0 scale-100 opacity-100"
                     : slideDirection === "next"
@@ -448,7 +448,7 @@ function TodayRecommendationSection({
                       : "-translate-x-5 scale-[0.98] opacity-0"
                 }`}
               >
-                <div className="mx-auto grid h-16 w-20 place-items-center rounded-[8px] bg-[#f5f5f7]">
+                <div className="mx-auto grid h-16 w-20 place-items-center rounded-lg bg-[#f5f5f7]">
                   <RecommandIcon
                     index={getRecommendationIconIndex(activeRecommendation.factorName)}
                     scale={0.17}
@@ -503,7 +503,7 @@ function TodayRecommendationSection({
           )}
         </div>
       ) : (
-        <div className="rounded-[12px] border border-[#e0e0e0] bg-white p-4 text-center">
+        <div className="rounded-xl border border-[#e0e0e0] bg-white p-4 text-center">
           <p className="text-[14px] font-semibold leading-[1.35] tracking-[-0.224px] text-[#1d1d1f]">
             {locationLabel} 기준으로 추가 행동 요령이 없어요.
           </p>
@@ -530,7 +530,7 @@ function RiskStatusSection({
     return (
       <section className="rounded-[14px] border border-[#e0e0e0] bg-white p-3">
         <div className="grid grid-cols-[84px_1fr_40px] items-center gap-3 max-[360px]:grid-cols-[72px_1fr_34px]">
-          <div className="h-[78px] w-[78px] animate-pulse bg-[#f5f5f7] max-[360px]:h-[66px] max-[360px]:w-[66px]" />
+          <div className="h-19.5 w-19.5 animate-pulse bg-[#f5f5f7] max-[360px]:h-16.5 max-[360px]:w-16.5" />
           <div className="min-w-0 space-y-2">
             <div className="h-4 w-24 animate-pulse rounded bg-[#f5f5f7]" />
             <div className="h-7 w-20 animate-pulse rounded bg-[#f5f5f7]" />
@@ -545,7 +545,7 @@ function RiskStatusSection({
     return (
       <section className="rounded-[14px] border border-[#e0e0e0] bg-white p-3">
         <div className="grid grid-cols-[84px_1fr_40px] items-center gap-3 max-[360px]:grid-cols-[72px_1fr_34px]">
-          <div className="grid h-[78px] w-[78px] place-items-center bg-[#f5f5f7] max-[360px]:h-[66px] max-[360px]:w-[66px]">
+          <div className="grid h-19.5 w-19.5 place-items-center bg-[#f5f5f7] max-[360px]:h-16.5 max-[360px]:w-16.5">
             <span className="text-[28px] leading-none text-[#7a7a7a]">!</span>
           </div>
           <div className="min-w-0">
@@ -565,7 +565,7 @@ function RiskStatusSection({
     return (
       <section className="rounded-[14px] border border-[#b7e3c0] bg-[#f1fbf3] p-3">
         <div className="grid grid-cols-[84px_1fr_40px] items-center gap-3 max-[360px]:grid-cols-[72px_1fr_34px]">
-          <div className="grid h-[78px] w-[78px] place-items-center bg-white max-[360px]:h-[66px] max-[360px]:w-[66px]">
+          <div className="grid h-19.5 w-19.5 place-items-center bg-white max-[360px]:h-16.5 max-[360px]:w-16.5">
             <ConditionIcon index={0} scale={0.18} />
           </div>
           <div className="min-w-0">
@@ -587,7 +587,7 @@ function RiskStatusSection({
   return (
     <section className="rounded-[14px] border border-[#ff8a8a] bg-[#fff1f1] p-3">
       <div className="grid grid-cols-[84px_1fr_40px] items-center gap-3 max-[360px]:grid-cols-[72px_1fr_34px]">
-        <div className="grid h-[78px] w-[78px] place-items-center bg-white max-[360px]:h-[66px] max-[360px]:w-[66px]">
+        <div className="grid h-19.5 w-19.5 place-items-center bg-white max-[360px]:h-16.5 max-[360px]:w-16.5">
           <ConditionIcon index={1} scale={0.18} />
         </div>
         <div className="min-w-0">
@@ -610,8 +610,8 @@ function RiskStatusSection({
 function WarningTriangle() {
   return (
     <div className="relative h-10 w-10">
-      <div className="absolute inset-x-0 top-0 mx-auto h-0 w-0 border-x-[20px] border-b-[38px] border-x-transparent border-b-red-400" />
-      <span className="absolute left-1/2 top-[9px] -translate-x-1/2 text-[22px] font-semibold leading-none text-white">
+      <div className="absolute inset-x-0 top-0 mx-auto h-0 w-0 border-x-20 border-b-38 border-x-transparent border-b-red-400" />
+      <span className="absolute left-1/2 top-2.25 -translate-x-1/2 text-[22px] font-semibold leading-none text-white">
         !
       </span>
     </div>
@@ -636,8 +636,8 @@ function AirQualityCard({
   iconIndex: number;
 }) {
   return (
-    <div className="relative flex min-h-[118px] flex-col rounded-[12px] border border-[#e0e0e0] bg-white p-2.5">
-      <div className={`absolute left-0 top-0 h-1 w-1/2 rounded-tl-[12px] ${accent}`} />
+    <div className="relative flex min-h-29.5 flex-col rounded-xl border border-[#e0e0e0] bg-white p-2.5">
+      <div className={`absolute left-0 top-0 h-1 w-1/2 rounded-tl-xl ${accent}`} />
       <p className="text-[12px] font-semibold leading-tight tracking-[-0.12px] text-[#1d1d1f]">
         {title}
         <span className="text-[9px] tracking-[-0.08px]">({sub})</span>

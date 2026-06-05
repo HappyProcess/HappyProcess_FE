@@ -105,7 +105,7 @@ function AirCard({ title, sub, label, value, dotColor, textColor, iconIndex }: A
         {sub && <p className="text-[10px] text-[#7a7a7a]">{sub}</p>}
       </div>
       <div className="flex items-center gap-1.5">
-        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${dotColor}`} />
+        <span className={`w-2 h-2 rounded-full shrink-0 ${dotColor}`} />
         <span className={`text-[13px] font-semibold ${textColor}`}>{label}</span>
       </div>
       <div className="flex items-center justify-between">
@@ -147,7 +147,7 @@ export default function WeatherSection({ weather, loading }: Props) {
     <div className="flex flex-col gap-4 w-full">
       {/* 메인 날씨 카드 */}
       <div className="bg-[#f5f5f7] rounded-3xl p-6 flex items-center gap-6">
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           <WeatherIcon index={getWeatherIconIndex(weather?.weatherCondition ?? "")} isOnlyIcon={true} />
         </div>
         <div className="flex flex-col">

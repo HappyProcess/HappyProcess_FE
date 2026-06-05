@@ -379,7 +379,7 @@ export default function AlarmPage() {
 
                   <div className="rounded-[18px] border border-[#ff8a8a] bg-[#fff1f1] p-4">
                     <div className="grid grid-cols-[112px_1fr_54px] items-center gap-4 max-[360px]:grid-cols-[82px_1fr_40px] max-[360px]:gap-3">
-                      <div className="grid h-[104px] w-[104px] place-items-center bg-white max-[360px]:h-[82px] max-[360px]:w-[82px]">
+                      <div className="grid h-26 w-26 place-items-center bg-white max-[360px]:h-20.5 max-[360px]:w-20.5">
                         <IllnessIcon index={getConditionIconIndex(getPrimaryHistoryDiseaseName(item))} scale={0.25} />
                       </div>
 
@@ -391,7 +391,7 @@ export default function AlarmPage() {
                               {getHistoryRelativeLabel(item)}
                             </span>
                           )}
-                          <p className="text-[18px] font-semibold leading-[1.25] tracking-[-0.374px] text-[#1d1d1f] max-[360px]:text-[15px]">
+                          <p className="text-[18px] font-semibold leading-tight tracking-[-0.374px] text-[#1d1d1f] max-[360px]:text-[15px]">
                             외출 주의 필요
                           </p>
                         </div>
@@ -405,12 +405,12 @@ export default function AlarmPage() {
 
                       <div className="flex h-full shrink-0 flex-col items-end justify-between">
                         <div className="relative h-12 w-14 max-[360px]:h-9 max-[360px]:w-10">
-                          <div className="absolute inset-x-0 top-0 mx-auto h-0 w-0 border-x-[28px] border-b-[48px] border-x-transparent border-b-red-400 max-[360px]:border-x-[20px] max-[360px]:border-b-[36px]" />
-                          <span className="absolute left-1/2 top-[13px] -translate-x-1/2 text-[28px] font-semibold leading-none text-white max-[360px]:top-[9px] max-[360px]:text-[22px]">
+                          <div className="absolute inset-x-0 top-0 mx-auto h-0 w-0 border-x-28 border-b-48 border-x-transparent border-b-red-400 max-[360px]:border-x-20 max-[360px]:border-b-36" />
+                          <span className="absolute left-1/2 top-3.25 -translate-x-1/2 text-[28px] font-semibold leading-none text-white max-[360px]:top-2.25 max-[360px]:text-[22px]">
                             !
                           </span>
                         </div>
-                        <div className="flex w-[74px] flex-col items-stretch gap-1.5 max-[360px]:w-[62px]">
+                        <div className="flex w-18.5 flex-col items-stretch gap-1.5 max-[360px]:w-15.5">
                           {!item.isRead && (
                             <button
                               type="button"
@@ -454,7 +454,7 @@ function Switch({
       role="switch"
       aria-checked={checked}
       onClick={onClick}
-      className={`relative h-10 w-[74px] shrink-0 rounded-full border-2 transition-colors active:scale-95 ${
+      className={`relative h-10 w-18.5 shrink-0 rounded-full border-2 transition-colors active:scale-95 ${
         checked ? "border-[#1d1d1f] bg-[#1d1d1f]" : "border-[#d2d2d7] bg-white"
       }`}
     >

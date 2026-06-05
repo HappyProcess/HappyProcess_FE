@@ -51,7 +51,7 @@ export default function Navigation() {
   }
 
   return (
-    <header className="w-full flex-shrink-0 bg-white px-5 pb-3 pt-5">
+    <header className="w-full shrink-0 bg-white px-5 pb-3 pt-5">
       <div className="flex items-center justify-between">
         <button
           type="button"
@@ -73,6 +73,9 @@ export default function Navigation() {
       <div className="mt-4 flex items-center justify-between gap-3 border-b border-[#1d1d1f] pb-3">
         <div className="min-w-0" />
         <nav className="flex shrink-0 items-center gap-3 text-[14px] font-normal tracking-[-0.224px] text-[#1d1d1f]">
+          <button type="button" onClick={() => router.push("/community")} className="active:scale-95">
+            커뮤니티
+          </button>
           <button type="button" onClick={() => router.push("/profile")} className="active:scale-95">
             프로필
           </button>
@@ -87,7 +90,7 @@ export default function Navigation() {
           >
             🔔
             {unread > 0 && (
-              <span className="absolute -right-1 -top-1 min-w-[17px] rounded-full bg-[#0066cc] px-1 text-center text-[10px] font-semibold leading-[17px] text-white">
+              <span className="absolute -right-1 -top-1 min-w-4.25 rounded-full bg-[#0066cc] px-1 text-center text-[10px] font-semibold leading-[17px] text-white">
                 {unread > 99 ? "99+" : unread}
               </span>
             )}

@@ -193,8 +193,8 @@ export default function ProfilePage() {
       <section className="rounded-[18px] border border-[#e0e0e0] bg-white overflow-hidden">
         <div className="flex items-center gap-4 p-5">
           <div className="relative h-20 w-20 shrink-0 rounded-full bg-[#f5f5f7]">
-            <div className="absolute left-1/2 top-[13px] h-10 w-10 -translate-x-1/2 rounded-full bg-[#7a7a7a]" />
-            <div className="absolute bottom-[13px] left-1/2 h-7 w-14 -translate-x-1/2 rounded-t-full bg-[#7a7a7a]" />
+            <div className="absolute left-1/2 top-3.25 h-10 w-10 -translate-x-1/2 rounded-full bg-[#7a7a7a]" />
+            <div className="absolute bottom-3.25 left-1/2 h-7 w-14 -translate-x-1/2 rounded-t-full bg-[#7a7a7a]" />
           </div>
 
           {editingBasic ? (
@@ -246,7 +246,7 @@ export default function ProfilePage() {
               type="button"
               aria-label="기본 정보 수정"
               onClick={() => setEditingBasic(true)}
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-[8px] border border-[#0066cc] text-[20px] leading-none text-[#0066cc] transition-transform active:scale-95"
+              className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-[#0066cc] text-[20px] leading-none text-[#0066cc] transition-transform active:scale-95"
             >
               ✎
             </button>
@@ -375,7 +375,7 @@ function ProfileLocationRow({
           type="button"
           aria-label={`${label} 수정`}
           onClick={editing ? onCancel : onEdit}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-[8px] border border-[#0066cc] text-[20px] leading-none text-[#0066cc] transition-transform active:scale-95"
+          className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-[#0066cc] text-[20px] leading-none text-[#0066cc] transition-transform active:scale-95"
         >
           {editing ? "×" : "✎"}
         </button>
@@ -419,22 +419,22 @@ function ConditionCard({
       type="button"
       onClick={onClick}
       className={[
-        "relative flex aspect-square min-h-[112px] flex-col items-center justify-center rounded-[8px] border bg-white p-2 text-center transition-transform active:scale-95",
+        "relative flex aspect-square min-h-28 flex-col items-center justify-center rounded-lg border bg-white p-2 text-center transition-transform active:scale-95",
         selected ? "border-[#0066cc]" : "border-[#e0e0e0]",
       ].join(" ")}
     >
       <span
         className={[
-          "absolute right-2 top-2 grid h-5 w-5 place-items-center rounded-[4px] border text-[16px] leading-none",
+          "absolute right-2 top-2 grid h-5 w-5 place-items-center rounded-sm border text-[16px] leading-none",
           selected ? "border-[#0066cc] text-[#0066cc]" : "border-[#7a7a7a] text-transparent",
         ].join(" ")}
       >
         ✓
       </span>
 
-      <div className="mb-1 grid h-[58px] w-[58px] place-items-center">
+      <div className="mb-1 grid h-14.5 w-14.5 place-items-center">
         {isNoCondition ? (
-          <span className="grid h-[50px] w-[50px] place-items-center rounded-full bg-[#f5f5f7] text-[24px] font-semibold leading-none text-[#7a7a7a]">
+          <span className="grid h-12.5 w-12.5 place-items-center rounded-full bg-[#f5f5f7] text-[24px] font-semibold leading-none text-[#7a7a7a]">
             0
           </span>
         ) : (
