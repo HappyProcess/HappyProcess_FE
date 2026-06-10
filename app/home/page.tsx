@@ -335,7 +335,7 @@ function HomeLocationSection({
                 onClick={() => onChange("HOME")}
                 className={`rounded-[9px] px-4 py-1.5 text-[13px] font-semibold transition-all active:scale-95 ${
                   locationType === "HOME"
-                    ? "bg-white text-[#191f28] shadow-[0_2px_4px_rgba(0,0,0,0.08)]"
+                    ? "bg-white text-[#191f28] shadow-[0_2px_4px_rgba(0,0,0,0.06)]"
                     : "text-[#8b95a1]"
                 }`}
               >
@@ -348,7 +348,7 @@ function HomeLocationSection({
                 onClick={() => onChange("WORK")}
                 className={`rounded-[9px] px-4 py-1.5 text-[13px] font-semibold transition-all active:scale-95 ${
                   locationType === "WORK"
-                    ? "bg-white text-[#191f28] shadow-[0_2px_4px_rgba(0,0,0,0.08)]"
+                    ? "bg-white text-[#191f28] shadow-[0_2px_4px_rgba(0,0,0,0.06)]"
                     : "text-[#8b95a1]"
                 }`}
               >

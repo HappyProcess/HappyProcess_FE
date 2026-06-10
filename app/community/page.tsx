@@ -18,6 +18,9 @@ export default function Community() {
   const [isFreeOnly, setFreeOnly] = useState(false);
   const [isRecentOrder, setRecentOrder] = useState(true);
 
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [draft, setDraft] = useState<Set<number>>(new Set());
+
   const [searchInput, setSearchInput] = useState("");
   const [keyword, setKeyword] = useState(""); // 실제 적용된 검색어
 
@@ -83,16 +86,30 @@ export default function Community() {
     setKeyword("");
   };
 
-  const toggleCondition = (id: number) => {
-    setFreeOnly(false);
-    setKeyword("");
-    setSelected((prev) => {
+  const openSheet = () => {
+    setDraft(new Set(selected));
+    setSheetOpen(true);
+  };
+
+  const toggleDraft = (id: number) => {
+    setDraft((prev) => {
       const next = new Set(prev);
       if (next.has(id)) next.delete(id);
       else next.add(id);
       return next;
     });
   };
+
+  const applyDraft = () => {
+    setFreeOnly(false);
+    setKeyword("");
+    setSelected(new Set(draft));
+    setSheetOpen(false);
+  };
+
+  const selectedNames = conditions
+    .filter((c) => selected.has(c.conditionId))
+    .map((c) => c.conditionName);
 
   const submitSearch = () => {
     const trimmed = searchInput.trim();
@@ -150,19 +167,25 @@ export default function Community() {
         </div>
       </div>
 
-      {/* 분류 칩 (가로 스크롤) */}
-      <div className="flex gap-2 overflow-x-auto px-5 pb-4 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      {/* 분류 칩 */}
+      <div className="flex items-center gap-2 px-5 pb-4">
         <button className={chip(isAllSelected)} onClick={selectAll}>전체</button>
         <button className={chip(isFreeOnly)} onClick={selectFree}>자유게시판</button>
-        {conditions.map((c) => (
-          <button
-            key={c.conditionId}
-            className={chip(selected.has(c.conditionId))}
-            onClick={() => toggleCondition(c.conditionId)}
-          >
-            {c.conditionName}
-          </button>
-        ))}
+        <button
+          className={`inline-flex h-9 shrink-0 items-center gap-1 rounded-full px-3.5 text-[14px] font-semibold transition-transform active:scale-[0.97] ${
+            selected.size > 0 ? "bg-[#3182f6] text-white" : "bg-[#f2f4f6] text-[#4e5968]"
+          }`}
+          onClick={openSheet}
+        >
+          {selected.size > 0
+            ? selectedNames.length <= 2
+              ? selectedNames.join(", ")
+              : `${selectedNames.slice(0, 2).join(", ")} 외 ${selectedNames.length - 2}`
+            : "질환 분류"}
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
       </div>
 
       {/* 정렬 */}
@@ -270,6 +293,49 @@ export default function Community() {
           gap={0}
           index={0} />
       </button>
+
+      {/* 분류 선택 바텀시트 */}
+      {sheetOpen && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end">
+          <button
+            className="absolute inset-0 bg-[rgba(2,9,19,0.5)] motion-safe:animate-[fadeIn_250ms_ease-out]"
+            onClick={() => setSheetOpen(false)}
+            aria-label="닫기"
+          />
+          <div className="relative max-h-[80vh] overflow-y-auto rounded-t-[16px] bg-white px-5 pb-8 pt-5 motion-safe:animate-[sheetUp_250ms_cubic-bezier(0,0,0.2,1)]">
+            <div className="mb-4 flex items-center justify-between">
+              <h3 className="text-[18px] font-bold text-[#191f28]">질환 분류</h3>
+              <button
+                className="text-[14px] font-semibold text-[#8b95a1] active:scale-95"
+                onClick={() => setDraft(new Set())}
+              >
+                초기화
+              </button>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {conditions.map((c) => (
+                <button
+                  key={c.conditionId}
+                  className={`rounded-full px-4 py-2.5 text-[14px] font-semibold transition-transform active:scale-[0.97] ${
+                    draft.has(c.conditionId) ? "bg-[#3182f6] text-white" : "bg-[#f2f4f6] text-[#4e5968]"
+                  }`}
+                  onClick={() => toggleDraft(c.conditionId)}
+                >
+                  {c.conditionName}
+                </button>
+              ))}
+            </div>
+
+            <button
+              className="mt-6 h-14 w-full rounded-[16px] bg-[#3182f6] text-[17px] font-semibold text-white transition-transform active:scale-[0.99]"
+              onClick={applyDraft}
+            >
+              {draft.size > 0 ? `${draft.size}개 적용하기` : "전체 보기"}
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
