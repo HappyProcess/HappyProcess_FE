@@ -52,31 +52,42 @@ export default function MultiSelect({
     <div className={className} ref={ref}>
       {/* 선택된 값 표시 */}
       <div
-        className="border p-2 cursor-pointer"
+        className={`flex cursor-pointer items-center justify-between rounded-[14px] border border-[#e5e8eb] bg-white px-4 py-3.5 text-[16px] active:scale-[0.99] transition-transform ${
+          value.length > 0 ? "text-[#191f28]" : "text-[#8b95a1]"
+        }`}
         onClick={() => setIsOpen(!isOpen)}
       >
-        {value.length > 0 ? value.join(", ") : placeholder}
+        <span className="truncate">
+          {value.length > 0 ? value.join(", ") : placeholder}
+        </span>
+        <span className={`ml-2 shrink-0 text-[#8b95a1] transition-transform ${isOpen ? "rotate-180" : ""}`}>⌄</span>
       </div>
 
       {/* 드롭다운 */}
       {isOpen && (
-        <div className="absolute border w-full bg-white shadow">
-          {options.map((opt) => (
-            <label
-              key={opt.value}
-              className="flex items-center gap-2 p-2 hover:bg-gray-100"
-            >
-              <input
-                type="checkbox"
-                checked={value.includes(opt.value)}
-                onChange={() => toggleOption(opt.value)}
-              />
-              {opt.label}
-            </label>
-          ))}
+        <div className="absolute z-10 mt-1.5 w-full overflow-hidden rounded-[14px] border border-[#e5e8eb] bg-white shadow-[0_4px_16px_rgba(0,0,0,0.08)]">
+          {options.map((opt) => {
+            const checked = value.includes(opt.value);
+            return (
+              <label
+                key={opt.value}
+                className={`flex cursor-pointer items-center gap-2.5 px-4 py-3 text-[15px] ${
+                  checked ? "bg-[#e8f3ff] text-[#3182f6] font-semibold" : "text-[#4e5968]"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  className="h-4 w-4 accent-[#3182f6]"
+                  checked={checked}
+                  onChange={() => toggleOption(opt.value)}
+                />
+                {opt.label}
+              </label>
+            );
+          })}
         </div>
       )}
-      
+
     </div>
   );
 }

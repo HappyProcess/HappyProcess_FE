@@ -13,13 +13,10 @@ export const ALERT_HISTORY_UPDATED_EVENT = "alertHistoryUpdated";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
-export const saveAlertTimes = (alerts: Alert[]) => {
-  const times = alerts
-    .filter((alert) => alert.isEnable)
-    .map((alert) => alert.alertTime)
-    .sort();
-
-  localStorage.setItem(ALERT_TIMES_STORAGE_KEY, JSON.stringify(times));
+// 개인 알림 변경을 AlertPoller에 알린다. 저장(스케줄 갱신)은 직접 하지 않고
+// AlertPoller가 개인+가족 시간을 한 번에 다시 쓰도록 일임한다.
+// (여기서 개인 시간만 직접 저장하면 가족 알림 시간이 덮여 사라져 토스트가 안 뜸)
+export const saveAlertTimes = () => {
   window.dispatchEvent(new Event(ALERT_TIMES_CHANGED_EVENT));
 };
 
@@ -27,9 +24,9 @@ const saveAllAlertTimes = (alerts: Alert[], families: FamilySummary[]) => {
   const personalTimes = alerts
     .filter((alert) => alert.isEnable)
     .map((alert) => alert.alertTime);
-  const familyTimes = families.flatMap((family) => family.alertTimes);
-  const times = [...personalTimes, ...familyTimes]
-    .sort();
+  // 가족 알림 시간도 동일하게 스케줄에 포함 — 가족 알림 시각에도 토스트가 뜨도록.
+  const familyTimes = families.flatMap((family) => family.alertTimes ?? []);
+  const times = [...personalTimes, ...familyTimes].sort();
 
   localStorage.setItem(ALERT_TIMES_STORAGE_KEY, JSON.stringify(times));
 };

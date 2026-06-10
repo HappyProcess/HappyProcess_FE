@@ -61,7 +61,7 @@ export default function AlarmPage() {
     Promise.all([getAlerts(), getAlertHistory()])
       .then(([alertList, historyList]) => {
         setAlerts(alertList);
-        saveAlertTimes(alertList);
+        saveAlertTimes();
         setHistory(historyList);
       })
       .catch(() => setError("알림 정보를 불러오지 못했어요."))
@@ -100,7 +100,7 @@ export default function AlarmPage() {
         a.alertTime.localeCompare(b.alertTime)
       );
       setAlerts(next);
-      saveAlertTimes(next);
+      saveAlertTimes();
       setIsAdding(false);
     } catch (err) {
       setError(isDuplicateAlertTime(err) ? "이미 등록된 시간이에요." : "알림을 추가하지 못했어요.");
@@ -135,7 +135,7 @@ export default function AlarmPage() {
         .map((alert) => (alert.alertId === alertId ? updated : alert))
         .sort((a, b) => a.alertTime.localeCompare(b.alertTime));
       setAlerts(next);
-      saveAlertTimes(next);
+      saveAlertTimes();
       cancelEdit();
     } catch (err) {
       setError(isDuplicateAlertTime(err) ? "이미 등록된 시간이에요." : "시간을 수정하지 못했어요.");
@@ -152,7 +152,7 @@ export default function AlarmPage() {
     try {
       await toggleAlert(alert.alertId, next);
       // PATCH 완료 후에만 재동기화 트리거 (동시 호출 시 변경 전 데이터가 잡히는 문제 방지)
-      saveAlertTimes(optimistic);
+      saveAlertTimes();
     } catch {
       setAlerts(alerts);
       setError("알림 설정을 변경하지 못했어요.");
@@ -166,7 +166,7 @@ export default function AlarmPage() {
 
     try {
       await deleteAlert(alertId);
-      saveAlertTimes(next);
+      saveAlertTimes();
       cancelEdit();
     } catch {
       setAlerts(prev);
@@ -244,7 +244,7 @@ export default function AlarmPage() {
                 type="time"
                 value={newTime}
                 onChange={(event) => setNewTime(event.target.value)}
-                className="min-w-0 bg-transparent text-[30px] font-bold leading-none tracking-[-0.02em] text-[#191f28] outline-none"
+                className="w-auto shrink-0 bg-transparent text-[30px] font-bold leading-none tracking-[-0.02em] text-[#191f28] outline-none"
               />
               <LocationToggle value={locationType} onChange={setLocationType} />
             </div>
@@ -290,7 +290,7 @@ export default function AlarmPage() {
                         type="time"
                         value={editTime}
                         onChange={(event) => setEditTime(event.target.value)}
-                        className="min-w-0 bg-transparent text-[30px] font-bold leading-none tracking-[-0.02em] text-[#191f28] outline-none"
+                        className="w-auto shrink-0 bg-transparent text-[30px] font-bold leading-none tracking-[-0.02em] text-[#191f28] outline-none"
                       />
                       <LocationToggle value={locationType} onChange={setLocationType} />
                     </div>

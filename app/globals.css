@@ -47,3 +47,28 @@ body {
   from { transform: translateY(40px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+/* AI 리포트 생성 애니메이션 ------------------------------------ */
+/* 인디터미닛 진행바 — 좌→우로 흐르는 하이라이트 */
+@keyframes reportBar {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(250%); }
+}
+
+/* 중앙 오브 — 천천히 떠오르는 글로우 */
+@keyframes reportFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+/* 단계 메시지 — 아래에서 떠오르며 페이드인 */
+@keyframes reportStepIn {
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .report-bar,
+  .report-float,
+  .report-step { animation: none !important; }
+}

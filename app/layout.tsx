@@ -9,7 +9,6 @@ const roboto = Roboto({
 });
 import MainSection from "./components/MainSection";
 import Navigation from "./components/Navigation";
-import BottomNav from "./components/BottomNav";
 import AlertPoller from "./components/AlertPoller";
 import { Toaster } from "react-hot-toast";
 
@@ -32,7 +31,6 @@ export default function RootLayout({children,}: Readonly<{children: React.ReactN
           <Navigation />
           {children}
         </MainSection>
-        <BottomNav />
         <AlertPoller />
         <Toaster
           position="top-center"
