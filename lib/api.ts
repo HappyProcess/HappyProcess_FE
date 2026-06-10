@@ -3,11 +3,13 @@ import axios from "axios";
 
 export const api = axios.create({
   baseURL: "/api/v1",
+  timeout: 15000, // 서버 행(hang) 시 무한 로딩 방지 — 초과 시 에러로 떨궈 재시도 가능하게
 });
 
 // reissue 전용 인스턴스 — 무한루프 방지
 const authApi = axios.create({
   baseURL: "/api/v1",
+  timeout: 15000,
 });
 
 api.interceptors.request.use((config) => {

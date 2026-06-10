@@ -79,6 +79,51 @@ export type RiskStatus = {
   riskDetails?: RiskDetail[];
 }
 
+// 커뮤니티 ----------------------------------------------------------------
+
+// Spring Page<T> 응답 구조 (목록/검색/마이페이지 공통)
+export type Page<T> = {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  number: number; // 현재 페이지(0부터)
+  size: number;
+};
+
+export type PostListItem = {
+  postId: number;
+  title: string;
+  writerName: string;
+  viewCount: number;
+  likeCount: number;
+  commentCount: number;
+  createdAt: string;
+  hasImage: boolean;
+  categories: string[]; // 질환 태그 이름들
+};
+
+export type CommentResponse = {
+  commentId: number;
+  writerName: string;
+  content: string;
+  createdAt: string;
+};
+
+export type PostDetail = {
+  postId: number;
+  title: string;
+  content: string;
+  writerName: string;
+  viewCount: number;
+  likeCount: number;
+  commentCount: number;
+  createdAt: string;
+  likedByMe: boolean; // 서버 JSON 키는 likedByMe (boolean 필드 Jackson 직렬화)
+  categories: string[];
+  imageUrls: string[]; // Supabase public URL — <img src> 그대로 사용
+  comments: CommentResponse[];
+};
+
 export type FamilySummary = {
   familyId: number;
   name: string;
