@@ -1,5 +1,4 @@
 'use client'
-import Icon from "@/components/IconComponents/Icon";
 import { getCachedAllConditions } from "#/lib/cache";
 import { formatDateTime } from "#/lib/format";
 import { parseError } from "#/lib/parseError";
@@ -126,7 +125,7 @@ export default function Community() {
     }`;
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-[#f2f4f6] px-5 pb-8">
+    <div className="flex w-full flex-col bg-[#f2f4f6] px-5 pb-8 pt-2">
       {/* 헤더 */}
       <header className="flex items-center justify-between pt-2 pb-2">
         <h1 className="text-[24px] font-bold tracking-[-0.02em] text-[#191f28]">커뮤니티</h1>
@@ -282,18 +281,15 @@ export default function Community() {
 
       {/* 글쓰기 FAB */}
       <button
-        className="fixed bottom-28 right-6 z-30 cursor-pointer drop-shadow-[0_4px_12px_rgba(49,130,246,0.4)] transition-transform active:scale-95"
+        type="button"
+        aria-label="글쓰기"
+        className="fixed bottom-28 right-5 z-30 grid h-14 w-14 place-items-center rounded-full bg-[#3182f6] shadow-[0_4px_12px_rgba(0,0,0,0.12)] transition-transform active:scale-95"
         onClick={() => router.push("/write")}
       >
-        <Icon
-          className="rounded-full"
-          path={"/resources/write_button.png"}
-          scale={0.5}
-          size={110}
-          cols={1}
-          rows={1}
-          gap={0}
-          index={0} />
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 20h9" />
+          <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z" />
+        </svg>
       </button>
 
       {/* 분류 선택 바텀시트 */}
