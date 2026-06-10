@@ -19,7 +19,7 @@ import {
   invalidateLocations,
   invalidateProfile,
 } from "#/lib/cache";
-import { type Location, type Condition, type Profile } from "#/service/types";
+import { type Location, type Condition, type Profile, type PrecipPreference } from "#/service/types";
 import RegionSelect from "@/components/RegionSelectBoxes";
 import IllnessIcon from "@/components/IconComponents/IllnessIcon";
 import { parseError } from "#/lib/parseError";
@@ -42,6 +42,12 @@ type BasicFormValues = {
 
 // 하이픈 없는 휴대폰 번호 (010/011/016/017/018/019 + 7~8자리)
 const PHONE_REGEX = /^01[016789]\d{7,8}$/;
+
+const PRECIP_OPTIONS: { value: PrecipPreference; label: string }[] = [
+  { value: "NONE", label: "없음" },
+  { value: "RAIN", label: "비" },
+  { value: "SNOW", label: "눈" },
+];
 
 const LOCATION_LABEL: Record<"HOME" | "WORK", string> = {
   HOME: "거주지역",
@@ -91,6 +97,10 @@ export default function ProfilePage() {
   const [savingSms, setSavingSms] = useState(false);
   const phoneRef = useRef<HTMLInputElement>(null);
 
+  // 강수 비선호 (질병 없는 사용자 날씨 점수에 반영). 토글 즉시 저장.
+  const [precipPreference, setPrecipPreference] = useState<PrecipPreference>("NONE");
+  const [savingPrecip, setSavingPrecip] = useState(false);
+
   const { register, handleSubmit, reset } = useForm<BasicFormValues>();
 
   const onLogout = async () => {
@@ -113,6 +123,7 @@ export default function ProfilePage() {
       setSavedPhone(phone);
       setSmsEnabled(sms);
       setSavedSms(sms);
+      setPrecipPreference(prof.precipPreference ?? "NONE");
       const ids = mine.map(normalizeConditionId);
       setMyConditionIds(ids);
       setSavedConditionIds(ids);
@@ -288,6 +299,24 @@ export default function ProfilePage() {
     }
   };
 
+  // 강수 비선호 선택 — 낙관적 반영 후 저장, 실패 시 원복.
+  const onSelectPrecip = async (next: PrecipPreference) => {
+    if (savingPrecip || next === precipPreference) return;
+    const prev = precipPreference;
+    setPrecipPreference(next);
+    setSavingPrecip(true);
+    try {
+      await modifyMyInformation({ precipPreference: next });
+      setProfile((p) => (p ? { ...p, precipPreference: next } : p));
+      invalidateProfile();
+    } catch (err) {
+      setPrecipPreference(prev);
+      toast.error(parseError(err));
+    } finally {
+      setSavingPrecip(false);
+    }
+  };
+
   if (!profile) {
     return (
       <div></div>
@@ -448,6 +477,36 @@ export default function ProfilePage() {
             </button>
           </div>
         )}
+      </section>
+
+      {/* 강수 비선호 */}
+      <section className="mt-3 flex flex-col gap-3 rounded-[16px] border border-[#e5e8eb] bg-white p-5">
+        <div className="min-w-0">
+          <p className="text-[16px] font-bold tracking-[-0.01em] text-[#191f28]">
+            싫어하는 날씨
+          </p>
+          <p className="mt-0.5 text-[13px] leading-[1.4] text-[#8b95a1]">
+            비나 눈을 선택하면 날씨 점수에 반영해드려요.
+          </p>
+        </div>
+        <div className="flex gap-2 rounded-[12px] bg-[#f2f4f6] p-1">
+          {PRECIP_OPTIONS.map((option) => (
+            <button
+              key={option.value}
+              type="button"
+              onClick={() => onSelectPrecip(option.value)}
+              disabled={savingPrecip}
+              aria-pressed={precipPreference === option.value}
+              className={`flex-1 rounded-[8px] py-2.5 text-[14px] font-semibold transition-all active:scale-[0.98] disabled:opacity-60 ${
+                precipPreference === option.value
+                  ? "bg-white text-[#191f28] shadow-[0_2px_4px_rgba(0,0,0,0.06)]"
+                  : "text-[#8b95a1]"
+              }`}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
       </section>
 
       {/* 건강 상태 */}

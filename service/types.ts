@@ -7,6 +7,9 @@ export type Location = {
   dong: string;
 }
 
+// 강수 비선호. 질병 없는 사용자의 날씨 점수(강수 불편도)에만 반영.
+export type PrecipPreference = "NONE" | "RAIN" | "SNOW";
+
 export type Profile = {
   loginId: string;
   name: string;
@@ -14,6 +17,7 @@ export type Profile = {
   commuteTime: string;
   phoneNumber?: string | null; // 하이픈 없는 숫자. 미등록 시 null
   smsEnabled?: boolean; // 위험 알림 문자 수신 동의. PR #46 배포 전엔 응답에 없을 수 있음
+  precipPreference?: PrecipPreference; // 배포 전 응답에 없을 수 있어 방어. 기본 NONE
 }
 
 export type Condition = {
@@ -71,7 +75,8 @@ export type RiskFactorGuide = {
 export type RiskDetail = {
   diseaseId: number;
   diseaseName: string;
-  factorGuides: RiskFactorGuide[];
+  weatherScore: number; // 0~100, 낮을수록 나쁜 날씨. 모든 질환에 채워짐
+  factorGuides: RiskFactorGuide[]; // 위험 요인 없으면 빈 배열
 }
 
 export type RiskStatus = {

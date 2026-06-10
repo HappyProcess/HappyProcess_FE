@@ -6,7 +6,7 @@ import { type Location, type RiskStatus, type Weather } from "#/service/types";
 import { getWeather } from "#/service/weather";
 import { getRiskStatus } from "#/service/analysis";
 import { useEffect, useRef, useState } from "react";
-import { ConditionIcon, RecommandIcon, WeatherIcon } from "@/components";
+import { RecommandIcon, WeatherIcon } from "@/components";
 import {
   getLocationTitle,
   getStoredLocationType,
@@ -25,18 +25,17 @@ const weatherIconIndex: Record<string, [number, number]> = {
 };
 
 const gradeLabel: Record<string, string> = { "1": "좋음", "2": "보통", "3": "나쁨", "4": "매우나쁨" };
-const gradeTone: Record<string, string> = {
-  "1": "text-[#3182f6]",
-  "2": "text-[#00b843]",
-  "3": "text-[#f04452]",
-  "4": "text-[#f04452]",
+
+// 대기질 카드도 점수 카드와 동일 체계: 좋음=파랑 / 보통=주황 / 나쁨=빨강 + 무드 얼굴 3종.
+type AirLevel = "good" | "normal" | "bad" | "none";
+const AIR_STYLE: Record<AirLevel, { color: string; mood: "bad" | "neutral" | "good" }> = {
+  good: { color: "#3182f6", mood: "good" },
+  normal: { color: "#fe9800", mood: "neutral" },
+  bad: { color: "#f04452", mood: "bad" },
+  none: { color: "#b0b8c1", mood: "neutral" },
 };
-const gradeAccent: Record<string, string> = {
-  "1": "bg-[#3182f6]",
-  "2": "bg-[#00c73c]",
-  "3": "bg-[#f04452]",
-  "4": "bg-[#f04452]",
-};
+const pmLevel = (grade: string): AirLevel =>
+  grade === "1" ? "good" : grade === "2" ? "normal" : grade === "3" || grade === "4" ? "bad" : "none";
 
 const pollenLabel: Record<string, string> = {
   "0": "낮음",
@@ -62,35 +61,16 @@ const getUvLabel = (level: string) => {
   return "위험";
 };
 
-const getUvTone = (level: string) => {
+const uvLevel = (level: string): AirLevel => {
   const value = Number(level);
-  if (Number.isNaN(value)) return "text-[#8b95a1]";
-  if (value <= 2) return "text-[#3182f6]";
-  if (value <= 5) return "text-[#00b843]";
-  return "text-[#f04452]";
+  if (Number.isNaN(value)) return "none";
+  if (value <= 2) return "good";
+  if (value <= 5) return "normal";
+  return "bad";
 };
 
-const getUvAccent = (level: string) => {
-  const value = Number(level);
-  if (Number.isNaN(value)) return "bg-[#d1d6db]";
-  if (value <= 2) return "bg-[#3182f6]";
-  if (value <= 5) return "bg-[#00c73c]";
-  return "bg-[#f04452]";
-};
-
-const getPollenTone = (level: string) => {
-  if (level === "0" || level === "1") return "text-[#3182f6]";
-  if (level === "2") return "text-[#00b843]";
-  if (level === "3" || level === "4") return "text-[#f04452]";
-  return "text-[#8b95a1]";
-};
-
-const getPollenAccent = (level: string) => {
-  if (level === "0" || level === "1") return "bg-[#3182f6]";
-  if (level === "2") return "bg-[#00c73c]";
-  if (level === "3" || level === "4") return "bg-[#f04452]";
-  return "bg-[#d1d6db]";
-};
+const pollenLevel = (level: string): AirLevel =>
+  level === "0" || level === "1" ? "good" : level === "2" ? "normal" : level === "3" || level === "4" ? "bad" : "none";
 
 export default function Home() {
   const [locations, setLocations] = useState<{ home?: Location; work?: Location }>({});
@@ -256,38 +236,28 @@ export default function Home() {
             sub="PM10"
             label={gradeLabel[weather?.pm10Grade ?? ""] ?? "-"}
             value={weather?.pm10Value ? `${weather.pm10Value} ㎍/㎥` : "-"}
-            tone={gradeTone[weather?.pm10Grade ?? ""] ?? "text-[#7a7a7a]"}
-            accent={gradeAccent[weather?.pm10Grade ?? ""] ?? "bg-[#d1d1d6]"}
-            iconIndex={weather?.pm10Grade === "1" || weather?.pm10Grade === "2" ? 0 : 1}
+            level={pmLevel(weather?.pm10Grade ?? "")}
           />
           <AirQualityCard
             title="초미세먼지"
             sub="PM2.5"
             label={gradeLabel[weather?.pm25Grade ?? ""] ?? "-"}
             value={weather?.pm25Value ? `${weather.pm25Value} ㎍/㎥` : "-"}
-            tone={gradeTone[weather?.pm25Grade ?? ""] ?? "text-[#7a7a7a]"}
-            accent={gradeAccent[weather?.pm25Grade ?? ""] ?? "bg-[#d1d1d6]"}
-            iconIndex={weather?.pm25Grade === "1" || weather?.pm25Grade === "2" ? 0 : 1}
+            level={pmLevel(weather?.pm25Grade ?? "")}
           />
           <AirQualityCard
             title="자외선"
             sub="UV"
             label={getUvLabel(weather?.uvRiskLevel ?? "")}
             value={weather?.uvRiskLevel ? `${weather.uvRiskLevel} ${getUvLabel(weather.uvRiskLevel)}` : "-"}
-            tone={getUvTone(weather?.uvRiskLevel ?? "")}
-            accent={getUvAccent(weather?.uvRiskLevel ?? "")}
-            iconIndex={Number(weather?.uvRiskLevel ?? 0) <= 5 ? 0 : 1}
+            level={uvLevel(weather?.uvRiskLevel ?? "")}
           />
           <AirQualityCard
             title="꽃가루"
             sub="Pollen"
             label={pollenLabel[weather?.pollenRiskLevel ?? ""] ?? "-"}
             value="위험도"
-            tone={getPollenTone(weather?.pollenRiskLevel ?? "")}
-            accent={getPollenAccent(weather?.pollenRiskLevel ?? "")}
-            iconIndex={
-              weather?.pollenRiskLevel === "3" || weather?.pollenRiskLevel === "4" ? 1 : 0
-            }
+            level={pollenLevel(weather?.pollenRiskLevel ?? "")}
           />
         </section>
 
@@ -462,7 +432,7 @@ function TodayRecommendationSection({
       </div>
 
       {loading ? (
-        <div className="min-h-46 rounded-[20px] bg-white p-4">
+        <div className="h-64 rounded-[20px] bg-white p-4">
           <div className="mx-auto h-16 w-16 animate-pulse rounded-xl bg-[#f2f4f6]" />
           <div className="mx-auto mt-4 h-5 w-24 animate-pulse rounded bg-[#f2f4f6]" />
           <div className="mx-auto mt-3 h-4 w-full animate-pulse rounded bg-[#f2f4f6]" />
@@ -471,10 +441,10 @@ function TodayRecommendationSection({
       ) : recommendations.length > 0 ? (
         <div>
           <div className="relative">
-            <div className="min-h-49 overflow-hidden rounded-[20px] bg-white">
+            <div className="h-64 overflow-hidden rounded-[20px] bg-white">
               <div
                 key={`${activeRecommendation.diseaseId}-${activeRecommendation.factorName}-${safeIndex}`}
-                className={`flex min-h-49 flex-col px-12 py-5 transition-all duration-200 ease-out ${
+                className={`flex h-64 flex-col justify-center px-12 py-5 transition-all duration-200 ease-out ${
                   slideReady
                     ? "translate-x-0 scale-100 opacity-100"
                     : slideDirection === "next"
@@ -547,6 +517,122 @@ function TodayRecommendationSection({
   );
 }
 
+// 날씨 점수: 0~100, 낮을수록 나쁨.
+// 0~40 나쁨(빨강) / 41~70 보통(회색) / 71~100 좋음(파랑)
+type Mood = "bad" | "neutral" | "good";
+type ScoreGrade = {
+  label: string;
+  status: string;
+  desc: string;
+  color: string;
+  bg: string;
+  badge: string;
+  mood: Mood;
+};
+
+const getScoreGrade = (score: number): ScoreGrade => {
+  if (score <= 40)
+    return {
+      label: "나쁨",
+      status: "주의 필요",
+      desc: "외출 시 주의가 필요해요.",
+      color: "#f04452",
+      bg: "#fdecee",
+      badge: "rgba(240,68,82,0.12)",
+      mood: "bad",
+    };
+  if (score <= 70)
+    return {
+      label: "보통",
+      status: "보통",
+      desc: "활동하기 무난한 날씨예요.",
+      color: "#fe9800",
+      bg: "#fff4e5",
+      badge: "rgba(254,152,0,0.14)",
+      mood: "neutral",
+    };
+  return {
+    label: "좋음",
+    status: "양호",
+    desc: "활동하기 좋은 날이에요.",
+    color: "#3182f6",
+    bg: "#e8f3ff",
+    badge: "rgba(49,130,246,0.12)",
+    mood: "good",
+  };
+};
+
+const clampScore = (score: number) => Math.max(0, Math.min(100, Math.round(score)));
+
+// 점수 등급별 무드 얼굴 (색상 원 + 흰 표정). 나쁨/보통/좋음 3종.
+function MoodFace({ mood, color, size = 48 }: { mood: Mood; color: string; size?: number }) {
+  const stroke = {
+    fill: "none",
+    stroke: "#fff",
+    strokeWidth: 7,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="50" r="50" fill={color} />
+      {mood === "bad" && (
+        <>
+          <path d="M26 40 L44 46" {...stroke} />
+          <path d="M74 40 L56 46" {...stroke} />
+          <circle cx="37" cy="54" r="4.5" fill="#fff" />
+          <circle cx="63" cy="54" r="4.5" fill="#fff" />
+          <path d="M34 72 Q50 60 66 72" {...stroke} />
+        </>
+      )}
+      {mood === "neutral" && (
+        <>
+          <circle cx="37" cy="46" r="5" fill="#fff" />
+          <circle cx="63" cy="46" r="5" fill="#fff" />
+          <path d="M36 64 L64 64" {...stroke} />
+        </>
+      )}
+      {mood === "good" && (
+        <>
+          <path d="M26 44 L44 38" {...stroke} />
+          <path d="M74 44 L56 38" {...stroke} />
+          <circle cx="37" cy="52" r="4.5" fill="#fff" />
+          <circle cx="63" cy="52" r="4.5" fill="#fff" />
+          <path d="M34 60 Q50 76 66 60" {...stroke} />
+        </>
+      )}
+    </svg>
+  );
+}
+
+function WeatherScoreRow({ name, score }: { name: string; score: number }) {
+  const grade = getScoreGrade(score);
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <div className="flex min-w-0 items-center gap-2">
+        <span
+          className="h-2 w-2 shrink-0 rounded-full"
+          style={{ backgroundColor: grade.color }}
+        />
+        <span className="truncate text-[15px] font-semibold leading-tight text-[#191f28]">
+          {name}
+        </span>
+      </div>
+      <div className="flex shrink-0 items-center gap-2">
+        <span className="text-[20px] font-bold leading-none tabular-nums" style={{ color: grade.color }}>
+          {score}
+        </span>
+        <span
+          className="rounded-full px-2 py-0.5 text-[12px] font-bold leading-none"
+          style={{ backgroundColor: grade.badge, color: grade.color }}
+        >
+          {grade.label}
+        </span>
+      </div>
+    </div>
+  );
+}
+
 function RiskStatusSection({
   status,
   loading,
@@ -558,6 +644,7 @@ function RiskStatusSection({
   hasError: boolean;
   locationType: SelectedLocationType;
 }) {
+  const [sheetOpen, setSheetOpen] = useState(false);
   const locationLabel = locationType === "HOME" ? "거주지역" : "직장/학교";
 
   if (loading) {
@@ -595,47 +682,95 @@ function RiskStatusSection({
     );
   }
 
-  if (!status?.isRisk) {
-    return (
-      <section className="rounded-[20px] bg-[#eafaf0] p-4">
-        <div className="grid grid-cols-[84px_1fr] items-center gap-4 max-[360px]:grid-cols-[72px_1fr]">
-          <div className="grid h-19.5 w-19.5 place-items-center rounded-[20px] bg-white max-[360px]:h-16.5 max-[360px]:w-16.5">
-            <ConditionIcon index={0} scale={0.18} />
-          </div>
-          <div className="min-w-0">
-            <p className="truncate text-[15px] font-semibold leading-[1.3] text-[#4e5968]">
-              외출 전 체크
-            </p>
-            <p className="mt-1 text-[26px] font-bold leading-[1.1] tracking-[-0.02em] text-[#00b843]">
-              양호
-            </p>
-            <p className="mt-1.5 break-keep text-[14px] font-medium leading-[1.4] text-[#4e5968] max-[360px]:text-[12px]">
-              현재 추가 주의 요인이 없어요.
-            </p>
-          </div>
-        </div>
-      </section>
-    );
-  }
+  const isRisk = !!status?.isRisk;
+  // 모든 질환이 항상 담김(질환 없으면 질병없음 1건). 점수 오름차순 = 나쁜 순.
+  const details = (status?.riskDetails ?? [])
+    .filter((detail) => typeof detail.weatherScore === "number")
+    .map((detail) => ({ ...detail, score: clampScore(detail.weatherScore) }))
+    .sort((a, b) => a.score - b.score);
+  // 보통 이하(≤70)만 리스트로 노출, 나머지(좋음)는 전체 보기 시트에서.
+  const attentionScores = details.filter((detail) => detail.score <= 70);
+  const hasMore = details.length > attentionScores.length;
+  // 카드 전체 분위기는 가장 나쁜(최저) 점수 기준. 점수 없으면 isRisk로 대체.
+  const grade = getScoreGrade(details[0]?.score ?? (isRisk ? 0 : 100));
 
   return (
-    <section className="rounded-[20px] bg-[#fdecee] p-4">
+    <section className="rounded-[20px] p-4" style={{ backgroundColor: grade.bg }}>
       <div className="grid grid-cols-[84px_1fr] items-center gap-4 max-[360px]:grid-cols-[72px_1fr]">
         <div className="grid h-19.5 w-19.5 place-items-center rounded-[20px] bg-white max-[360px]:h-16.5 max-[360px]:w-16.5">
-          <ConditionIcon index={1} scale={0.18} />
+          <MoodFace mood={grade.mood} color={grade.color} size={44} />
         </div>
         <div className="min-w-0">
-          <p className="truncate text-[15px] font-semibold leading-[1.3] text-[#4e5968]">
-            외출 전 체크
+          <p className="text-[13px] font-semibold leading-tight text-[#8b95a1]">
+            오늘의 날씨 점수
           </p>
-          <p className="mt-1 text-[26px] font-bold leading-[1.1] tracking-[-0.02em] text-[#f04452]">
-            주의 필요
-          </p>
-          <p className="mt-1.5 break-keep text-[14px] font-medium leading-[1.4] text-[#4e5968] max-[360px]:text-[12px]">
-            아래 행동요령을 참고해 주세요.
+          <p
+            className="mt-1 text-[26px] font-bold leading-[1.1] tracking-[-0.02em]"
+            style={{ color: grade.color }}
+          >
+            {grade.status}
           </p>
         </div>
       </div>
+
+      {details.length > 0 && (
+        <div className="mt-3 rounded-[16px] bg-white p-4">
+          <div className="flex items-center justify-between gap-3">
+            <h3 className="text-[15px] font-bold tracking-[-0.01em] text-[#191f28]">
+              질환별 날씨 점수
+            </h3>
+            {hasMore && (
+              <button
+                type="button"
+                onClick={() => setSheetOpen(true)}
+                className="shrink-0 text-[13px] font-semibold text-[#3182f6] transition-transform active:scale-95"
+              >
+                전체 보기
+              </button>
+            )}
+          </div>
+          {attentionScores.length > 0 ? (
+            <div className="mt-3 flex flex-col gap-3">
+              {attentionScores.map((detail) => (
+                <WeatherScoreRow key={detail.diseaseId} name={detail.diseaseName} score={detail.score} />
+              ))}
+            </div>
+          ) : (
+            <p className="mt-2 text-[13px] font-medium leading-[1.4] text-[#8b95a1]">
+              점수가 낮은 질환이 없어요. 전체 점수를 확인해 보세요.
+            </p>
+          )}
+        </div>
+      )}
+
+      {sheetOpen && (
+        <div className="fixed inset-0 z-50 flex flex-col justify-end">
+          <button
+            className="absolute inset-0 bg-[rgba(2,9,19,0.5)] motion-safe:animate-[fadeIn_250ms_ease-out]"
+            onClick={() => setSheetOpen(false)}
+            aria-label="닫기"
+          />
+          <div className="relative max-h-[80vh] overflow-y-auto rounded-t-[16px] bg-white px-5 pb-8 pt-5 motion-safe:animate-[sheetUp_250ms_cubic-bezier(0,0,0.2,1)]">
+            <div className="mb-1 flex items-center justify-between">
+              <h3 className="text-[18px] font-bold text-[#191f28]">질환별 날씨 점수</h3>
+              <button
+                className="text-[14px] font-semibold text-[#8b95a1] transition-transform active:scale-95"
+                onClick={() => setSheetOpen(false)}
+              >
+                닫기
+              </button>
+            </div>
+            <p className="mb-4 text-[13px] font-medium leading-[1.4] text-[#8b95a1]">
+              점수가 높을수록 오늘 날씨가 건강에 좋아요.
+            </p>
+            <div className="flex flex-col gap-3">
+              {details.map((detail) => (
+                <WeatherScoreRow key={detail.diseaseId} name={detail.diseaseName} score={detail.score} />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -645,35 +780,32 @@ function AirQualityCard({
   sub,
   label,
   value,
-  tone,
-  accent,
-  iconIndex,
+  level,
 }: {
   title: string;
   sub: string;
   label: string;
   value: string;
-  tone: string;
-  accent: string;
-  iconIndex: number;
+  level: AirLevel;
 }) {
+  const { color, mood } = AIR_STYLE[level];
   return (
     <div className="flex min-h-30 flex-col rounded-[20px] bg-white p-4 active:scale-[0.98] transition-transform">
       <div className="flex items-center gap-1.5">
-        <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${accent}`} />
+        <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ backgroundColor: color }} />
         <p className="text-[13px] font-semibold leading-tight text-[#4e5968]">
           {title}
           <span className="ml-0.5 text-[10px] font-medium text-[#b0b8c1]">{sub}</span>
         </p>
       </div>
-      <p className={`mt-2.5 text-[24px] font-bold leading-none tracking-[-0.02em] ${tone}`}>
+      <p className="mt-2.5 text-[24px] font-bold leading-none tracking-[-0.02em]" style={{ color }}>
         {label}
       </p>
       <div className="mt-auto flex items-end justify-between gap-2 pt-2">
         <span className="text-[12px] font-medium leading-tight text-[#8b95a1]">
           {value}
         </span>
-        <ConditionIcon index={iconIndex} scale={0.16} />
+        <MoodFace mood={mood} color={color} size={32} />
       </div>
     </div>
   );
