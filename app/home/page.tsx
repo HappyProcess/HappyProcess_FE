@@ -96,7 +96,8 @@ export default function Home() {
   const [locations, setLocations] = useState<{ home?: Location; work?: Location }>({});
   const [weathers, setWeathers] = useState<{ home?: Weather; work?: Weather }>({});
   const [loading, setLoading] = useState(true);
-  const [locType, setLocType] = useState<SelectedLocationType>(() => getStoredLocationType());
+  // SSR/CSR 일치를 위해 초기값은 고정("HOME"), 저장된 값은 마운트 후 반영(아래 effect)
+  const [locType, setLocType] = useState<SelectedLocationType>("HOME");
   const [riskState, setRiskState] = useState<{
     locationType: SelectedLocationType | null;
     status: RiskStatus | null;
@@ -108,6 +109,9 @@ export default function Home() {
   });
 
   useEffect(() => {
+    // 마운트 후 저장된 선택 지역 반영 (hydration mismatch 방지)
+    setLocType(getStoredLocationType());
+
     const handleLocationChanged = (event: Event) => {
       const { locationType } = (event as CustomEvent<{
         locationType: SelectedLocationType;
@@ -120,30 +124,55 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    getCachedLocations().then((list) => {
-      const home = list.find((location) => location.locationType === "HOME");
-      const work = list.find((location) => location.locationType === "WORK");
-      setLocations({ home, work });
+    let canceled = false;
 
-      if (locType === "WORK" && !work && home) {
-        saveSelectedLocationType("HOME");
-      }
+    getCachedLocations()
+      .then((list) => {
+        if (canceled) return;
+        const home = list.find((location) => location.locationType === "HOME");
+        const work = list.find((location) => location.locationType === "WORK");
+        setLocations({ home, work });
 
-      const fetches = [
-        home ? getWeather(home.areaNo).then((weather) => ({ type: "home", weather })) : null,
-        work ? getWeather(work.areaNo).then((weather) => ({ type: "work", weather })) : null,
-      ].filter(Boolean) as Promise<{ type: string; weather: Weather }>[];
+        if (locType === "WORK" && !work && home) {
+          saveSelectedLocationType("HOME");
+        }
 
-      Promise.all(fetches)
-        .then((results) => {
-          const next: { home?: Weather; work?: Weather } = {};
-          results.forEach(({ type, weather }) => {
-            next[type as "home" | "work"] = weather;
-          });
-          setWeathers(next);
-        })
-        .finally(() => setLoading(false));
-    });
+        // 선택된 지역을 우선 처리해, 날씨가 도착하는 즉시 그 지역부터 렌더한다.
+        // (home/work를 Promise.all로 묶지 않아 느린 한쪽이 빠른 쪽을 막지 않음)
+        const selected = locType === "WORK" ? "work" : "home";
+        const targets: { type: "home" | "work"; areaNo: string }[] = [];
+        if (home) targets.push({ type: "home", areaNo: home.areaNo });
+        if (work) targets.push({ type: "work", areaNo: work.areaNo });
+        targets.sort((a) => (a.type === selected ? -1 : 1));
+
+        if (targets.length === 0) {
+          setLoading(false);
+          return;
+        }
+
+        targets.forEach(({ type, areaNo }) => {
+          getWeather(areaNo)
+            .then((weather) => {
+              if (canceled) return;
+              setWeathers((prev) => ({ ...prev, [type]: weather }));
+            })
+            // 개별 지역 날씨 실패는 무시 — 해당 카드만 비고 앱은 계속 동작
+            .catch(() => {})
+            .finally(() => {
+              // 선택된 지역의 날씨가 끝나면 곧바로 로딩 해제 — 나머지는 백그라운드로.
+              if (!canceled && type === selected) setLoading(false);
+            });
+        });
+      })
+      // 위치 조회 실패(예: 미인증 403) 시 unhandledRejection을 막는다.
+      // (dev 에러 오버레이가 스택 심볼화를 반복 요청하는 부작용 방지)
+      .catch(() => {
+        if (!canceled) setLoading(false);
+      });
+
+    return () => {
+      canceled = true;
+    };
   }, [locType]);
 
   useEffect(() => {

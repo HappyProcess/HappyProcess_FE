@@ -5,8 +5,8 @@ import { getMyInformation } from "#/service/member";
 import toast from "react-hot-toast";
 import { parseError } from "#/lib/parseError";
 
-const inputClass = "w-full border border-[rgba(0,0,0,0.08)] rounded-full px-5 py-[10px] text-[17px] text-[#1d1d1f] leading-[1.47] tracking-[-0.374px] bg-white focus:outline-2 focus:outline-[#0071e3] focus:outline-none focus:ring-2 focus:ring-[#0071e3]"
-const labelClass = "text-[14px] font-semibold tracking-[-0.224px] text-[#1d1d1f]"
+const inputClass = "w-full border border-[#e5e8eb] rounded-[14px] px-4 py-3.5 text-[17px] text-[#191f28] leading-[1.47] tracking-[-0.01em] bg-white focus:outline-2 focus:outline-[#3182f6] focus:outline-none focus:ring-2 focus:ring-[#3182f6]"
+const labelClass = "text-[14px] font-semibold tracking-[-0.01em] text-[#191f28]"
 
 export default function Login() {
   const router = useRouter()
@@ -31,8 +31,8 @@ export default function Login() {
 
   return (
     <div className="flex-1 flex items-center justify-center px-6 py-10">
-    <div className="w-full max-w-sm bg-white rounded-[18px] border border-[#e0e0e0] px-8 py-10 flex flex-col gap-6">
-      <h1 className="text-[28px] font-semibold leading-[1.14] tracking-[-0.374px] text-[#1d1d1f] text-center">
+    <div className="w-full max-w-sm bg-white rounded-[20px] px-8 py-10 flex flex-col gap-6">
+      <h1 className="text-[28px] font-semibold leading-[1.14] tracking-[-0.01em] text-[#191f28] text-center">
         로그인
       </h1>
 
@@ -49,22 +49,22 @@ export default function Login() {
 
         <button
           type="submit"
-          className="w-full bg-[#0066cc] text-white rounded-full py-2.75 text-[17px] leading-none cursor-pointer active:scale-95 transition-transform focus:outline-2 focus:outline-[#0071e3] mt-2"
+          className="w-full bg-[#3182f6] text-white rounded-[14px] py-4 text-[17px] font-semibold leading-none cursor-pointer active:scale-[0.98] transition-transform focus:outline-2 focus:outline-[#3182f6] mt-2"
         >
           로그인
         </button>
       </form>
 
       <div className="flex items-center gap-3">
-        <div className="flex-1 h-px bg-[#e0e0e0]" />
-        <span className="text-[14px] text-[#7a7a7a]">또는</span>
-        <div className="flex-1 h-px bg-[#e0e0e0]" />
+        <div className="flex-1 h-px bg-[#e5e8eb]" />
+        <span className="text-[14px] text-[#8b95a1]">또는</span>
+        <div className="flex-1 h-px bg-[#e5e8eb]" />
       </div>
 
       <button
         type="button"
         onClick={() => router.push('/register')}
-        className="w-full border border-[#0066cc] text-[#0066cc] rounded-full py-2.75 text-[17px] leading-none cursor-pointer active:scale-95 transition-transform"
+        className="w-full border border-[#3182f6] text-[#3182f6] rounded-[14px] py-4 text-[17px] font-semibold leading-none cursor-pointer active:scale-[0.98] transition-transform"
       >
         회원가입
       </button>

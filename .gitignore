@@ -40,3 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 app/todo
+
+# local screenshot util (do not commit)
+.shot.mjs
+
+# playwright-mcp 산출물 (dev 서버가 감시해 HMR 리빌드를 유발하므로 제외)
+.playwright-mcp/

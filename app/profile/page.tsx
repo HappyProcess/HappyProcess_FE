@@ -206,26 +206,53 @@ export default function ProfilePage() {
     setPhoneError(null);
   };
 
+  // 토글은 즉시 반영(낙관적 + 저장). 실패 시 원복.
+  const persistSms = async (nextEnabled: boolean, phone: string, commitPhone: boolean) => {
+    const prevEnabled = smsEnabled;
+    setSmsEnabled(nextEnabled);
+    setSavingSms(true);
+    try {
+      await modifyMyInformation({ phoneNumber: phone, smsEnabled: nextEnabled });
+      setSavedSms(nextEnabled);
+      if (commitPhone) {
+        setSavedPhone(phone);
+        setPhoneInput(phone);
+      }
+      setProfile((p) => (p ? { ...p, phoneNumber: phone, smsEnabled: nextEnabled } : p));
+      invalidateProfile();
+    } catch (err) {
+      setSmsEnabled(prevEnabled);
+      toast.error(parseError(err));
+    } finally {
+      setSavingSms(false);
+    }
+  };
+
   // 토글 ON은 유효한 번호가 있어야만 허용 (opt-in 가드)
   const onToggleSms = () => {
+    if (savingSms) return;
     if (smsEnabled) {
-      setSmsEnabled(false);
+      // 끄기 — 저장된 번호 그대로 두고 수신만 해제
+      persistSms(false, savedPhone, false);
       return;
     }
-    if (phoneInput.trim() === "") {
+    const trimmed = phoneInput.trim();
+    if (trimmed === "") {
       toast.error("문자 수신은 휴대폰 번호 등록이 필요해요.");
       phoneRef.current?.focus();
       return;
     }
-    if (!PHONE_REGEX.test(phoneInput.trim())) {
+    if (!PHONE_REGEX.test(trimmed)) {
       setPhoneError("휴대폰 번호 형식을 확인해주세요.");
       phoneRef.current?.focus();
       return;
     }
-    setSmsEnabled(true);
+    // 켜기 — 입력한 번호도 함께 저장/커밋
+    persistSms(true, trimmed, true);
   };
 
-  const smsDirty = phoneInput !== savedPhone || smsEnabled !== savedSms;
+  // 취소/저장 버튼은 휴대폰 번호를 바꿨을 때만 노출 (토글은 즉시 반영되므로 제외)
+  const smsDirty = phoneInput !== savedPhone;
 
   const onCancelSms = () => {
     setPhoneInput(savedPhone);

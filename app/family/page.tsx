@@ -522,7 +522,7 @@ function FamilyProfileView({
               type="time"
               value={newAlertTime}
               onChange={(event) => setNewAlertTime(event.target.value)}
-              className="w-27.5 shrink-0 bg-transparent text-[28px] font-semibold leading-none tracking-[-0.28px] text-[#191f28] outline-none"
+              className="w-auto shrink-0 bg-transparent text-[28px] font-semibold leading-none tracking-[-0.28px] text-[#191f28] outline-none"
             />
             <LocationToggle value={newAlertLocationType} onChange={setNewAlertLocationType} />
             <div className="flex items-center gap-2">
@@ -714,7 +714,7 @@ function FamilyAlertRow({
               type="time"
               value={editingTime}
               onChange={(event) => onTimeChange(event.target.value)}
-              className="w-27.5 shrink-0 bg-transparent text-[28px] font-semibold leading-none tracking-[-0.28px] text-[#191f28] outline-none"
+              className="w-auto shrink-0 bg-transparent text-[28px] font-semibold leading-none tracking-[-0.28px] text-[#191f28] outline-none"
             />
             <LocationToggle value={editingLocationType} onChange={onLocationChange} />
           </div>

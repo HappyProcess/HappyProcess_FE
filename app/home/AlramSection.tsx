@@ -27,7 +27,7 @@ export default function alram() {
                 <IllnessIcon index={1} scale={0.25}/>
                 <div className="flex flex-col">
                   <p className="font-bold">{"천식"} 위험도</p>
-                  <h1 className="text-red-500 font-bold text-2xl">{"높음"}</h1>
+                  <h1 className="text-[#f04452] font-bold text-2xl">{"높음"}</h1>
                   <p className="font-semibold text-sm">{"외출 시 주의가 필요해요!"}</p>
                 </div>
               </div>

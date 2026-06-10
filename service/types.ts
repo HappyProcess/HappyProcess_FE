@@ -143,3 +143,56 @@ export type Family = {
   locations: Location[];
   alerts: Alert[];
 }
+
+// 증상 일기 ----------------------------------------------------------------
+
+export type DiarySymptom = {
+  conditionId: number;
+  conditionName: string;
+  intensity: number; // 1~5
+};
+
+// 작성 시점 날씨 스냅샷. 위치(집/직장)별로 한 건씩. 값이 없으면 각 필드 null
+export type DiaryWeatherSnapshot = {
+  locationType: "HOME" | "WORK";
+  regionName: string | null;
+  temperature: string | null;
+  humidity: string | null;
+  weatherCondition: string | null;
+  pm10Value: string | null;
+  pm10Grade: string | null;
+  pm25Value: string | null;
+  pm25Grade: string | null;
+  pollenRiskLevel: string | null;
+  uvRiskLevel: string | null;
+};
+
+export type DiaryResponse = {
+  diaryId: number;
+  entryDate: string; // "YYYY-MM-DD"
+  memo: string | null;
+  symptoms: DiarySymptom[];
+  weathers: DiaryWeatherSnapshot[]; // 집(HOME)/직장(WORK) 위치별 날씨
+};
+
+// 주간 리포트 (Gemini 생성, 구조화 JSON)
+export type WeeklyReportPattern = {
+  weather: string; // 어떤 날씨/환경일 때
+  symptom: string; // 어떤 증상이
+  observation: string; // 어떻게 나타났는지
+};
+
+export type WeeklyReportSolution = {
+  target: string; // 어떤 증상/상황에
+  action: string; // 무슨 조치를
+};
+
+export type WeeklyReportResponse = {
+  reportId: number;
+  weekStartDate: string; // "YYYY-MM-DD" (월요일)
+  weekEndDate: string;
+  createdAt: string;
+  summary: string; // 한 주 요약 한두 문장
+  patterns: WeeklyReportPattern[]; // 데이터 부족 시 빈 배열
+  solutions: WeeklyReportSolution[];
+};

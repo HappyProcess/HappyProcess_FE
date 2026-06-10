@@ -21,21 +21,21 @@ const gradeDot: Record<string, string> = {
   "1": "bg-blue-400",
   "2": "bg-green-500",
   "3": "bg-orange-400",
-  "4": "bg-red-500",
+  "4": "bg-[#f04452]",
 };
 const gradeText: Record<string, string> = {
   "1": "text-blue-400",
   "2": "text-green-500",
   "3": "text-orange-400",
-  "4": "text-red-500",
+  "4": "text-[#f04452]",
 };
 
 const pollenLabel: Record<string, string> = { "0": "낮음", "1": "낮음", "2": "보통", "3": "높음", "4": "매우높음" };
 const pollenDot: Record<string, string> = {
-  "0": "bg-blue-400", "1": "bg-blue-400", "2": "bg-green-500", "3": "bg-orange-400", "4": "bg-red-500",
+  "0": "bg-blue-400", "1": "bg-blue-400", "2": "bg-green-500", "3": "bg-orange-400", "4": "bg-[#f04452]",
 };
 const pollenText: Record<string, string> = {
-  "0": "text-blue-400", "1": "text-blue-400", "2": "text-green-500", "3": "text-orange-400", "4": "text-red-500",
+  "0": "text-blue-400", "1": "text-blue-400", "2": "text-green-500", "3": "text-orange-400", "4": "text-[#f04452]",
 };
 
 function uvLabel(level: string): string {
@@ -54,7 +54,7 @@ function uvDot(level: string): string {
   if (n <= 2) return "bg-blue-400";
   if (n <= 5) return "bg-green-500";
   if (n <= 7) return "bg-orange-400";
-  if (n <= 10) return "bg-red-500";
+  if (n <= 10) return "bg-[#f04452]";
   return "bg-red-700";
 }
 
@@ -64,7 +64,7 @@ function uvText(level: string): string {
   if (n <= 2) return "text-blue-400";
   if (n <= 5) return "text-green-500";
   if (n <= 7) return "text-orange-400";
-  if (n <= 10) return "text-red-500";
+  if (n <= 10) return "text-[#f04452]";
   return "text-red-700";
 }
 
@@ -99,17 +99,17 @@ type AirCardProps = {
 
 function AirCard({ title, sub, label, value, dotColor, textColor, iconIndex }: AirCardProps) {
   return (
-    <div className="flex flex-col justify-between bg-[#f5f5f7] rounded-2xl p-3 gap-3 flex-1">
+    <div className="flex flex-col justify-between bg-[#f2f4f6] rounded-2xl p-3 gap-3 flex-1">
       <div>
-        <p className="text-[11px] font-semibold text-[#1d1d1f] leading-tight">{title}</p>
-        {sub && <p className="text-[10px] text-[#7a7a7a]">{sub}</p>}
+        <p className="text-[11px] font-semibold text-[#191f28] leading-tight">{title}</p>
+        {sub && <p className="text-[10px] text-[#8b95a1]">{sub}</p>}
       </div>
       <div className="flex items-center gap-1.5">
         <span className={`w-2 h-2 rounded-full shrink-0 ${dotColor}`} />
         <span className={`text-[13px] font-semibold ${textColor}`}>{label}</span>
       </div>
       <div className="flex items-center justify-between">
-        <span className="text-[10px] text-[#7a7a7a]">{value}</span>
+        <span className="text-[10px] text-[#8b95a1]">{value}</span>
         <ConditionIcon index={iconIndex} scale={0.1875} />
       </div>
     </div>
@@ -120,7 +120,7 @@ export default function WeatherSection({ weather, loading }: Props) {
   if (loading) {
     return (
       <div className="flex flex-col gap-4 w-full">
-        <div className="bg-[#f5f5f7] rounded-3xl p-6 flex items-center gap-6">
+        <div className="bg-[#f2f4f6] rounded-3xl p-6 flex items-center gap-6">
           <Skeleton className="w-16 h-16 rounded-full" />
           <div className="flex flex-col gap-2 flex-1">
             <Skeleton className="w-20 h-4" />
@@ -130,7 +130,7 @@ export default function WeatherSection({ weather, loading }: Props) {
         </div>
         <div className="flex gap-2">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="flex-1 bg-[#f5f5f7] rounded-2xl p-3 flex flex-col gap-3">
+            <div key={i} className="flex-1 bg-[#f2f4f6] rounded-2xl p-3 flex flex-col gap-3">
               <Skeleton className="w-full h-3" />
               <Skeleton className="w-12 h-4" />
               <Skeleton className="w-full h-3" />
@@ -146,19 +146,19 @@ export default function WeatherSection({ weather, loading }: Props) {
   return (
     <div className="flex flex-col gap-4 w-full">
       {/* 메인 날씨 카드 */}
-      <div className="bg-[#f5f5f7] rounded-3xl p-6 flex items-center gap-6">
+      <div className="bg-[#f2f4f6] rounded-3xl p-6 flex items-center gap-6">
         <div className="shrink-0">
           <WeatherIcon index={getWeatherIconIndex(weather?.weatherCondition ?? "")} isOnlyIcon={true} />
         </div>
         <div className="flex flex-col">
-          <p className="text-[13px] text-[#7a7a7a] tracking-[-0.224px]">
+          <p className="text-[13px] text-[#8b95a1] tracking-[-0.01em]">
             {weather?.weatherCondition ?? "날씨 정보 없음"}
           </p>
-          <h2 className="text-[56px] font-semibold leading-[1.07] tracking-[-0.28px] text-[#1d1d1f] -mt-1">
+          <h2 className="text-[56px] font-semibold leading-[1.07] tracking-[-0.28px] text-[#191f28] -mt-1">
             {weather?.temperature ?? "--"}°
           </h2>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <span className="text-[13px] text-[#7a7a7a]">습도 {humidity || "--"}%</span>
+            <span className="text-[13px] text-[#8b95a1]">습도 {humidity || "--"}%</span>
           </div>
         </div>
       </div>

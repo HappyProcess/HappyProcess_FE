@@ -30,9 +30,9 @@ type FormValues = {
   conditionIds: number[];
 };
 
-const inputClass = "w-full border border-[rgba(0,0,0,0.08)] rounded-full px-5 py-[10px] text-[17px] text-[#1d1d1f] leading-[1.47] tracking-[-0.374px] bg-white focus:outline-none focus:ring-2 focus:ring-[#0071e3]"
-const selectClass = "border border-[rgba(0,0,0,0.08)] rounded-full px-5 py-[10px] text-[17px] text-[#1d1d1f] bg-white focus:outline-none focus:ring-2 focus:ring-[#0071e3] cursor-pointer"
-const labelClass = "text-[14px] font-semibold tracking-[-0.224px] text-[#1d1d1f]"
+const inputClass = "w-full border border-[#e5e8eb] rounded-[14px] px-4 py-3.5 text-[17px] text-[#191f28] leading-[1.47] tracking-[-0.01em] bg-white focus:outline-none focus:ring-2 focus:ring-[#3182f6]"
+const selectClass = "border border-[#e5e8eb] rounded-[14px] px-4 py-3.5 text-[17px] text-[#191f28] bg-white focus:outline-none focus:ring-2 focus:ring-[#3182f6] cursor-pointer"
+const labelClass = "text-[14px] font-semibold tracking-[-0.01em] text-[#191f28]"
 
 export default function Register() {
   const [sidoList, setSidoList] = useState<string[]>([]);
@@ -66,15 +66,15 @@ export default function Register() {
   };
 
   return (
-    <div className="w-full max-w-lg bg-white rounded-[18px] border border-[#e0e0e0] px-8 py-10 flex flex-col gap-6">
-      <h1 className="text-[28px] font-semibold leading-[1.14] tracking-[-0.374px] text-[#1d1d1f] text-center">
+    <div className="w-full max-w-lg bg-white rounded-[20px] px-8 py-10 flex flex-col gap-6">
+      <h1 className="text-[28px] font-semibold leading-[1.14] tracking-[-0.01em] text-[#191f28] text-center">
         회원가입
       </h1>
 
       <form id="registerForm" className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-1.5">
           <label htmlFor="name" className={labelClass}>
-            이름 <span className="text-red-500">*</span>
+            이름 <span className="text-[#f04452]">*</span>
           </label>
           <div className="relative group">
             <input type="text" id="name" {...register("name")} className={inputClass} />
@@ -84,7 +84,7 @@ export default function Register() {
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="loginId" className={labelClass}>
-            아이디 <span className="text-red-500">*</span>
+            아이디 <span className="text-[#f04452]">*</span>
           </label>
           <div className="relative group">
             <input type="text" id="loginId" {...register("loginId")} className={inputClass} />
@@ -94,7 +94,7 @@ export default function Register() {
 
         <div className="flex flex-col gap-1.5">
           <label htmlFor="password" className={labelClass}>
-            비밀번호 <span className="text-red-500">*</span>
+            비밀번호 <span className="text-[#f04452]">*</span>
           </label>
           <div className="relative group">
             <input type="password" id="password" {...register("password")} className={inputClass} />
@@ -104,7 +104,7 @@ export default function Register() {
 
         <div className="flex flex-col gap-1.5">
           <label className={labelClass}>
-            출생연도 <span className="text-red-500">*</span>
+            출생연도 <span className="text-[#f04452]">*</span>
           </label>
           <div className="relative group">
             <select {...register("birth")} className={selectClass}>
@@ -119,7 +119,7 @@ export default function Register() {
 
         <div className="flex flex-col gap-1.5">
           <label className={labelClass}>
-            건강상태 <span className="text-red-500">*</span>
+            건강상태 <span className="text-[#f04452]">*</span>
           </label>
           <Controller
             control={control}
@@ -139,7 +139,7 @@ export default function Register() {
           <React.Fragment key={type}>
             <div className="flex flex-col gap-1.5">
               <label className={labelClass}>
-                {LOCATION_LABEL[type]} <span className="text-red-500">*</span>
+                {LOCATION_LABEL[type]} <span className="text-[#f04452]">*</span>
               </label>
               <input type="hidden" value={type} {...register(`locations.${index}.locationType` as const)} />
               <Controller
@@ -160,7 +160,7 @@ export default function Register() {
 
         <button
           type="submit"
-          className="w-full bg-[#0066cc] text-white rounded-full py-2.75 text-[17px] leading-none cursor-pointer active:scale-95 transition-transform focus:outline-2 focus:outline-[#0071e3] mt-2"
+          className="w-full bg-[#3182f6] text-white rounded-[14px] py-4 text-[17px] font-semibold leading-none cursor-pointer active:scale-[0.98] transition-transform focus:outline-2 focus:outline-[#3182f6] mt-2"
         >
           회원가입
         </button>
