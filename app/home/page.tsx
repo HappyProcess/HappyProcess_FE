@@ -316,48 +316,50 @@ function HomeLocationSection({
   locationType: SelectedLocationType;
   onChange: (locationType: SelectedLocationType) => void;
 }) {
+  const hasToggle = Boolean(locations.home || locations.work);
+
   return (
-    <section className="flex flex-col gap-3">
-      <div className="flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <p className="text-[13px] font-semibold leading-tight text-[#8b95a1]">
+    <section className="flex items-center justify-between gap-3">
+      <div className="min-w-0">
+        {!hasToggle && (
+          <p className="mb-1 text-[13px] font-semibold leading-tight tracking-[-0.01em] text-[#8b95a1]">
             {locationType === "HOME" ? "거주지역" : "직장/학교"}
           </p>
-          <p className="mt-1 truncate text-[22px] font-bold leading-tight tracking-[-0.02em] text-[#191f28]">
-            {getLocationTitle(selectedLocation)}
-          </p>
-        </div>
-        {(locations.home || locations.work) && (
-          <div className="flex shrink-0 items-center gap-1 rounded-[12px] bg-[#eef0f3] p-1">
-            {locations.home && (
-              <button
-                type="button"
-                onClick={() => onChange("HOME")}
-                className={`rounded-[9px] px-4 py-1.5 text-[13px] font-semibold transition-all active:scale-95 ${
-                  locationType === "HOME"
-                    ? "bg-white text-[#191f28] shadow-[0_2px_4px_rgba(0,0,0,0.06)]"
-                    : "text-[#8b95a1]"
-                }`}
-              >
-                거주지역
-              </button>
-            )}
-            {locations.work && (
-              <button
-                type="button"
-                onClick={() => onChange("WORK")}
-                className={`rounded-[9px] px-4 py-1.5 text-[13px] font-semibold transition-all active:scale-95 ${
-                  locationType === "WORK"
-                    ? "bg-white text-[#191f28] shadow-[0_2px_4px_rgba(0,0,0,0.06)]"
-                    : "text-[#8b95a1]"
-                }`}
-              >
-                직장/학교
-              </button>
-            )}
-          </div>
         )}
+        <p className="text-[22px] font-bold leading-[1.3] tracking-[-0.02em] text-[#191f28] break-keep">
+          {getLocationTitle(selectedLocation)}
+        </p>
       </div>
+      {hasToggle && (
+        <div className="flex shrink-0 items-center gap-0.5 rounded-[10px] bg-[#e5e8eb] p-1">
+          {locations.home && (
+            <button
+              type="button"
+              onClick={() => onChange("HOME")}
+              className={`rounded-[8px] px-3.5 py-1.5 text-[13px] font-semibold transition-all active:scale-95 ${
+                locationType === "HOME"
+                  ? "bg-white text-[#191f28] shadow-[0_2px_4px_rgba(0,0,0,0.06)]"
+                  : "text-[#8b95a1]"
+              }`}
+            >
+              거주지역
+            </button>
+          )}
+          {locations.work && (
+            <button
+              type="button"
+              onClick={() => onChange("WORK")}
+              className={`rounded-[8px] px-3.5 py-1.5 text-[13px] font-semibold transition-all active:scale-95 ${
+                locationType === "WORK"
+                  ? "bg-white text-[#191f28] shadow-[0_2px_4px_rgba(0,0,0,0.06)]"
+                  : "text-[#8b95a1]"
+              }`}
+            >
+              직장/학교
+            </button>
+          )}
+        </div>
+      )}
     </section>
   );
 }
