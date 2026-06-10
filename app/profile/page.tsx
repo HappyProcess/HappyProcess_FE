@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -27,15 +27,21 @@ import { getYearOptions, healthOptions, NO_CONDITION_ID } from "@/register/Optio
 import { getConditionIconIndex } from "@/constants/conditionIconMap";
 
 const inputClass =
-  "w-full border border-[rgba(0,0,0,0.08)] rounded-full px-5 py-[10px] text-[17px] text-[#1d1d1f] leading-[1.47] tracking-[-0.374px] bg-white focus:outline-none focus:ring-2 focus:ring-[#0071e3]";
+  "w-full border border-[#e5e8eb] rounded-[14px] px-4 py-3.5 text-[17px] text-[#191f28] leading-[1.47] tracking-[-0.01em] bg-white focus:outline-none focus:ring-2 focus:ring-[#3182f6]";
 const selectClass =
-  "border border-[rgba(0,0,0,0.08)] rounded-full px-5 py-[10px] text-[17px] text-[#1d1d1f] bg-white focus:outline-none focus:ring-2 focus:ring-[#0071e3] cursor-pointer";
-const labelClass = "text-[14px] font-semibold tracking-[-0.224px] text-[#1d1d1f]";
+  "border border-[#e5e8eb] rounded-[14px] px-4 py-3.5 text-[17px] text-[#191f28] bg-white focus:outline-none focus:ring-2 focus:ring-[#3182f6] cursor-pointer";
+const labelClass = "text-[14px] font-semibold tracking-[-0.01em] text-[#191f28]";
+// 회색 고스트 pill 버튼 공용 스타일 (수정/변경 등) — 한 곳에서 관리해 크기가 갈라지지 않게
+const pillButton =
+  "shrink-0 rounded-full bg-[#f2f4f6] px-4 py-2 text-[14px] font-semibold text-[#4e5968] transition-transform active:scale-[0.95]";
 
 type BasicFormValues = {
   name: string;
   birth: string;
 };
+
+// 하이픈 없는 휴대폰 번호 (010/011/016/017/018/019 + 7~8자리)
+const PHONE_REGEX = /^01[016789]\d{7,8}$/;
 
 const LOCATION_LABEL: Record<"HOME" | "WORK", string> = {
   HOME: "거주지역",
@@ -76,6 +82,15 @@ export default function ProfilePage() {
   const [editingLocType, setEditingLocType] = useState<"HOME" | "WORK" | null>(null);
   const [editingAreaNo, setEditingAreaNo] = useState("");
 
+  // 문자(SMS) 알림 설정
+  const [phoneInput, setPhoneInput] = useState("");
+  const [smsEnabled, setSmsEnabled] = useState(false);
+  const [savedPhone, setSavedPhone] = useState("");
+  const [savedSms, setSavedSms] = useState(false);
+  const [phoneError, setPhoneError] = useState<string | null>(null);
+  const [savingSms, setSavingSms] = useState(false);
+  const phoneRef = useRef<HTMLInputElement>(null);
+
   const { register, handleSubmit, reset } = useForm<BasicFormValues>();
 
   const onLogout = async () => {
@@ -91,6 +106,13 @@ export default function ProfilePage() {
       getCachedSido(),
     ]).then(([prof, mine, locs, sido]) => {
       setProfile(prof);
+      // PR #46 배포 전 응답에 필드 없을 수 있어 방어
+      const phone = prof.phoneNumber ?? "";
+      const sms = prof.smsEnabled ?? false;
+      setPhoneInput(phone);
+      setSavedPhone(phone);
+      setSmsEnabled(sms);
+      setSavedSms(sms);
       const ids = mine.map(normalizeConditionId);
       setMyConditionIds(ids);
       setSavedConditionIds(ids);
@@ -179,6 +201,66 @@ export default function ProfilePage() {
     setEditingAreaNo("");
   };
 
+  const onChangePhone = (value: string) => {
+    setPhoneInput(value.replace(/[^0-9]/g, "").slice(0, 11)); // 하이픈 등 제거, 숫자만 11자
+    setPhoneError(null);
+  };
+
+  // 토글 ON은 유효한 번호가 있어야만 허용 (opt-in 가드)
+  const onToggleSms = () => {
+    if (smsEnabled) {
+      setSmsEnabled(false);
+      return;
+    }
+    if (phoneInput.trim() === "") {
+      toast.error("문자 수신은 휴대폰 번호 등록이 필요해요.");
+      phoneRef.current?.focus();
+      return;
+    }
+    if (!PHONE_REGEX.test(phoneInput.trim())) {
+      setPhoneError("휴대폰 번호 형식을 확인해주세요.");
+      phoneRef.current?.focus();
+      return;
+    }
+    setSmsEnabled(true);
+  };
+
+  const smsDirty = phoneInput !== savedPhone || smsEnabled !== savedSms;
+
+  const onCancelSms = () => {
+    setPhoneInput(savedPhone);
+    setSmsEnabled(savedSms);
+    setPhoneError(null);
+  };
+
+  const onSaveSms = async () => {
+    const trimmed = phoneInput.trim();
+    if (trimmed !== "" && !PHONE_REGEX.test(trimmed)) {
+      setPhoneError("휴대폰 번호 형식을 확인해주세요.");
+      phoneRef.current?.focus();
+      return;
+    }
+    if (smsEnabled && trimmed === "") {
+      toast.error("문자 수신은 휴대폰 번호 등록이 필요해요.");
+      phoneRef.current?.focus();
+      return;
+    }
+    setSavingSms(true);
+    try {
+      await modifyMyInformation({ phoneNumber: trimmed, smsEnabled });
+      setSavedPhone(trimmed);
+      setSavedSms(smsEnabled);
+      setProfile((p) => (p ? { ...p, phoneNumber: trimmed, smsEnabled } : p));
+      invalidateProfile();
+      toast.success("알림 설정이 저장되었습니다.");
+    } catch (err) {
+      setPhoneError("휴대폰 번호 형식을 확인해주세요.");
+      toast.error(parseError(err));
+    } finally {
+      setSavingSms(false);
+    }
+  };
+
   if (!profile) {
     return (
       <div></div>
@@ -189,72 +271,71 @@ export default function ProfilePage() {
   const work = locations.find((location) => location.locationType === "WORK");
 
   return (
-    <div className="flex w-full flex-col bg-white px-5 pb-8 pt-6">
-      <section className="rounded-[18px] border border-[#e0e0e0] bg-white overflow-hidden">
-        <div className="flex items-center gap-4 p-5">
-          <div className="relative h-20 w-20 shrink-0 rounded-full bg-[#f5f5f7]">
-            <div className="absolute left-1/2 top-3.25 h-10 w-10 -translate-x-1/2 rounded-full bg-[#7a7a7a]" />
-            <div className="absolute bottom-3.25 left-1/2 h-7 w-14 -translate-x-1/2 rounded-t-full bg-[#7a7a7a]" />
-          </div>
-
-          {editingBasic ? (
-            <form onSubmit={handleSubmit(onSaveBasic)} className="flex min-w-0 flex-1 flex-col gap-3">
-              <div className="grid grid-cols-2 gap-2">
-                <div className="flex flex-col gap-1">
-                  <label className={labelClass}>이름</label>
-                  <input type="text" {...register("name")} className={inputClass} />
-                </div>
-                <div className="flex flex-col gap-1">
-                  <label className={labelClass}>출생연도</label>
-                  <select {...register("birth")} className={selectClass}>
-                    <option value="">선택</option>
-                    {getYearOptions().map((year) => (
-                      <option key={year} value={`${year}-01-01`}>{year}</option>
-                    ))}
-                  </select>
-                </div>
+    <div className="flex w-full flex-col bg-[#f2f4f6] px-5 pb-10 pt-2">
+      {/* 프로필 히어로 */}
+      <section className="rounded-[16px] bg-white p-6 border border-[#e5e8eb]">
+        {editingBasic ? (
+          <form onSubmit={handleSubmit(onSaveBasic)} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>이름</label>
+                <input type="text" {...register("name")} className={inputClass} />
               </div>
-              <div className="flex gap-2">
-                <button
-                  type="submit"
-                  className="flex-1 rounded-full bg-[#0066cc] py-2 text-[14px] font-normal leading-none tracking-[-0.224px] text-white transition-transform active:scale-95"
-                >
-                  저장
-                </button>
-                <button
-                  type="button"
-                  onClick={onCancelBasic}
-                  className="flex-1 rounded-full border border-[#0066cc] py-2 text-[14px] font-normal leading-none tracking-[-0.224px] text-[#0066cc] transition-transform active:scale-95"
-                >
-                  취소
-                </button>
+              <div className="flex flex-col gap-1.5">
+                <label className={labelClass}>출생연도</label>
+                <select {...register("birth")} className={selectClass + " w-full"}>
+                  <option value="">선택</option>
+                  {getYearOptions().map((year) => (
+                    <option key={year} value={`${year}-01-01`}>{year}</option>
+                  ))}
+                </select>
               </div>
-            </form>
-          ) : (
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={onCancelBasic}
+                className="flex-1 rounded-[14px] bg-[#f2f4f6] py-3.5 text-[15px] font-semibold text-[#4e5968] transition-transform active:scale-[0.98]"
+              >
+                취소
+              </button>
+              <button
+                type="submit"
+                className="flex-1 rounded-[14px] bg-[#3182f6] py-3.5 text-[15px] font-semibold text-white transition-transform active:scale-[0.98] active:bg-[#2272eb]"
+              >
+                저장
+              </button>
+            </div>
+          </form>
+        ) : (
+          <div className="flex items-center gap-4">
+            <div className="relative h-18 w-18 shrink-0 overflow-hidden rounded-full bg-[#e8f3ff]">
+              <div className="absolute left-1/2 top-3.5 h-8.5 w-8.5 -translate-x-1/2 rounded-full bg-[#3182f6]/70" />
+              <div className="absolute bottom-2.5 left-1/2 h-6.5 w-13 -translate-x-1/2 rounded-t-full bg-[#3182f6]/70" />
+            </div>
             <div className="min-w-0 flex-1">
-              <h1 className="truncate text-[28px] font-semibold leading-[1.1] tracking-[-0.28px] text-[#1d1d1f]">
+              <h1 className="truncate text-[24px] font-bold leading-[1.2] tracking-[-0.02em] text-[#191f28]">
                 {formatProfileName(profile.name)}님
               </h1>
-              <p className="mt-1 text-[17px] font-semibold leading-[1.24] tracking-[-0.374px] text-[#1d1d1f]">
+              <p className="mt-1 text-[15px] font-medium text-[#8b95a1]">
                 나이 {getAge(profile.birth)}세
               </p>
             </div>
-          )}
-
-          {!editingBasic && (
             <button
               type="button"
               aria-label="기본 정보 수정"
               onClick={() => setEditingBasic(true)}
-              className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-[#0066cc] text-[20px] leading-none text-[#0066cc] transition-transform active:scale-95"
+              className={pillButton}
             >
-              ✎
+              수정
             </button>
-          )}
-        </div>
+          </div>
+        )}
+      </section>
 
+      {/* 내 동네 */}
+      <section className="mt-3 overflow-hidden rounded-[16px] bg-white border border-[#e5e8eb]">
         <ProfileLocationRow
-          icon="🏠"
           label={LOCATION_LABEL.HOME}
           value={formatLocation(home)}
           editing={editingLocType === "HOME"}
@@ -269,8 +350,8 @@ export default function ProfilePage() {
           }}
           onSave={() => onSaveLocation("HOME")}
         />
+        <div className="mx-5 h-px bg-[#f2f4f6]" />
         <ProfileLocationRow
-          icon="🏢"
           label={LOCATION_LABEL.WORK}
           value={formatLocation(work)}
           editing={editingLocType === "WORK"}
@@ -287,9 +368,65 @@ export default function ProfilePage() {
         />
       </section>
 
-      <section className="mt-5 border-t border-[#f0f0f0] pt-5">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-[24px] font-semibold leading-[1.19] tracking-[-0.374px] text-[#1d1d1f]">
+      {/* 알림 설정 (문자 수신) */}
+      <section className="mt-3 flex flex-col gap-4 rounded-[16px] border border-[#e5e8eb] bg-white p-5">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <p className="text-[16px] font-bold tracking-[-0.01em] text-[#191f28]">
+              위험 알림 문자 수신
+            </p>
+            <p className="mt-0.5 text-[13px] leading-[1.4] text-[#8b95a1]">
+              휴대폰 번호를 등록하면 위험 알림을 문자로 받아요. 앱 알림은 항상 받아요.
+            </p>
+          </div>
+          <Toggle on={smsEnabled} onClick={onToggleSms} />
+        </div>
+
+        <div className="flex flex-col gap-1.5">
+          <label className={labelClass}>휴대폰 번호</label>
+          <input
+            ref={phoneRef}
+            type="tel"
+            inputMode="numeric"
+            value={phoneInput}
+            onChange={(e) => onChangePhone(e.target.value)}
+            placeholder="01012345678"
+            className={`${inputClass} ${
+              phoneError ? "border-[#f04452] focus:ring-[#f04452]" : ""
+            }`}
+          />
+          {phoneError ? (
+            <p className="text-[13px] font-medium text-[#f04452]">{phoneError}</p>
+          ) : (
+            <p className="text-[12px] text-[#8b95a1]">하이픈(-) 없이 숫자만 입력해요.</p>
+          )}
+        </div>
+
+        {smsDirty && (
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={onCancelSms}
+              className="flex-1 rounded-[14px] bg-[#f2f4f6] py-3.5 text-[15px] font-semibold text-[#4e5968] transition-transform active:scale-[0.98]"
+            >
+              취소
+            </button>
+            <button
+              type="button"
+              onClick={onSaveSms}
+              disabled={savingSms}
+              className="flex-1 rounded-[14px] bg-[#3182f6] py-3.5 text-[15px] font-semibold text-white transition-transform active:enabled:scale-[0.98] active:enabled:bg-[#2272eb] disabled:opacity-40"
+            >
+              저장
+            </button>
+          </div>
+        )}
+      </section>
+
+      {/* 건강 상태 */}
+      <section className="mt-7">
+        <div className="mb-3 flex items-center justify-between px-1">
+          <h2 className="text-[20px] font-bold tracking-[-0.02em] text-[#191f28]">
             건강 상태
           </h2>
           {conditionsDirty && (
@@ -297,7 +434,7 @@ export default function ProfilePage() {
               <button
                 type="button"
                 onClick={onCancelConditions}
-                className="rounded-full border border-[#0066cc] px-4 py-2 text-[14px] font-normal leading-none tracking-[-0.224px] text-[#0066cc] transition-transform active:scale-95"
+                className="rounded-full bg-[#f2f4f6] px-4 py-2 text-[13px] font-semibold text-[#4e5968] transition-transform active:scale-[0.95]"
               >
                 취소
               </button>
@@ -305,7 +442,7 @@ export default function ProfilePage() {
                 type="button"
                 onClick={onSaveConditions}
                 disabled={myConditionIds.length === 0}
-                className="rounded-full bg-[#0066cc] px-4 py-2 text-[14px] font-normal leading-none tracking-[-0.224px] text-white transition-transform active:enabled:scale-95 disabled:opacity-40"
+                className="rounded-full bg-[#3182f6] px-4 py-2 text-[13px] font-semibold text-white transition-transform active:enabled:scale-95 disabled:opacity-40"
               >
                 저장
               </button>
@@ -313,7 +450,7 @@ export default function ProfilePage() {
           )}
         </div>
 
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-3 gap-2.5">
           {healthOptions.map((condition) => (
             <ConditionCard
               key={condition.value}
@@ -328,7 +465,7 @@ export default function ProfilePage() {
       <button
         type="button"
         onClick={onLogout}
-        className="mt-8 w-full rounded-full border border-[#e0e0e0] py-2.5 text-[17px] leading-none tracking-[-0.374px] text-[#1d1d1f] transition-transform active:scale-95"
+        className="mt-8 w-full rounded-[14px] bg-white py-4 text-[15px] font-semibold text-[#8b95a1] border border-[#e5e8eb] transition-transform active:scale-[0.98]"
       >
         로그아웃
       </button>
@@ -336,8 +473,27 @@ export default function ProfilePage() {
   );
 }
 
+function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={on}
+      onClick={onClick}
+      className={`relative h-[31px] w-[51px] shrink-0 rounded-full transition-colors duration-200 ${
+        on ? "bg-[#3182f6]" : "bg-[#d1d6db]"
+      }`}
+    >
+      <span
+        className={`absolute top-[2.5px] h-[26px] w-[26px] rounded-full bg-white shadow-[0_1px_2px_rgba(0,0,0,0.2)] transition-transform duration-200 ${
+          on ? "translate-x-[22.5px]" : "translate-x-[2.5px]"
+        }`}
+      />
+    </button>
+  );
+}
+
 function ProfileLocationRow({
-  icon,
   label,
   value,
   editing,
@@ -349,7 +505,6 @@ function ProfileLocationRow({
   onCancel,
   onSave,
 }: {
-  icon: string;
   label: string;
   value: string;
   editing: boolean;
@@ -362,27 +517,26 @@ function ProfileLocationRow({
   onSave: () => void;
 }) {
   return (
-    <div className="border-t border-[#e0e0e0] px-5 py-3">
-      <div className="grid grid-cols-[auto_auto_1fr_auto] items-center gap-3">
-        <span className="text-[24px] leading-none">{icon}</span>
-        <span className="text-[21px] font-semibold leading-[1.19] tracking-[-0.374px] text-[#1d1d1f]">
-          {label} :
-        </span>
-        <span className="min-w-0 truncate text-[20px] font-semibold leading-[1.19] tracking-[-0.374px] text-[#1d1d1f]">
-          {value}
-        </span>
+    <div className="px-5 py-4">
+      <div className="flex items-center gap-3">
+        <div className="min-w-0 flex-1">
+          <p className="text-[13px] font-medium text-[#8b95a1]">{label}</p>
+          <p className="mt-0.5 truncate text-[16px] font-bold tracking-[-0.01em] text-[#191f28]">
+            {value}
+          </p>
+        </div>
         <button
           type="button"
           aria-label={`${label} 수정`}
           onClick={editing ? onCancel : onEdit}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-[#0066cc] text-[20px] leading-none text-[#0066cc] transition-transform active:scale-95"
+          className={pillButton}
         >
-          {editing ? "×" : "✎"}
+          {editing ? "취소" : "변경"}
         </button>
       </div>
 
       {editing && (
-        <div className="mt-3 flex flex-col gap-3">
+        <div className="mt-3 flex flex-col gap-2.5">
           <RegionSelect
             className={selectClass}
             value={editingAreaNo}
@@ -393,7 +547,7 @@ function ProfileLocationRow({
             type="button"
             onClick={onSave}
             disabled={!editingAreaNo}
-            className="w-full rounded-full bg-[#0066cc] py-2.5 text-[17px] leading-none tracking-[-0.374px] text-white transition-transform active:enabled:scale-95 disabled:opacity-40"
+            className="w-full rounded-[14px] bg-[#3182f6] py-3.5 text-[15px] font-semibold text-white transition-transform active:enabled:scale-[0.98] active:enabled:bg-[#2272eb] disabled:opacity-40"
           >
             저장
           </button>
@@ -419,36 +573,37 @@ function ConditionCard({
       type="button"
       onClick={onClick}
       className={[
-        "relative flex aspect-square min-h-28 flex-col items-center justify-center rounded-lg border bg-white p-2 text-center transition-transform active:scale-95",
-        selected ? "border-[#0066cc]" : "border-[#e0e0e0]",
+        "relative flex aspect-square flex-col items-center justify-center gap-2 rounded-[16px] border p-2 text-center transition-all active:scale-[0.96]",
+        selected
+          ? "border-[#3182f6] bg-[#e8f3ff]"
+          : "border-[#e5e8eb] bg-white",
       ].join(" ")}
     >
-      <span
+      {selected && (
+        <span className="absolute right-2 top-2 grid h-5 w-5 place-items-center rounded-full bg-[#3182f6] text-[12px] font-bold leading-none text-white">
+          ✓
+        </span>
+      )}
+
+      <div
         className={[
-          "absolute right-2 top-2 grid h-5 w-5 place-items-center rounded-sm border text-[16px] leading-none",
-          selected ? "border-[#0066cc] text-[#0066cc]" : "border-[#7a7a7a] text-transparent",
+          "grid h-13 w-13 place-items-center rounded-full transition-all",
+          selected ? "bg-white" : "bg-[#f9fafb]",
         ].join(" ")}
       >
-        ✓
-      </span>
-
-      <div className="mb-1 grid h-14.5 w-14.5 place-items-center">
         {isNoCondition ? (
-          <span className="grid h-12.5 w-12.5 place-items-center rounded-full bg-[#f5f5f7] text-[24px] font-semibold leading-none text-[#7a7a7a]">
-            0
-          </span>
+          <span className="text-[22px] font-bold leading-none text-[#8b95a1]">0</span>
         ) : (
-          <IllnessIcon index={getConditionIconIndex(label)} scale={0.135} />
+          <span className={selected ? "" : "opacity-35 grayscale"}>
+            <IllnessIcon index={getConditionIconIndex(label)} scale={0.115} />
+          </span>
         )}
       </div>
       <span
-        className={`text-[12px] font-semibold leading-tight tracking-[-0.12px] ${
-          selected ? "text-[#0066cc]" : "text-[#7a7a7a]"
+        className={`text-[13px] font-bold leading-tight tracking-[-0.01em] ${
+          selected ? "text-[#3182f6]" : "text-[#8b95a1]"
         }`}
       >
-        {selected ? "선택됨" : "선택 안됨"}
-      </span>
-      <span className="mt-1 text-[17px] font-semibold leading-tight tracking-[-0.374px] text-[#1d1d1f]">
         {label}
       </span>
     </button>

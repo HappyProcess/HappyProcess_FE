@@ -12,6 +12,8 @@ export type Profile = {
   name: string;
   birth: string;
   commuteTime: string;
+  phoneNumber?: string | null; // 하이픈 없는 숫자. 미등록 시 null
+  smsEnabled?: boolean; // 위험 알림 문자 수신 동의. PR #46 배포 전엔 응답에 없을 수 있음
 }
 
 export type Condition = {
