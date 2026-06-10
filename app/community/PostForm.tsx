@@ -129,7 +129,7 @@ export default function PostForm({ postId }: Props) {
       </h1>
 
       <section className="flex flex-1 flex-col gap-3">
-        <div className="rounded-[20px] bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
+        <div className="rounded-[20px] bg-white p-4">
           <div className="mb-3 flex items-center gap-2">
             <h2 className="text-[16px] font-bold text-[#191f28]">분류</h2>
             <span className="text-[12px] text-[#8b95a1]">선택 안 하면 자유게시판 글</span>
@@ -151,7 +151,7 @@ export default function PostForm({ postId }: Props) {
         </div>
 
         <form className="flex flex-1 flex-col gap-3" onSubmit={onSubmit}>
-          <div className="rounded-[20px] bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
+          <div className="rounded-[20px] bg-white p-4">
             <input
               className="w-full text-[20px] font-bold text-[#191f28] placeholder:text-[#b0b8c1] focus:outline-none"
               value={title}
@@ -168,7 +168,7 @@ export default function PostForm({ postId }: Props) {
           </div>
 
           {isEdit && existingImageUrls.length > 0 && (
-            <div className="rounded-[16px] bg-white p-3 shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
+            <div className="rounded-[16px] bg-white p-3">
               <p className="mb-2 text-[13px] font-semibold text-[#4e5968]">기존 사진</p>
               <div className="flex gap-2 overflow-x-auto">
                 {existingImageUrls.map((url) => (
@@ -180,7 +180,7 @@ export default function PostForm({ postId }: Props) {
           )}
 
           {images.length > 0 && (
-            <div className="flex gap-2 overflow-x-auto rounded-[16px] bg-white p-3 shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
+            <div className="flex gap-2 overflow-x-auto rounded-[16px] bg-white p-3">
               {images.map((file, i) => (
                 <div key={i} className="relative shrink-0">
                   <img
@@ -198,7 +198,7 @@ export default function PostForm({ postId }: Props) {
             </div>
           )}
 
-          <div className="flex items-center justify-between gap-2 rounded-[16px] bg-white p-3 shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
+          <div className="flex items-center justify-between gap-2 rounded-[16px] bg-white p-3">
             <label htmlFor="fileInput" className="flex grow cursor-pointer items-center gap-2">
               <span className="grid h-9 w-9 place-items-center rounded-[10px] bg-[#f2f4f6]">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8b95a1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

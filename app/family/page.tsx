@@ -25,7 +25,7 @@ import { parseError } from "#/lib/parseError";
 import { ALERT_TIMES_CHANGED_EVENT } from "@/components/AlertPoller";
 
 const selectClass =
-  "border border-[rgba(0,0,0,0.08)] rounded-full px-5 py-[10px] text-[17px] text-[#1d1d1f] bg-white focus:outline-none focus:ring-2 focus:ring-[#0071e3] cursor-pointer";
+  "border border-[#e5e8eb] rounded-[14px] px-4 py-3.5 text-[17px] text-[#191f28] bg-white focus:outline-none focus:ring-2 focus:ring-[#3182f6] cursor-pointer";
 
 const locationLabel: Record<LocationType, string> = {
   HOME: "집",
@@ -142,13 +142,13 @@ export default function FamilyPage() {
   }
 
   return (
-    <div className="flex min-h-full w-full flex-col overflow-x-clip bg-white px-5 pb-8 pt-6">
+    <div className="flex min-h-full w-full flex-col overflow-x-clip bg-[#f2f4f6] px-5 pb-8 pt-2">
       <section className="flex items-center justify-between">
         <div>
-          <h1 className="text-[34px] font-semibold leading-[1.1] tracking-[-0.374px] text-[#1d1d1f]">
+          <h1 className="text-[24px] font-bold leading-tight tracking-[-0.02em] text-[#191f28]">
             가족
           </h1>
-          <p className="mt-3 text-[17px] font-semibold leading-[1.24] tracking-[-0.374px] text-[#1d1d1f]">
+          <p className="mt-1 text-[14px] font-medium leading-tight tracking-[-0.01em] text-[#8b95a1]">
             내 가족 그룹
           </p>
         </div>
@@ -156,15 +156,17 @@ export default function FamilyPage() {
           type="button"
           aria-label="가족 추가"
           onClick={() => setIsAdding((value) => !value)}
-          className="grid h-11 w-11 place-items-center rounded-full bg-[#0066cc] text-[30px] font-light leading-none text-white transition-transform active:scale-95"
+          className={`grid h-10 w-10 place-items-center rounded-full bg-[#3182f6] text-[24px] font-light leading-none text-white transition-all active:scale-[0.92] active:bg-[#2272eb] ${
+            isAdding ? "rotate-45" : ""
+          }`}
         >
           +
         </button>
       </section>
 
       {isAdding && (
-        <section className="mt-4 rounded-[18px] border border-[#e0e0e0] bg-white p-4">
-          <label className="text-[14px] font-semibold tracking-[-0.224px] text-[#1d1d1f]">
+        <section className="mt-4 rounded-[16px] bg-white p-4">
+          <label className="text-[14px] font-semibold tracking-[-0.01em] text-[#191f28]">
             가족 로그인 ID
           </label>
           <div className="mt-2 flex gap-2">
@@ -172,12 +174,12 @@ export default function FamilyPage() {
               value={relativeLoginId}
               onChange={(event) => setRelativeLoginId(event.target.value)}
               placeholder="papa123"
-              className="min-w-0 flex-1 rounded-full border border-[rgba(0,0,0,0.08)] bg-white px-5 py-2.5 text-[17px] leading-[1.47] tracking-[-0.374px] text-[#1d1d1f] focus:outline-none focus:ring-2 focus:ring-[#0071e3]"
+              className="min-w-0 flex-1 rounded-[14px] border border-[#e5e8eb] bg-white px-4 py-3 text-[17px] leading-[1.47] tracking-[-0.01em] text-[#191f28] focus:outline-none focus:ring-2 focus:ring-[#3182f6]"
             />
             <button
               type="button"
               onClick={handleAddFamily}
-              className="rounded-full bg-[#0066cc] px-4 text-[14px] font-normal leading-none tracking-[-0.224px] text-white transition-transform active:scale-95"
+              className="shrink-0 rounded-[14px] bg-[#3182f6] px-5 text-[15px] font-semibold leading-none tracking-[-0.01em] text-white transition-transform active:scale-[0.98] active:bg-[#2272eb]"
             >
               추가
             </button>
@@ -187,11 +189,11 @@ export default function FamilyPage() {
 
       <section className="mt-4 flex flex-col gap-3">
         {loading ? (
-          <p className="py-7 text-[17px] font-normal tracking-[-0.374px] text-[#7a7a7a]">
+          <p className="rounded-[16px] bg-white px-5 py-9 text-center text-[15px] font-medium tracking-[-0.01em] text-[#8b95a1]">
             불러오는 중...
           </p>
         ) : families.length === 0 ? (
-          <p className="py-7 text-[17px] font-normal tracking-[-0.374px] text-[#7a7a7a]">
+          <p className="rounded-[16px] bg-white px-5 py-9 text-center text-[15px] font-medium tracking-[-0.01em] text-[#8b95a1]">
             등록된 가족이 없어요.
           </p>
         ) : (
@@ -218,32 +220,33 @@ function FamilyMemberCard({
   const primaryCondition = family.healthConditionNames?.[0] ?? "건강";
 
   return (
-    <article className="rounded-lg border border-[#e0e0e0] bg-white p-3">
-      <div className="grid grid-cols-[56px_1fr_auto] items-center gap-3">
+    <article
+      onClick={onOpen}
+      className="cursor-pointer rounded-[16px] bg-white p-4 transition-transform active:scale-[0.99]"
+    >
+      <div className="grid grid-cols-[52px_1fr_auto] items-center gap-3">
         <Avatar />
         <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="truncate text-[18px] font-semibold leading-tight tracking-[-0.374px] text-[#1d1d1f]">
-              {family.name}님
-            </p>
-          </div>
-          <p className="mt-1 truncate text-[13px] font-semibold leading-tight tracking-[-0.12px] text-[#7a7a7a]">
+          <p className="truncate text-[17px] font-bold leading-tight tracking-[-0.01em] text-[#191f28]">
+            {family.name}님
+          </p>
+          <p className="mt-1 truncate text-[13px] font-medium leading-tight tracking-[-0.01em] text-[#8b95a1]">
             {normalizeConditionName(primaryCondition)}
           </p>
           {(family.alertTimes?.length ?? 0) > 0 && (
-            <p className="mt-1 truncate text-[12px] font-semibold leading-tight tracking-[-0.12px] text-[#0066cc]">
+            <p className="mt-1 truncate text-[12px] font-semibold leading-tight tracking-[-0.01em] text-[#3182f6]">
               알림 {family.alertTimes.join(", ")}
             </p>
           )}
         </div>
-        <button
-          type="button"
-          aria-label={`${family.name} 프로필 보기`}
-          onClick={onOpen}
-          className="grid h-9 w-9 place-items-center rounded-lg border border-[#0066cc] text-[20px] leading-none text-[#0066cc] transition-transform active:scale-95"
+        <span
+          aria-hidden
+          className="grid h-9 w-9 place-items-center rounded-full bg-[#f2f4f6] text-[#8b95a1]"
         >
-          ✎
-        </button>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M9 18l6-6-6-6" />
+          </svg>
+        </span>
       </div>
     </article>
   );
@@ -251,28 +254,22 @@ function FamilyMemberCard({
 
 function FamilyProfileSkeleton({ onBack }: { onBack: () => void }) {
   return (
-    <div className="flex min-h-full w-full flex-col overflow-x-clip bg-white px-5 pb-8 pt-6">
-      <div className="mb-5 flex items-center justify-between gap-3">
-        <button
-          type="button"
-          onClick={onBack}
-          className="rounded-full px-1 text-[17px] font-semibold leading-none tracking-[-0.374px] text-[#0066cc] transition-transform active:scale-95"
-        >
-          ‹ 가족
-        </button>
+    <div className="flex min-h-full w-full flex-col overflow-x-clip bg-[#f2f4f6] px-5 pb-8 pt-2">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <BackButton onBack={onBack} />
       </div>
-      <section className="rounded-[18px] border border-[#e0e0e0] bg-white p-5">
+      <section className="rounded-[16px] bg-white p-5">
         <div className="flex items-center gap-4">
-          <div className="h-20 w-20 shrink-0 animate-pulse rounded-full bg-[#f5f5f7]" />
+          <div className="h-20 w-20 shrink-0 animate-pulse rounded-full bg-[#f2f4f6]" />
           <div className="min-w-0 flex-1 space-y-3">
-            <div className="h-8 w-32 animate-pulse rounded bg-[#f5f5f7]" />
-            <div className="h-5 w-20 animate-pulse rounded bg-[#f5f5f7]" />
+            <div className="h-8 w-32 animate-pulse rounded bg-[#f2f4f6]" />
+            <div className="h-5 w-20 animate-pulse rounded bg-[#f2f4f6]" />
           </div>
         </div>
       </section>
       <div className="mt-5 space-y-3">
         {[0, 1, 2].map((item) => (
-          <div key={item} className="h-20 animate-pulse rounded-xl bg-[#f5f5f7]" />
+          <div key={item} className="h-20 animate-pulse rounded-xl bg-[#f2f4f6]" />
         ))}
       </div>
     </div>
@@ -439,32 +436,26 @@ function FamilyProfileView({
   };
 
   return (
-    <div className="flex min-h-full w-full flex-col overflow-x-clip bg-white px-5 pb-8 pt-6">
-      <div className="mb-5 flex items-center justify-between gap-3">
-        <button
-          type="button"
-          onClick={onBack}
-          className="rounded-full px-1 text-[17px] font-semibold leading-none tracking-[-0.374px] text-[#0066cc] transition-transform active:scale-95"
-        >
-          ‹ 가족
-        </button>
+    <div className="flex min-h-full w-full flex-col overflow-x-clip bg-[#f2f4f6] px-5 pb-8 pt-2">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <BackButton onBack={onBack} />
       </div>
 
-      <section className="shrink-0 overflow-hidden rounded-[18px] border border-[#e0e0e0] bg-white">
+      <section className="shrink-0 overflow-hidden rounded-[16px] bg-white">
         <div className="flex items-center gap-4 p-5">
           <Avatar size="large" />
           <div className="min-w-0 flex-1">
-            <h1 className="truncate text-[28px] font-semibold leading-[1.1] tracking-[-0.28px] text-[#1d1d1f]">
+            <h1 className="truncate text-[28px] font-semibold leading-[1.1] tracking-[-0.28px] text-[#191f28]">
               {family.name}님
             </h1>
-            <p className="mt-1 text-[17px] font-semibold leading-[1.24] tracking-[-0.374px] text-[#1d1d1f]">
+            <p className="mt-1 text-[17px] font-semibold leading-[1.24] tracking-[-0.01em] text-[#191f28]">
               나이 {family.age}세
             </p>
           </div>
         </div>
 
         <FamilyLocationRow
-          icon="🏠"
+          kind="home"
           label="거주지역"
           location={home}
           editing={editingLocType === "HOME"}
@@ -479,7 +470,7 @@ function FamilyProfileView({
           onSave={() => saveLocation("HOME")}
         />
         <FamilyLocationRow
-          icon="🏢"
+          kind="work"
           label="직장/학교"
           location={work}
           editing={editingLocType === "WORK"}
@@ -495,13 +486,13 @@ function FamilyProfileView({
         />
       </section>
 
-      <section className="mt-5 shrink-0 border-t border-[#f0f0f0] pt-5">
+      <section className="mt-4 shrink-0 rounded-[16px] bg-white p-5">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h2 className="text-[24px] font-semibold leading-[1.19] tracking-[-0.374px] text-[#1d1d1f]">
+            <h2 className="text-[18px] font-bold leading-tight tracking-[-0.01em] text-[#191f28]">
               알림 시간
             </h2>
-            <p className="mt-1 text-[13px] font-normal leading-tight tracking-[-0.12px] text-[#7a7a7a]">
+            <p className="mt-1 text-[13px] font-medium leading-tight tracking-[-0.01em] text-[#8b95a1]">
               가족 알림 수신
             </p>
           </div>
@@ -514,36 +505,38 @@ function FamilyProfileView({
                 setEditingAlertId(null);
                 setIsAddingAlert((value) => !value);
               }}
-              className="grid h-11 w-11 place-items-center rounded-full text-[34px] font-light leading-none text-[#0066cc] transition-transform active:scale-95"
+              className={`grid h-10 w-10 place-items-center rounded-full bg-[#f2f4f6] text-[24px] font-light leading-none text-[#3182f6] transition-all active:scale-[0.92] ${
+                isAddingAlert ? "rotate-45" : ""
+              }`}
             >
               +
             </button>
           </div>
         </div>
 
-        <div className="mt-6 h-px w-full bg-[#e0e0e0]" />
+        <div className="mt-4 h-px w-full bg-[#f2f4f6]" />
 
         {isAddingAlert && (
-          <div className="flex flex-wrap items-center gap-3 border-b border-[#e0e0e0] py-5">
+          <div className="flex flex-wrap items-center gap-3 border-b border-[#f2f4f6] py-5">
             <input
               type="time"
               value={newAlertTime}
               onChange={(event) => setNewAlertTime(event.target.value)}
-              className="w-27.5 shrink-0 bg-transparent text-[28px] font-semibold leading-none tracking-[-0.28px] text-[#1d1d1f] outline-none"
+              className="w-27.5 shrink-0 bg-transparent text-[28px] font-semibold leading-none tracking-[-0.28px] text-[#191f28] outline-none"
             />
             <LocationToggle value={newAlertLocationType} onChange={setNewAlertLocationType} />
             <div className="flex items-center gap-2">
               <button
                 type="button"
                 onClick={addAlert}
-                className="rounded-full bg-[#0066cc] px-4 py-2 text-[14px] font-normal tracking-[-0.224px] text-white transition-transform active:scale-95"
+                className="rounded-full bg-[#3182f6] px-4 py-2 text-[14px] font-normal tracking-[-0.01em] text-white transition-transform active:scale-[0.98]"
               >
                 추가
               </button>
               <button
                 type="button"
                 onClick={() => setIsAddingAlert(false)}
-                className="text-[14px] font-normal tracking-[-0.224px] text-[#7a7a7a] transition-transform active:scale-95"
+                className="text-[14px] font-normal tracking-[-0.01em] text-[#8b95a1] transition-transform active:scale-[0.98]"
               >
                 취소
               </button>
@@ -552,7 +545,7 @@ function FamilyProfileView({
         )}
 
         {familyAlerts.length === 0 ? (
-          <p className="border-b border-[#e0e0e0] py-7 text-[17px] font-normal tracking-[-0.374px] text-[#7a7a7a]">
+          <p className="py-7 text-center text-[15px] font-medium tracking-[-0.01em] text-[#8b95a1]">
             설정한 알림이 없어요.
           </p>
         ) : (
@@ -579,9 +572,9 @@ function FamilyProfileView({
         )}
       </section>
 
-      <section className="mt-5 shrink-0 border-t border-[#f0f0f0] pt-5">
+      <section className="mt-4 shrink-0 rounded-[16px] bg-white p-5">
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-[24px] font-semibold leading-[1.19] tracking-[-0.374px] text-[#1d1d1f]">
+          <h2 className="text-[18px] font-bold leading-tight tracking-[-0.01em] text-[#191f28]">
             건강 상태
           </h2>
           {conditionsDirty && (
@@ -589,7 +582,7 @@ function FamilyProfileView({
               type="button"
               onClick={saveConditions}
               disabled={selectedIds.length === 0}
-              className="rounded-full bg-[#0066cc] px-4 py-2 text-[14px] font-normal leading-none tracking-[-0.224px] text-white transition-transform active:enabled:scale-95 disabled:opacity-40"
+              className="rounded-[12px] bg-[#3182f6] px-4 py-2 text-[14px] font-semibold leading-none tracking-[-0.01em] text-white transition-transform active:enabled:scale-95 active:bg-[#2272eb] disabled:opacity-40"
             >
               저장
             </button>
@@ -611,7 +604,7 @@ function FamilyProfileView({
 }
 
 function FamilyLocationRow({
-  icon,
+  kind,
   label,
   location,
   editing,
@@ -622,7 +615,7 @@ function FamilyLocationRow({
   onCancel,
   onSave,
 }: {
-  icon: string;
+  kind: "home" | "work";
   label: string;
   location?: Location;
   editing: boolean;
@@ -634,22 +627,37 @@ function FamilyLocationRow({
   onSave: () => void;
 }) {
   return (
-    <div className="border-t border-[#e0e0e0] px-5 py-3">
-      <div className="grid grid-cols-[auto_auto_1fr_auto] items-center gap-3">
-        <span className="text-[24px] leading-none">{icon}</span>
-        <span className="text-[21px] font-semibold leading-[1.19] tracking-[-0.374px] text-[#1d1d1f]">
-          {label} :
+    <div className="border-t border-[#f2f4f6] px-5 py-3.5">
+      <div className="grid grid-cols-[36px_1fr_auto] items-center gap-3">
+        <span className="grid h-9 w-9 place-items-center rounded-full bg-[#f2f4f6] text-[#4e5968]">
+          {kind === "home" ? (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 10.5 12 3l9 7.5" />
+              <path d="M5 9.5V20a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9.5" />
+            </svg>
+          ) : (
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="4" y="3" width="11" height="18" rx="1" />
+              <path d="M15 8h4a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4" />
+              <path d="M8 7h3M8 11h3M8 15h3" />
+            </svg>
+          )}
         </span>
-        <span className="min-w-0 truncate text-[20px] font-semibold leading-[1.19] tracking-[-0.374px] text-[#1d1d1f]">
-          {formatLocation(location)}
-        </span>
+        <div className="min-w-0">
+          <p className="text-[12px] font-semibold leading-tight tracking-[-0.01em] text-[#8b95a1]">
+            {label}
+          </p>
+          <p className="mt-0.5 truncate text-[15px] font-semibold leading-tight tracking-[-0.01em] text-[#191f28]">
+            {formatLocation(location)}
+          </p>
+        </div>
         <button
           type="button"
           aria-label={`${label} 수정`}
           onClick={editing ? onCancel : onEdit}
-          className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-[#0066cc] text-[20px] leading-none text-[#0066cc] transition-transform active:scale-95"
+          className="shrink-0 rounded-full bg-[#f2f4f6] px-3 py-1.5 text-[13px] font-semibold leading-none text-[#4e5968] transition-transform active:scale-[0.95]"
         >
-          {editing ? "×" : "✎"}
+          {editing ? "취소" : "수정"}
         </button>
       </div>
       {editing && (
@@ -664,7 +672,7 @@ function FamilyLocationRow({
             type="button"
             onClick={onSave}
             disabled={!editingAreaNo}
-            className="w-full rounded-full bg-[#0066cc] py-2.5 text-[17px] leading-none tracking-[-0.374px] text-white transition-transform active:enabled:scale-95 disabled:opacity-40"
+            className="w-full rounded-[14px] bg-[#3182f6] py-3 text-[15px] font-semibold leading-none tracking-[-0.01em] text-white transition-transform active:enabled:scale-[0.98] active:bg-[#2272eb] disabled:opacity-40"
           >
             저장
           </button>
@@ -698,7 +706,7 @@ function FamilyAlertRow({
   onDelete: () => void;
 }) {
   return (
-    <li className="border-b border-[#e0e0e0] py-5">
+    <li className="border-b border-[#f2f4f6] py-5 last:border-b-0">
       {editing ? (
         <div className="flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-3">
@@ -706,7 +714,7 @@ function FamilyAlertRow({
               type="time"
               value={editingTime}
               onChange={(event) => onTimeChange(event.target.value)}
-              className="w-27.5 shrink-0 bg-transparent text-[28px] font-semibold leading-none tracking-[-0.28px] text-[#1d1d1f] outline-none"
+              className="w-27.5 shrink-0 bg-transparent text-[28px] font-semibold leading-none tracking-[-0.28px] text-[#191f28] outline-none"
             />
             <LocationToggle value={editingLocationType} onChange={onLocationChange} />
           </div>
@@ -714,21 +722,21 @@ function FamilyAlertRow({
             <button
               type="button"
               onClick={onDelete}
-              className="text-[14px] font-normal tracking-[-0.224px] text-[#7a7a7a] transition-transform active:scale-95"
+              className="text-[14px] font-normal tracking-[-0.01em] text-[#8b95a1] transition-transform active:scale-[0.98]"
             >
               삭제
             </button>
             <button
               type="button"
               onClick={onCancel}
-              className="text-[14px] font-normal tracking-[-0.224px] text-[#7a7a7a] transition-transform active:scale-95"
+              className="text-[14px] font-normal tracking-[-0.01em] text-[#8b95a1] transition-transform active:scale-[0.98]"
             >
               취소
             </button>
             <button
               type="button"
               onClick={onSave}
-              className="rounded-full bg-[#0066cc] px-4 py-2 text-[14px] font-normal tracking-[-0.224px] text-white transition-transform active:scale-95"
+              className="rounded-full bg-[#3182f6] px-4 py-2 text-[14px] font-normal tracking-[-0.01em] text-white transition-transform active:scale-[0.98]"
             >
               완료
             </button>
@@ -737,7 +745,7 @@ function FamilyAlertRow({
       ) : (
         <div className="grid grid-cols-[1fr_auto] items-center gap-4 max-[360px]:gap-3">
           <div className="flex min-w-0 items-center gap-2">
-            <span className="text-[34px] font-semibold leading-none tracking-[-0.28px] text-[#1d1d1f] max-[360px]:text-[30px]">
+            <span className="text-[34px] font-semibold leading-none tracking-[-0.28px] text-[#191f28] max-[360px]:text-[30px]">
               {alert.alertTime}
             </span>
             <LocationBadge locationType={alert.locationType} />
@@ -745,7 +753,7 @@ function FamilyAlertRow({
           <button
             type="button"
             onClick={onStartEdit}
-            className="text-[17px] font-normal tracking-[-0.374px] text-[#0066cc] transition-transform active:scale-95 max-[360px]:text-[15px]"
+            className="text-[17px] font-normal tracking-[-0.01em] text-[#3182f6] transition-transform active:scale-[0.98] max-[360px]:text-[15px]"
           >
             편집
           </button>
@@ -757,7 +765,7 @@ function FamilyAlertRow({
 
 function LocationBadge({ locationType }: { locationType: Alert["locationType"] }) {
   return (
-    <span className="rounded-full bg-[#f5f5f7] px-2 py-1 text-[11px] font-semibold leading-none tracking-[-0.12px] text-[#1d1d1f]">
+    <span className="rounded-full bg-[#f2f4f6] px-2 py-1 text-[11px] font-semibold leading-none tracking-[-0.01em] text-[#191f28]">
       {locationLabel[locationType === "WORK" ? "WORK" : "HOME"]}
     </span>
   );
@@ -771,12 +779,12 @@ function LocationToggle({
   onChange: (value: AlertLocationType) => void;
 }) {
   return (
-    <div className="flex shrink-0 items-center rounded-full bg-[#f5f5f7] p-0.5">
+    <div className="flex shrink-0 items-center rounded-full bg-[#f2f4f6] p-0.5">
       <button
         type="button"
         onClick={() => onChange("HOME")}
-        className={`rounded-full px-3 py-1 text-[12px] font-semibold tracking-[-0.12px] transition-colors ${
-          value === "HOME" ? "bg-white text-[#1d1d1f]" : "text-[#7a7a7a]"
+        className={`rounded-full px-3 py-1 text-[12px] font-semibold tracking-[-0.01em] transition-colors ${
+          value === "HOME" ? "bg-white text-[#191f28]" : "text-[#8b95a1]"
         }`}
       >
         집
@@ -784,8 +792,8 @@ function LocationToggle({
       <button
         type="button"
         onClick={() => onChange("WORK")}
-        className={`rounded-full px-3 py-1 text-[12px] font-semibold tracking-[-0.12px] transition-colors ${
-          value === "WORK" ? "bg-white text-[#1d1d1f]" : "text-[#7a7a7a]"
+        className={`rounded-full px-3 py-1 text-[12px] font-semibold tracking-[-0.01em] transition-colors ${
+          value === "WORK" ? "bg-white text-[#191f28]" : "text-[#8b95a1]"
         }`}
       >
         직장
@@ -800,9 +808,9 @@ function Avatar({ size = "normal" }: { size?: "normal" | "large" }) {
   const bodySize = size === "large" ? "h-7 w-14 bottom-[13px]" : "h-5 w-9 bottom-2";
 
   return (
-    <div className={`relative shrink-0 rounded-full bg-[#f5f5f7] ${boxSize}`}>
-      <div className={`absolute left-1/2 -translate-x-1/2 rounded-full bg-[#7a7a7a] ${headSize}`} />
-      <div className={`absolute left-1/2 -translate-x-1/2 rounded-t-full bg-[#7a7a7a] ${bodySize}`} />
+    <div className={`relative shrink-0 rounded-full bg-[#f2f4f6] ${boxSize}`}>
+      <div className={`absolute left-1/2 -translate-x-1/2 rounded-full bg-[#8b95a1] ${headSize}`} />
+      <div className={`absolute left-1/2 -translate-x-1/2 rounded-t-full bg-[#8b95a1] ${bodySize}`} />
     </div>
   );
 }
@@ -823,35 +831,31 @@ function ConditionCard({
       type="button"
       onClick={onClick}
       className={[
-        "relative flex aspect-square min-h-26.5 flex-col items-center justify-center rounded-lg border bg-white p-2 text-center transition-transform active:scale-95",
-        selected ? "border-[#0066cc]" : "border-[#e0e0e0]",
+        "relative flex aspect-square min-h-26.5 flex-col items-center justify-center gap-2 rounded-[16px] border bg-white p-2 text-center transition-transform active:scale-[0.97]",
+        selected ? "border-[#3182f6] bg-[#f4f9ff]" : "border-transparent bg-[#f2f4f6]",
       ].join(" ")}
     >
-      <span
-        className={[
-          "absolute right-2 top-2 grid h-5 w-5 place-items-center rounded-sm border text-[16px] leading-none",
-          selected ? "border-[#0066cc] text-[#0066cc]" : "border-[#7a7a7a] text-transparent",
-        ].join(" ")}
-      >
-        ✓
-      </span>
-      <div className="mb-1 grid h-13.5 w-13.5 place-items-center">
+      {selected && (
+        <span className="absolute right-2 top-2 grid h-5 w-5 place-items-center rounded-full bg-[#3182f6] text-white">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20 6 9 17l-5-5" />
+          </svg>
+        </span>
+      )}
+      <div className="grid h-12 w-12 place-items-center">
         {isNoCondition ? (
-          <span className="grid h-12 w-12 place-items-center rounded-full bg-[#f5f5f7] text-[24px] font-semibold leading-none text-[#7a7a7a]">
+          <span className="grid h-11 w-11 place-items-center rounded-full bg-white text-[22px] font-bold leading-none text-[#8b95a1]">
             0
           </span>
         ) : (
-          <IllnessIcon index={getConditionIconIndex(label)} scale={0.125} />
+          <IllnessIcon index={getConditionIconIndex(label)} scale={0.115} />
         )}
       </div>
       <span
-        className={`text-[12px] font-semibold leading-tight tracking-[-0.12px] ${
-          selected ? "text-[#0066cc]" : "text-[#7a7a7a]"
+        className={`text-[14px] font-semibold leading-tight tracking-[-0.01em] ${
+          selected ? "text-[#3182f6]" : "text-[#4e5968]"
         }`}
       >
-        {selected ? "선택됨" : "선택 안됨"}
-      </span>
-      <span className="mt-1 text-[15px] font-semibold leading-tight tracking-[-0.224px] text-[#1d1d1f]">
         {label}
       </span>
     </button>
@@ -861,11 +865,9 @@ function ConditionCard({
 function Switch({
   checked,
   onClick,
-  compact = false,
 }: {
   checked: boolean;
   onClick: () => void;
-  compact?: boolean;
 }) {
   return (
     <button
@@ -873,15 +875,31 @@ function Switch({
       role="switch"
       aria-checked={checked}
       onClick={onClick}
-      className={`relative shrink-0 rounded-full border-2 transition-colors active:scale-95 ${
-        compact ? "h-7 w-13" : "h-10 w-18.5"
-      } ${checked ? "border-[#1d1d1f] bg-[#1d1d1f]" : "border-[#d2d2d7] bg-white"}`}
+      className={`relative h-8 w-13 shrink-0 rounded-full transition-colors active:scale-[0.96] ${
+        checked ? "bg-[#3182f6]" : "bg-[#e5e8eb]"
+      }`}
     >
       <span
-        className={`absolute top-1/2 -translate-y-1/2 rounded-full transition-all ${
-          compact ? "h-5 w-5" : "h-8 w-8"
-        } ${checked ? "right-0.5 bg-white" : "left-0.5 bg-[#1d1d1f]"}`}
+        className={`absolute top-1/2 h-6.5 w-6.5 -translate-y-1/2 rounded-full bg-white shadow-[0_1px_2px_rgba(0,0,0,0.1)] transition-all ${
+          checked ? "right-0.75" : "left-0.75"
+        }`}
       />
+    </button>
+  );
+}
+
+function BackButton({ onBack }: { onBack: () => void }) {
+  return (
+    <button
+      type="button"
+      onClick={onBack}
+      aria-label="뒤로"
+      className="-ml-1 flex items-center gap-1 rounded-full py-1 pr-2 text-[15px] font-semibold leading-none tracking-[-0.01em] text-[#4e5968] transition-transform active:scale-[0.97]"
+    >
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M15 18l-6-6 6-6" />
+      </svg>
+      가족
     </button>
   );
 }

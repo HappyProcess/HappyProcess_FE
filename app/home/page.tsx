@@ -319,14 +319,14 @@ function HomeLocationSection({
   const hasToggle = Boolean(locations.home || locations.work);
 
   return (
-    <section className="flex items-center justify-between gap-3">
+    <section className="flex min-h-[60px] items-center justify-between gap-3">
       <div className="min-w-0">
         {!hasToggle && (
           <p className="mb-1 text-[13px] font-semibold leading-tight tracking-[-0.01em] text-[#8b95a1]">
             {locationType === "HOME" ? "거주지역" : "직장/학교"}
           </p>
         )}
-        <p className="text-[22px] font-bold leading-[1.3] tracking-[-0.02em] text-[#191f28] break-keep">
+        <p className="line-clamp-2 text-[22px] font-bold leading-[1.3] tracking-[-0.02em] text-[#191f28] break-keep">
           {getLocationTitle(selectedLocation)}
         </p>
       </div>

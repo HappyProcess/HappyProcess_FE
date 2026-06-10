@@ -10,12 +10,6 @@ import { ALERT_HISTORY_UPDATED_EVENT } from "./AlertPoller";
 
 const cleanName = (name: string) => name.replace(/^\d+/, "");
 
-const NAV_ITEMS = [
-  { label: "커뮤니티", path: "/community" },
-  { label: "프로필", path: "/profile" },
-  { label: "가족", path: "/family" },
-];
-
 export default function Navigation() {
   const router = useRouter();
   const pathname = usePathname();
@@ -100,27 +94,6 @@ export default function Navigation() {
           </button>
         </div>
       </div>
-
-      <nav className="mt-3 flex items-center gap-5 text-[15px] font-semibold tracking-[-0.01em]">
-        {NAV_ITEMS.map(({ label, path }) => {
-          const active = pathname.startsWith(path);
-          return (
-            <button
-              key={path}
-              type="button"
-              onClick={() => router.push(path)}
-              className={`relative pb-1 active:scale-95 ${
-                active ? "text-[#191f28]" : "text-[#8b95a1]"
-              }`}
-            >
-              {label}
-              {active && (
-                <span className="absolute -bottom-px left-0 h-[2.5px] w-full rounded-full bg-[#3182f6]" />
-              )}
-            </button>
-          );
-        })}
-      </nav>
     </header>
   );
 }

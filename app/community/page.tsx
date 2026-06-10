@@ -122,16 +122,16 @@ export default function Community() {
 
   const chip = (active: boolean) =>
     `shrink-0 rounded-full px-3.5 h-9 text-[14px] font-semibold transition-transform active:scale-[0.97] ${
-      active ? "bg-[#3182f6] text-white" : "bg-[#f2f4f6] text-[#4e5968]"
+      active ? "bg-[#3182f6] text-white" : "bg-white text-[#4e5968]"
     }`;
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-white pb-8">
+    <div className="relative flex min-h-screen flex-col bg-[#f2f4f6] px-5 pb-8">
       {/* 헤더 */}
-      <header className="flex items-center justify-between px-5 pt-2 pb-2">
+      <header className="flex items-center justify-between pt-2 pb-2">
         <h1 className="text-[24px] font-bold tracking-[-0.02em] text-[#191f28]">커뮤니티</h1>
         <button
-          className="rounded-full bg-[#f2f4f6] px-3.5 py-2 text-[13px] font-semibold text-[#4e5968] active:scale-95"
+          className="rounded-full bg-white px-3.5 py-2 text-[13px] font-semibold text-[#4e5968] active:scale-95"
           onClick={() => router.push("/community/mine")}
         >
           내 활동
@@ -139,8 +139,8 @@ export default function Community() {
       </header>
 
       {/* 검색 */}
-      <div className="px-5 pt-1 pb-3">
-        <div className="flex h-12 items-center gap-2 rounded-[14px] bg-[#f2f4f6] px-4">
+      <div className="pt-1 pb-3">
+        <div className="flex h-12 items-center gap-2 rounded-[14px] bg-white px-4">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b95a1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="11" cy="11" r="7" />
             <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -168,12 +168,12 @@ export default function Community() {
       </div>
 
       {/* 분류 칩 */}
-      <div className="flex items-center gap-2 px-5 pb-4">
+      <div className="flex items-center gap-2 pb-4">
         <button className={chip(isAllSelected)} onClick={selectAll}>전체</button>
         <button className={chip(isFreeOnly)} onClick={selectFree}>자유게시판</button>
         <button
           className={`inline-flex h-9 shrink-0 items-center gap-1 rounded-full px-3.5 text-[14px] font-semibold transition-transform active:scale-[0.97] ${
-            selected.size > 0 ? "bg-[#3182f6] text-white" : "bg-[#f2f4f6] text-[#4e5968]"
+            selected.size > 0 ? "bg-[#3182f6] text-white" : "bg-white text-[#4e5968]"
           }`}
           onClick={openSheet}
         >
@@ -189,17 +189,17 @@ export default function Community() {
       </div>
 
       {/* 정렬 */}
-      <div className="flex items-center justify-between px-5 pb-1">
+      <div className="flex items-center justify-between pb-2">
         <h2 className="text-[18px] font-bold text-[#191f28]">게시글</h2>
-        <div className="flex gap-0.5 rounded-[10px] bg-[#f2f4f6] p-1">
+        <div className="flex gap-0.5 rounded-[10px] bg-[#e5e8eb] p-1">
           <button
-            className={`rounded-[8px] px-3 py-1 text-[13px] font-semibold transition-colors active:scale-95 ${
+            className={`rounded-[8px] px-3.5 py-1.5 text-[13px] font-semibold transition-colors active:scale-95 ${
               isRecentOrder ? "bg-white text-[#191f28] shadow-[0_2px_4px_rgba(0,0,0,0.06)]" : "text-[#8b95a1]"
             }`}
             onClick={() => setRecentOrder(true)}
           >최신순</button>
           <button
-            className={`rounded-[8px] px-3 py-1 text-[13px] font-semibold transition-colors active:scale-95 ${
+            className={`rounded-[8px] px-3.5 py-1.5 text-[13px] font-semibold transition-colors active:scale-95 ${
               !isRecentOrder ? "bg-white text-[#191f28] shadow-[0_2px_4px_rgba(0,0,0,0.06)]" : "text-[#8b95a1]"
             }`}
             onClick={() => setRecentOrder(false)}
@@ -207,24 +207,25 @@ export default function Community() {
         </div>
       </div>
 
-      {error && (
-        <p className="px-5 py-10 text-center text-[14px] text-[#f04452]">{error}</p>
-      )}
+      {/* 게시글 카드 */}
+      <div className="overflow-hidden rounded-[16px] bg-white">
+        {error && (
+          <p className="px-5 py-10 text-center text-[14px] text-[#f04452]">{error}</p>
+        )}
 
-      {!error && posts.length === 0 && !loading && (
-        <p className="whitespace-pre-line px-5 py-16 text-center text-[14px] leading-[1.5] text-[#8b95a1]">
-          {keyword ? "검색 결과가 없어요." : "아직 게시글이 없어요.\n첫 글을 남겨보세요."}
-        </p>
-      )}
+        {!error && posts.length === 0 && !loading && (
+          <p className="whitespace-pre-line px-5 py-16 text-center text-[14px] leading-[1.5] text-[#8b95a1]">
+            {keyword ? "검색 결과가 없어요." : "아직 게시글이 없어요.\n첫 글을 남겨보세요."}
+          </p>
+        )}
 
-      {/* 게시글 리스트 */}
-      <ul className="divide-y divide-[#f2f4f6]">
-        {posts.map((post) => (
-          <li
-            key={post.postId}
-            className="cursor-pointer px-5 py-4 transition-colors active:bg-[#f9fafb]"
-            onClick={() => router.push(`/community/${post.postId}`)}
-          >
+        <ul className="divide-y divide-[#f2f4f6]">
+          {posts.map((post) => (
+            <li
+              key={post.postId}
+              className="cursor-pointer px-5 py-4 transition-colors active:bg-[#f9fafb]"
+              onClick={() => router.push(`/community/${post.postId}`)}
+            >
             <div className="flex items-center gap-1.5">
               {post.hasImage && (
                 <svg className="shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8b95a1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -261,9 +262,10 @@ export default function Community() {
               </span>
               <span>조회 {post.viewCount}</span>
             </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       {loading && (
         <p className="py-6 text-center text-[13px] text-[#8b95a1]">불러오는 중...</p>
@@ -271,7 +273,7 @@ export default function Community() {
 
       {!loading && page < totalPages - 1 && (
         <button
-          className="mx-5 mt-3 rounded-[14px] bg-[#f2f4f6] py-3.5 text-[14px] font-semibold text-[#4e5968] active:scale-[0.99]"
+          className="mt-3 rounded-[14px] bg-white py-3.5 text-[14px] font-semibold text-[#4e5968] active:scale-[0.99]"
           onClick={() => fetchPage(page + 1, true)}
         >
           더보기
@@ -280,7 +282,7 @@ export default function Community() {
 
       {/* 글쓰기 FAB */}
       <button
-        className="fixed bottom-6 right-6 cursor-pointer drop-shadow-[0_4px_12px_rgba(49,130,246,0.4)] transition-transform active:scale-95"
+        className="fixed bottom-28 right-6 z-30 cursor-pointer drop-shadow-[0_4px_12px_rgba(49,130,246,0.4)] transition-transform active:scale-95"
         onClick={() => router.push("/write")}
       >
         <Icon

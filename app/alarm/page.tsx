@@ -208,10 +208,11 @@ export default function AlarmPage() {
   };
 
   return (
-    <div className="flex min-h-full flex-col bg-white px-5 pb-24 pt-7">
+    <div className="flex min-h-full flex-col bg-[#f2f4f6] px-5 pb-24 pt-2">
+      {/* 알림 설정 */}
       <section className="flex flex-col">
-        <div className="flex items-center justify-between">
-          <h1 className="text-[34px] font-semibold leading-[1.1] tracking-[-0.374px] text-[#1d1d1f]">
+        <div className="mb-3 flex items-center justify-between px-1">
+          <h1 className="text-[22px] font-bold tracking-[-0.02em] text-[#191f28]">
             알림
           </h1>
           <button
@@ -222,116 +223,123 @@ export default function AlarmPage() {
               cancelEdit();
               setIsAdding((value) => !value);
             }}
-            className="grid h-11 w-11 place-items-center rounded-full text-[34px] font-light leading-none text-[#0066cc] transition-transform active:scale-95"
+            className={`grid h-10 w-10 place-items-center rounded-full bg-[#3182f6] text-[24px] font-light leading-none text-white transition-all active:scale-[0.92] active:bg-[#2272eb] ${
+              isAdding ? "rotate-45" : ""
+            }`}
           >
             +
           </button>
         </div>
 
-        <div className="mt-6 h-px w-full bg-[#e0e0e0]" />
-
         {error && (
-          <p className="border-b border-[#e0e0e0] py-3 text-[14px] font-normal tracking-[-0.224px] text-red-500">
+          <div className="mb-3 rounded-[14px] bg-[#fdecee] px-4 py-3 text-[14px] font-medium text-[#f04452]">
             {error}
-          </p>
+          </div>
         )}
 
         {isAdding && (
-          <div className="grid grid-cols-[1fr_auto_auto] items-center gap-3 border-b border-[#e0e0e0] py-5">
-            <input
-              type="time"
-              value={newTime}
-              onChange={(event) => setNewTime(event.target.value)}
-              className="min-w-0 bg-transparent text-[30px] font-semibold leading-none tracking-[-0.28px] text-[#1d1d1f] outline-none"
-            />
-            <LocationToggle value={locationType} onChange={setLocationType} />
+          <div className="mb-3 flex flex-col gap-4 rounded-[16px] border border-[#e5e8eb] bg-white p-4">
+            <div className="flex items-center justify-between gap-3">
+              <input
+                type="time"
+                value={newTime}
+                onChange={(event) => setNewTime(event.target.value)}
+                className="min-w-0 bg-transparent text-[30px] font-bold leading-none tracking-[-0.02em] text-[#191f28] outline-none"
+              />
+              <LocationToggle value={locationType} onChange={setLocationType} />
+            </div>
             <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setIsAdding(false)}
+                className="flex-1 rounded-[14px] bg-[#f2f4f6] py-3 text-[15px] font-semibold text-[#4e5968] transition-transform active:scale-[0.98]"
+              >
+                취소
+              </button>
               <button
                 type="button"
                 onClick={handleAdd}
                 disabled={adding}
-                className="rounded-full bg-[#0066cc] px-4 py-2 text-[14px] font-normal tracking-[-0.224px] text-white transition-transform active:scale-95 disabled:opacity-40"
+                className="flex-1 rounded-[14px] bg-[#3182f6] py-3 text-[15px] font-semibold text-white transition-transform active:scale-[0.98] active:bg-[#2272eb] disabled:opacity-40"
               >
                 추가
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsAdding(false)}
-                className="text-[14px] font-normal tracking-[-0.224px] text-[#7a7a7a] transition-transform active:scale-95"
-              >
-                취소
               </button>
             </div>
           </div>
         )}
 
         {loading ? (
-          <p className="border-b border-[#e0e0e0] py-7 text-[17px] font-normal tracking-[-0.374px] text-[#7a7a7a]">
+          <div className="rounded-[16px] border border-[#e5e8eb] bg-white px-5 py-7 text-center text-[15px] font-medium text-[#8b95a1]">
             불러오는 중...
-          </p>
+          </div>
         ) : alerts.length === 0 ? (
-          <p className="border-b border-[#e0e0e0] py-7 text-[17px] font-normal tracking-[-0.374px] text-[#7a7a7a]">
+          <div className="rounded-[16px] border border-[#e5e8eb] bg-white px-5 py-9 text-center text-[15px] font-medium text-[#8b95a1]">
             설정한 알림이 없어요.
-          </p>
+          </div>
         ) : (
-          <ul className="flex flex-col">
-            {alerts.map((alert) => (
-              <li key={alert.alertId} className="border-b border-[#e0e0e0] py-5">
+          <ul className="overflow-hidden rounded-[16px] border border-[#e5e8eb] bg-white">
+            {alerts.map((alert, index) => (
+              <li
+                key={alert.alertId}
+                className={index > 0 ? "border-t border-[#f2f4f6]" : ""}
+              >
                 {editingId === alert.alertId ? (
-                  <div className="flex flex-col gap-4">
-                    <div className="flex items-center gap-3">
+                  <div className="flex flex-col gap-4 p-4">
+                    <div className="flex items-center justify-between gap-3">
                       <input
                         type="time"
                         value={editTime}
                         onChange={(event) => setEditTime(event.target.value)}
-                        className="min-w-0 bg-transparent text-[30px] font-semibold leading-none tracking-[-0.28px] text-[#1d1d1f] outline-none"
+                        className="min-w-0 bg-transparent text-[30px] font-bold leading-none tracking-[-0.02em] text-[#191f28] outline-none"
                       />
                       <LocationToggle value={locationType} onChange={setLocationType} />
                     </div>
-                    <div className="flex items-center justify-end gap-4">
+                    <div className="flex items-center gap-2">
                       <button
                         type="button"
                         onClick={() => handleDeleteAlert(alert.alertId)}
-                        className="text-[14px] font-normal tracking-[-0.224px] text-[#7a7a7a] transition-transform active:scale-95"
+                        className="rounded-[14px] bg-[#fdecee] px-4 py-3 text-[15px] font-semibold text-[#f04452] transition-transform active:scale-[0.98]"
                       >
                         삭제
                       </button>
                       <button
                         type="button"
                         onClick={cancelEdit}
-                        className="text-[14px] font-normal tracking-[-0.224px] text-[#7a7a7a] transition-transform active:scale-95"
+                        className="flex-1 rounded-[14px] bg-[#f2f4f6] py-3 text-[15px] font-semibold text-[#4e5968] transition-transform active:scale-[0.98]"
                       >
                         취소
                       </button>
                       <button
                         type="button"
                         onClick={() => handleSaveEdit(alert.alertId)}
-                        className="rounded-full bg-[#0066cc] px-4 py-2 text-[14px] font-normal tracking-[-0.224px] text-white transition-transform active:scale-95"
+                        className="flex-1 rounded-[14px] bg-[#3182f6] py-3 text-[15px] font-semibold text-white transition-transform active:scale-[0.98] active:bg-[#2272eb]"
                       >
                         완료
                       </button>
                     </div>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-[1fr_auto_auto] items-center gap-4 max-[360px]:gap-3">
-                    <div className="flex min-w-0 items-center gap-2">
+                  <div className="flex items-center gap-3 px-5 py-4">
+                    <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                       <span
-                        className={`text-[34px] font-semibold leading-none tracking-[-0.28px] max-[360px]:text-[30px] ${
-                          alert.isEnable ? "text-[#1d1d1f]" : "text-[#cccccc]"
+                        className={`text-[36px] font-bold leading-none tracking-[-0.02em] max-[360px]:text-[30px] ${
+                          alert.isEnable ? "text-[#191f28]" : "text-[#c4cad2]"
                         }`}
                       >
                         {alert.alertTime}
                       </span>
-                      <LocationBadge locationType={alert.locationType} />
+                      <div className="flex items-center gap-2">
+                        <LocationBadge locationType={alert.locationType} />
+                        <button
+                          type="button"
+                          onClick={() => startEdit(alert)}
+                          className="text-[13px] font-semibold tracking-[-0.01em] text-[#8b95a1] transition-transform active:scale-[0.95]"
+                        >
+                          편집
+                        </button>
+                      </div>
                     </div>
                     <Switch checked={alert.isEnable} onClick={() => handleToggle(alert)} />
-                    <button
-                      type="button"
-                      onClick={() => startEdit(alert)}
-                      className="text-[17px] font-normal tracking-[-0.374px] text-[#0066cc] transition-transform active:scale-95 max-[360px]:text-[15px]"
-                    >
-                      편집
-                    </button>
                   </div>
                 )}
               </li>
@@ -340,102 +348,91 @@ export default function AlarmPage() {
         )}
       </section>
 
-      <section className="mt-10 flex flex-col">
-        <div className="flex items-center justify-between">
-          <h2 className="text-[34px] font-semibold leading-[1.1] tracking-[-0.374px] text-[#1d1d1f]">
+      {/* 알림 센터 */}
+      <section className="mt-8 flex flex-col">
+        <div className="mb-3 flex items-center gap-2 px-1">
+          <h2 className="text-[22px] font-bold tracking-[-0.02em] text-[#191f28]">
             알림 센터
           </h2>
           {unreadCount > 0 && (
-            <span className="min-w-7 rounded-full bg-[#0066cc] px-2 py-1 text-center text-[12px] font-semibold leading-none tracking-[-0.12px] text-white">
+            <span className="grid min-w-5 place-items-center rounded-full bg-[#3182f6] px-1.5 py-0.5 text-[12px] font-bold leading-none text-white">
               {unreadCount}
             </span>
           )}
         </div>
 
-        <div className="mt-6 flex flex-col">
-          {loading ? (
-            <p className="border-t border-[#e0e0e0] py-5 text-[17px] font-normal tracking-[-0.374px] text-[#7a7a7a]">
-              불러오는 중...
-            </p>
-          ) : history.length === 0 ? (
-            <p className="border-t border-[#e0e0e0] py-5 text-[17px] font-normal tracking-[-0.374px] text-[#7a7a7a]">
-              받은 알림이 없어요.
-            </p>
-          ) : (
-            <ul className="flex flex-col gap-5">
-              {history.map((item) => (
-                <li
-                  key={item.historyId}
-                  className="flex flex-col gap-2"
-                >
-                  <div className="flex items-center justify-end gap-3">
-                    {!item.isRead && (
-                      <span className="h-2 w-2 rounded-full bg-[#0066cc]" />
-                    )}
-                    <span className="text-right text-[17px] font-semibold leading-none tracking-[-0.374px] text-[#1d1d1f]">
-                      {item.createdAt}
-                    </span>
+        {loading ? (
+          <div className="rounded-[16px] border border-[#e5e8eb] bg-white px-5 py-7 text-center text-[15px] font-medium text-[#8b95a1]">
+            불러오는 중...
+          </div>
+        ) : history.length === 0 ? (
+          <div className="rounded-[16px] border border-[#e5e8eb] bg-white px-5 py-9 text-center text-[15px] font-medium text-[#8b95a1]">
+            받은 알림이 없어요.
+          </div>
+        ) : (
+          <ul className="flex flex-col gap-3">
+            {history.map((item) => (
+              <li
+                key={item.historyId}
+                className={`overflow-hidden rounded-[16px] ${
+                  item.isRead ? "bg-white" : "bg-[#f4f9ff]"
+                }`}
+              >
+                {/* 헤더 띠 */}
+                <div className="flex items-center gap-2.5 px-4 pt-4">
+                  <div className="grid h-11 w-11 shrink-0 place-items-center rounded-[14px] bg-[#fff0f1]">
+                    <IllnessIcon index={getConditionIconIndex(getPrimaryHistoryDiseaseName(item))} scale={0.1} />
                   </div>
-
-                  <div className="rounded-[18px] border border-[#ff8a8a] bg-[#fff1f1] p-4">
-                    <div className="grid grid-cols-[112px_1fr_54px] items-center gap-4 max-[360px]:grid-cols-[82px_1fr_40px] max-[360px]:gap-3">
-                      <div className="grid h-26 w-26 place-items-center bg-white max-[360px]:h-20.5 max-[360px]:w-20.5">
-                        <IllnessIcon index={getConditionIconIndex(getPrimaryHistoryDiseaseName(item))} scale={0.25} />
-                      </div>
-
-                      <div className="min-w-0">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <HistoryLocationBadge locationType={item.locationType} />
-                          {getHistoryRelativeLabel(item) && (
-                            <span className="rounded-full bg-white px-3 py-1.5 text-[12px] font-semibold leading-none tracking-[-0.12px] text-red-500">
-                              {getHistoryRelativeLabel(item)}
-                            </span>
-                          )}
-                          <p className="text-[18px] font-semibold leading-tight tracking-[-0.374px] text-[#1d1d1f] max-[360px]:text-[15px]">
-                            외출 주의 필요
-                          </p>
-                        </div>
-                        <div className="mt-3 flex flex-col gap-1.5 max-[360px]:mt-2">
-                          <HistoryInfoRow label="주의 질환" value={getHistoryDiseaseNames(item).join(", ")} />
-                          {getHistoryFactorNames(item).length > 0 && (
-                            <HistoryInfoRow label="요인" value={getHistoryFactorNames(item).join(", ")} />
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="flex h-full shrink-0 flex-col items-end justify-between">
-                        <div className="relative h-12 w-14 max-[360px]:h-9 max-[360px]:w-10">
-                          <div className="absolute inset-x-0 top-0 mx-auto h-0 w-0 border-x-28 border-b-48 border-x-transparent border-b-red-400 max-[360px]:border-x-20 max-[360px]:border-b-36" />
-                          <span className="absolute left-1/2 top-3.25 -translate-x-1/2 text-[28px] font-semibold leading-none text-white max-[360px]:top-2.25 max-[360px]:text-[22px]">
-                            !
-                          </span>
-                        </div>
-                        <div className="flex w-18.5 flex-col items-stretch gap-1.5 max-[360px]:w-15.5">
-                          {!item.isRead && (
-                            <button
-                              type="button"
-                              onClick={() => handleReadHistory(item)}
-                              className="min-h-8 rounded-full bg-[#0066cc] px-3 text-[12px] font-semibold leading-none tracking-[-0.12px] text-white transition-transform active:scale-95 max-[360px]:px-2 max-[360px]:text-[11px]"
-                            >
-                              확인
-                            </button>
-                          )}
-                          <button
-                            type="button"
-                            onClick={() => handleDeleteHistory(item.historyId)}
-                            className="min-h-7 rounded-full px-3 text-[12px] font-semibold leading-none tracking-[-0.12px] text-[#7a7a7a] transition-colors active:scale-95 active:bg-white/70 max-[360px]:px-2 max-[360px]:text-[11px]"
-                          >
-                            삭제
-                          </button>
-                        </div>
-                      </div>
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1.5">
+                      <p className="text-[16px] font-bold tracking-[-0.01em] text-[#191f28]">
+                        외출 주의 필요
+                      </p>
+                      {!item.isRead && <span className="h-1.5 w-1.5 rounded-full bg-[#3182f6]" />}
                     </div>
+                    <p className="mt-0.5 text-[12px] font-medium text-[#8b95a1]">{item.createdAt}</p>
                   </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </div>
+                  <div className="flex shrink-0 flex-wrap justify-end gap-1.5">
+                    <HistoryLocationBadge locationType={item.locationType} />
+                    {getHistoryRelativeLabel(item) && (
+                      <span className="rounded-full bg-[#f2f4f6] px-2.5 py-1 text-[11px] font-semibold leading-none text-[#4e5968]">
+                        {getHistoryRelativeLabel(item)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* 내용 */}
+                <div className="mt-3.5 flex flex-col gap-2.5 px-4">
+                  <ChipGroup label="주의 질환" items={getHistoryDiseaseNames(item)} tone="danger" />
+                  {getHistoryFactorNames(item).length > 0 && (
+                    <ChipGroup label="요인" items={getHistoryFactorNames(item)} tone="neutral" />
+                  )}
+                </div>
+
+                {/* 액션 */}
+                <div className="mt-4 flex items-center gap-2 border-t border-[#f2f4f6] px-3 py-2.5">
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteHistory(item.historyId)}
+                    className="flex-1 rounded-[12px] py-2.5 text-[14px] font-semibold text-[#8b95a1] transition-colors active:bg-[#f2f4f6]"
+                  >
+                    삭제
+                  </button>
+                  {!item.isRead && (
+                    <button
+                      type="button"
+                      onClick={() => handleReadHistory(item)}
+                      className="flex-1 rounded-[12px] bg-[#3182f6] py-2.5 text-[14px] font-semibold text-white transition-transform active:scale-[0.98] active:bg-[#2272eb]"
+                    >
+                      확인했어요
+                    </button>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     </div>
   );
@@ -454,13 +451,13 @@ function Switch({
       role="switch"
       aria-checked={checked}
       onClick={onClick}
-      className={`relative h-10 w-18.5 shrink-0 rounded-full border-2 transition-colors active:scale-95 ${
-        checked ? "border-[#1d1d1f] bg-[#1d1d1f]" : "border-[#d2d2d7] bg-white"
+      className={`relative h-8 w-13 shrink-0 rounded-full transition-colors active:scale-[0.96] ${
+        checked ? "bg-[#3182f6]" : "bg-[#e5e8eb]"
       }`}
     >
       <span
-        className={`absolute top-1/2 h-8 w-8 -translate-y-1/2 rounded-full transition-all ${
-          checked ? "right-0.5 bg-white" : "left-0.5 bg-[#1d1d1f]"
+        className={`absolute top-1/2 h-6.5 w-6.5 -translate-y-1/2 rounded-full bg-white transition-all ${
+          checked ? "right-0.75" : "left-0.75"
         }`}
       />
     </button>
@@ -475,12 +472,12 @@ function LocationToggle({
   onChange: (value: AlertLocationType) => void;
 }) {
   return (
-    <div className="flex shrink-0 items-center rounded-full bg-[#f5f5f7] p-0.5">
+    <div className="flex shrink-0 items-center rounded-full bg-[#f2f4f6] p-0.5">
       <button
         type="button"
         onClick={() => onChange("HOME")}
-        className={`rounded-full px-3 py-1 text-[12px] font-semibold tracking-[-0.12px] transition-colors ${
-          value === "HOME" ? "bg-white text-[#1d1d1f]" : "text-[#7a7a7a]"
+        className={`rounded-full px-3 py-1 text-[12px] font-semibold tracking-[-0.01em] transition-colors ${
+          value === "HOME" ? "bg-white text-[#191f28]" : "text-[#8b95a1]"
         }`}
       >
         집
@@ -488,8 +485,8 @@ function LocationToggle({
       <button
         type="button"
         onClick={() => onChange("WORK")}
-        className={`rounded-full px-3 py-1 text-[12px] font-semibold tracking-[-0.12px] transition-colors ${
-          value === "WORK" ? "bg-white text-[#1d1d1f]" : "text-[#7a7a7a]"
+        className={`rounded-full px-3 py-1 text-[12px] font-semibold tracking-[-0.01em] transition-colors ${
+          value === "WORK" ? "bg-white text-[#191f28]" : "text-[#8b95a1]"
         }`}
       >
         직장
@@ -500,7 +497,7 @@ function LocationToggle({
 
 function LocationBadge({ locationType }: { locationType: Alert["locationType"] }) {
   return (
-    <span className="rounded-full bg-[#f5f5f7] px-2 py-1 text-[11px] font-semibold leading-none tracking-[-0.12px] text-[#1d1d1f]">
+    <span className="rounded-full bg-[#f2f4f6] px-2 py-1 text-[11px] font-semibold leading-none tracking-[-0.01em] text-[#191f28]">
       {getAlertLocationLabel(locationType)}
     </span>
   );
@@ -508,19 +505,42 @@ function LocationBadge({ locationType }: { locationType: Alert["locationType"] }
 
 function HistoryLocationBadge({ locationType }: { locationType: Alert["locationType"] }) {
   return (
-    <span className="rounded-full bg-[#0066cc] px-3 py-1.5 text-[12px] font-semibold leading-none tracking-[-0.12px] text-white">
+    <span className="rounded-full bg-[#eef1f4] px-2.5 py-1 text-[11px] font-semibold leading-none tracking-[-0.01em] text-[#4e5968]">
       {getAlertLocationLabel(locationType)}
     </span>
   );
 }
 
-function HistoryInfoRow({ label, value }: { label: string; value: string }) {
+function ChipGroup({
+  label,
+  items,
+  tone,
+}: {
+  label: string;
+  items: string[];
+  tone: "danger" | "neutral";
+}) {
+  const chipClass =
+    tone === "danger"
+      ? "bg-[#fff0f1] text-[#e8404f]"
+      : "bg-[#f2f4f6] text-[#4e5968]";
   return (
-    <p className="whitespace-normal break-keep text-[15px] font-semibold leading-[1.35] tracking-[-0.224px] text-[#1d1d1f] max-[360px]:text-[13px]">
-      <span className="mr-1.5 inline-block rounded-full bg-white px-2.5 py-1 text-[11px] font-semibold leading-none tracking-[-0.12px] text-red-500">
-        {label}
-      </span>
-      {value || "-"}
-    </p>
+    <div className="flex items-start gap-2.5">
+      <span className="mt-1.5 shrink-0 text-[12px] font-semibold text-[#8b95a1]">{label}</span>
+      <div className="flex flex-wrap gap-1.5">
+        {items.length > 0 ? (
+          items.map((name, i) => (
+            <span
+              key={`${name}-${i}`}
+              className={`rounded-full px-2.5 py-1 text-[12px] font-semibold leading-none ${chipClass}`}
+            >
+              {name}
+            </span>
+          ))
+        ) : (
+          <span className="py-1 text-[13px] font-medium text-[#8b95a1]">-</span>
+        )}
+      </div>
+    </div>
   );
 }
