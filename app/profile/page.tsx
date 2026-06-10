@@ -480,13 +480,13 @@ function Toggle({ on, onClick }: { on: boolean; onClick: () => void }) {
       role="switch"
       aria-checked={on}
       onClick={onClick}
-      className={`relative h-[31px] w-[51px] shrink-0 rounded-full transition-colors duration-200 ${
+      className={`relative h-8 w-[52px] shrink-0 rounded-full transition-colors duration-200 ${
         on ? "bg-[#3182f6]" : "bg-[#d1d6db]"
       }`}
     >
       <span
-        className={`absolute top-[2.5px] h-[26px] w-[26px] rounded-full bg-white shadow-[0_1px_2px_rgba(0,0,0,0.2)] transition-transform duration-200 ${
-          on ? "translate-x-[22.5px]" : "translate-x-[2.5px]"
+        className={`absolute left-[3px] top-[3px] h-[26px] w-[26px] rounded-full bg-white shadow-[0_1px_2px_rgba(0,0,0,0.2)] transition-transform duration-200 ${
+          on ? "translate-x-[20px]" : "translate-x-0"
         }`}
       />
     </button>
