@@ -1,4 +1,5 @@
 'use client'
+import Image from "next/image";
 
 import { getCachedLocations } from "#/lib/cache";
 import { type Location, type RiskStatus, type Weather } from "#/service/types";
@@ -25,16 +26,16 @@ const weatherIconIndex: Record<string, [number, number]> = {
 
 const gradeLabel: Record<string, string> = { "1": "좋음", "2": "보통", "3": "나쁨", "4": "매우나쁨" };
 const gradeTone: Record<string, string> = {
-  "1": "text-[#2f80ed]",
-  "2": "text-[#24a148]",
-  "3": "text-red-500",
-  "4": "text-red-500",
+  "1": "text-[#3182f6]",
+  "2": "text-[#00b843]",
+  "3": "text-[#f04452]",
+  "4": "text-[#f04452]",
 };
 const gradeAccent: Record<string, string> = {
-  "1": "bg-[#2f80ed]",
-  "2": "bg-[#24a148]",
-  "3": "bg-red-500",
-  "4": "bg-red-500",
+  "1": "bg-[#3182f6]",
+  "2": "bg-[#00c73c]",
+  "3": "bg-[#f04452]",
+  "4": "bg-[#f04452]",
 };
 
 const pollenLabel: Record<string, string> = {
@@ -63,32 +64,32 @@ const getUvLabel = (level: string) => {
 
 const getUvTone = (level: string) => {
   const value = Number(level);
-  if (Number.isNaN(value)) return "text-[#7a7a7a]";
-  if (value <= 2) return "text-[#2f80ed]";
-  if (value <= 5) return "text-[#24a148]";
-  return "text-red-500";
+  if (Number.isNaN(value)) return "text-[#8b95a1]";
+  if (value <= 2) return "text-[#3182f6]";
+  if (value <= 5) return "text-[#00b843]";
+  return "text-[#f04452]";
 };
 
 const getUvAccent = (level: string) => {
   const value = Number(level);
-  if (Number.isNaN(value)) return "bg-[#d1d1d6]";
-  if (value <= 2) return "bg-[#2f80ed]";
-  if (value <= 5) return "bg-[#24a148]";
-  return "bg-red-500";
+  if (Number.isNaN(value)) return "bg-[#d1d6db]";
+  if (value <= 2) return "bg-[#3182f6]";
+  if (value <= 5) return "bg-[#00c73c]";
+  return "bg-[#f04452]";
 };
 
 const getPollenTone = (level: string) => {
-  if (level === "0" || level === "1") return "text-[#2f80ed]";
-  if (level === "2") return "text-[#24a148]";
-  if (level === "3" || level === "4") return "text-red-500";
-  return "text-[#7a7a7a]";
+  if (level === "0" || level === "1") return "text-[#3182f6]";
+  if (level === "2") return "text-[#00b843]";
+  if (level === "3" || level === "4") return "text-[#f04452]";
+  return "text-[#8b95a1]";
 };
 
 const getPollenAccent = (level: string) => {
-  if (level === "0" || level === "1") return "bg-[#2f80ed]";
-  if (level === "2") return "bg-[#24a148]";
-  if (level === "3" || level === "4") return "bg-red-500";
-  return "bg-[#d1d1d6]";
+  if (level === "0" || level === "1") return "bg-[#3182f6]";
+  if (level === "2") return "bg-[#00c73c]";
+  if (level === "3" || level === "4") return "bg-[#f04452]";
+  return "bg-[#d1d6db]";
 };
 
 export default function Home() {
@@ -174,8 +175,8 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col bg-white px-5 pb-8">
-      <main className="flex flex-col gap-4 pt-1">
+    <div className="flex flex-col bg-[#f2f4f6] px-5 pb-8">
+      <main className="flex flex-col gap-3 pt-2">
         <HomeLocationSection
           selectedLocation={selectedLocation}
           locations={locations}
@@ -190,9 +191,9 @@ export default function Home() {
           locationType={locType}
         />
 
-        <section className="rounded-[14px] border border-[#e0e0e0] bg-white p-4">
+        <section className="rounded-[20px] bg-white p-5">
           {loading ? (
-            <div className="h-24 animate-pulse rounded-xl bg-[#f5f5f7]" />
+            <div className="h-24 animate-pulse rounded-xl bg-[#f2f4f6]" />
           ) : (
             <div className="flex items-center justify-center gap-5">
               <div className="grid h-20 w-20 shrink-0 place-items-center overflow-hidden rounded-full bg-[#fff8dc]">
@@ -203,15 +204,15 @@ export default function Home() {
                 />
               </div>
               <div className="min-w-0 text-center">
-                <p className="text-[18px] font-normal leading-none tracking-[-0.374px] text-[#1d1d1f]">
+                <p className="text-[15px] font-medium leading-none text-[#4e5968]">
                   {weather?.weatherCondition ?? "날씨 정보 없음"}
                 </p>
-                <p className="mt-1 text-[52px] font-semibold leading-none tracking-[-0.28px] text-black max-[360px]:text-[44px]">
+                <p className="mt-2 text-[52px] font-bold leading-none tracking-[-0.02em] text-[#191f28] max-[360px]:text-[44px]">
                   {weather?.temperature ?? "--"}°
                 </p>
-                <p className="mt-1 text-[14px] font-normal leading-[1.24] tracking-[-0.224px] text-[#1d1d1f]">
+                <p className="mt-2 text-[14px] font-medium leading-[1.24] text-[#8b95a1]">
                   체감 {weather?.temperature ?? "--"} |{" "}
-                  <span className="text-[#0066cc]">
+                  <span className="text-[#3182f6]">
                     습도 {weather?.humidity ?? "--"}%
                   </span>
                 </p>
@@ -220,7 +221,7 @@ export default function Home() {
           )}
         </section>
 
-        <section className="grid grid-cols-2 gap-2">
+        <section className="grid grid-cols-2 gap-2.5">
           <AirQualityCard
             title="미세먼지"
             sub="PM10"
@@ -269,11 +270,9 @@ export default function Home() {
 
       </main>
 
-      <footer className="mt-6 border-t border-[#1d1d1f] pt-4 text-center">
-        <p className="text-[26px] font-semibold leading-none tracking-[-0.374px] text-[#1d1d1f]">
-          Happy Process☀️
-        </p>
-        <p className="mt-4 text-[10px] font-normal leading-[1.3] tracking-[-0.08px] text-[#1d1d1f]">
+      <footer className="mt-8 border-t border-[#e5e8eb] pt-5 text-center">
+        <Image src="/logo.png" alt="Happy Process" width={149} height={38} className="mx-auto" />
+        <p className="mt-3 text-[11px] font-medium leading-[1.4] text-[#8b95a1]">
           ※ 본 서비스의 건강 정보 및 행동 추천은 참고용 가이드이며, 의료 진단을 대체하지 않습니다.
         </p>
       </footer>
@@ -321,21 +320,23 @@ function HomeLocationSection({
     <section className="flex flex-col gap-3">
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-[12px] font-semibold leading-tight tracking-[-0.12px] text-[#7a7a7a]">
+          <p className="text-[13px] font-semibold leading-tight text-[#8b95a1]">
             {locationType === "HOME" ? "거주지역" : "직장/학교"}
           </p>
-          <p className="mt-1 truncate text-[20px] font-semibold leading-tight tracking-[-0.374px] text-[#1d1d1f]">
+          <p className="mt-1 truncate text-[22px] font-bold leading-tight tracking-[-0.02em] text-[#191f28]">
             {getLocationTitle(selectedLocation)}
           </p>
         </div>
         {(locations.home || locations.work) && (
-          <div className="flex shrink-0 items-center gap-1 rounded-full bg-[#f5f5f7] p-0.5">
+          <div className="flex shrink-0 items-center gap-1 rounded-[12px] bg-[#eef0f3] p-1">
             {locations.home && (
               <button
                 type="button"
                 onClick={() => onChange("HOME")}
-                className={`rounded-full px-3 py-1 text-[12px] font-semibold tracking-[-0.12px] transition-colors active:scale-95 ${
-                  locationType === "HOME" ? "bg-white text-[#1d1d1f]" : "text-[#7a7a7a]"
+                className={`rounded-[9px] px-4 py-1.5 text-[13px] font-semibold transition-all active:scale-95 ${
+                  locationType === "HOME"
+                    ? "bg-white text-[#191f28] shadow-[0_2px_4px_rgba(0,0,0,0.06)]"
+                    : "text-[#8b95a1]"
                 }`}
               >
                 거주지역
@@ -345,8 +346,10 @@ function HomeLocationSection({
               <button
                 type="button"
                 onClick={() => onChange("WORK")}
-                className={`rounded-full px-3 py-1 text-[12px] font-semibold tracking-[-0.12px] transition-colors active:scale-95 ${
-                  locationType === "WORK" ? "bg-white text-[#1d1d1f]" : "text-[#7a7a7a]"
+                className={`rounded-[9px] px-4 py-1.5 text-[13px] font-semibold transition-all active:scale-95 ${
+                  locationType === "WORK"
+                    ? "bg-white text-[#191f28] shadow-[0_2px_4px_rgba(0,0,0,0.06)]"
+                    : "text-[#8b95a1]"
                 }`}
               >
                 직장/학교
@@ -418,26 +421,26 @@ function TodayRecommendationSection({
 
   return (
     <section>
-      <div className="mb-2 flex items-center gap-2">
-        <span className="grid h-7 w-7 place-items-center rounded-full border-2 border-[#48c8d8] text-[18px] font-semibold leading-none text-[#0066cc]">
+      <div className="mb-3 mt-1 flex items-center gap-2">
+        <span className="grid h-7 w-7 place-items-center rounded-full bg-[#3182f6] text-[15px] font-bold leading-none text-white">
           ✓
         </span>
-        <h2 className="text-[22px] font-semibold leading-tight tracking-[-0.374px] text-[#1d1d1f]">
+        <h2 className="text-[20px] font-bold leading-tight tracking-[-0.02em] text-[#191f28]">
           오늘의 행동 요령
         </h2>
       </div>
 
       {loading ? (
-        <div className="min-h-46 rounded-xl border border-[#e0e0e0] p-4">
-          <div className="mx-auto h-16 w-16 animate-pulse rounded-xl bg-[#f5f5f7]" />
-          <div className="mx-auto mt-4 h-5 w-24 animate-pulse rounded bg-[#f5f5f7]" />
-          <div className="mx-auto mt-3 h-4 w-full animate-pulse rounded bg-[#f5f5f7]" />
-          <div className="mx-auto mt-2 h-4 w-5/6 animate-pulse rounded bg-[#f5f5f7]" />
+        <div className="min-h-46 rounded-[20px] bg-white p-4">
+          <div className="mx-auto h-16 w-16 animate-pulse rounded-xl bg-[#f2f4f6]" />
+          <div className="mx-auto mt-4 h-5 w-24 animate-pulse rounded bg-[#f2f4f6]" />
+          <div className="mx-auto mt-3 h-4 w-full animate-pulse rounded bg-[#f2f4f6]" />
+          <div className="mx-auto mt-2 h-4 w-5/6 animate-pulse rounded bg-[#f2f4f6]" />
         </div>
       ) : recommendations.length > 0 ? (
         <div>
           <div className="relative">
-            <div className="min-h-49 overflow-hidden rounded-[18px] border border-[#e0e0e0] bg-white">
+            <div className="min-h-49 overflow-hidden rounded-[20px] bg-white">
               <div
                 key={`${activeRecommendation.diseaseId}-${activeRecommendation.factorName}-${safeIndex}`}
                 className={`flex min-h-49 flex-col px-12 py-5 transition-all duration-200 ease-out ${
@@ -448,19 +451,19 @@ function TodayRecommendationSection({
                       : "-translate-x-5 scale-[0.98] opacity-0"
                 }`}
               >
-                <div className="mx-auto grid h-16 w-20 place-items-center rounded-lg bg-[#f5f5f7]">
+                <div className="mx-auto grid h-16 w-20 place-items-center rounded-xl bg-[#f2f4f6]">
                   <RecommandIcon
                     index={getRecommendationIconIndex(activeRecommendation.factorName)}
                     scale={0.17}
                   />
                 </div>
-                <p className="mt-3 text-center text-[13px] font-semibold leading-tight tracking-[-0.12px] text-[#7a7a7a]">
+                <p className="mt-3 text-center text-[13px] font-semibold leading-tight text-[#8b95a1]">
                   {activeRecommendation.diseaseName} · {activeRecommendation.factorName}
                 </p>
-                <p className="mt-1 text-center text-[16px] font-semibold leading-tight tracking-[-0.224px] text-[#1d1d1f]">
+                <p className="mt-1 text-center text-[17px] font-bold leading-tight tracking-[-0.01em] text-[#191f28]">
                   {getRecommendationTitle(activeRecommendation.factorName, activeRecommendation.guide)}
                 </p>
-                <p className="mt-3 break-keep text-center text-[13px] font-medium leading-[1.45] tracking-[-0.12px] text-[#3a3a3c]">
+                <p className="mt-3 break-keep text-center text-[14px] font-medium leading-[1.5] text-[#4e5968]">
                   {activeRecommendation.guide}
                 </p>
               </div>
@@ -470,7 +473,7 @@ function TodayRecommendationSection({
                 <button
                   type="button"
                   onClick={() => moveRecommendation(-1)}
-                  className="absolute left-2 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-[#d2d2d7]/70 text-[30px] font-normal leading-none text-[#1d1d1f] backdrop-blur active:scale-95 focus:outline-2 focus:outline-[#0071e3]"
+                  className="absolute left-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-[26px] font-normal leading-none text-[#4e5968] shadow-[0_1px_4px_rgba(0,0,0,0.1)] backdrop-blur active:scale-95 focus:outline-2 focus:outline-[#3182f6]"
                   aria-label="이전 추천"
                 >
                   ‹
@@ -478,7 +481,7 @@ function TodayRecommendationSection({
                 <button
                   type="button"
                   onClick={() => moveRecommendation(1)}
-                  className="absolute right-2 top-1/2 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-[#d2d2d7]/70 text-[30px] font-normal leading-none text-[#1d1d1f] backdrop-blur active:scale-95 focus:outline-2 focus:outline-[#0071e3]"
+                  className="absolute right-2 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-full bg-white/90 text-[26px] font-normal leading-none text-[#4e5968] shadow-[0_1px_4px_rgba(0,0,0,0.1)] backdrop-blur active:scale-95 focus:outline-2 focus:outline-[#3182f6]"
                   aria-label="다음 추천"
                 >
                   ›
@@ -494,7 +497,7 @@ function TodayRecommendationSection({
                   type="button"
                   onClick={() => selectRecommendation(index)}
                   className={`h-1.5 rounded-full transition-all ${
-                    index === safeIndex ? "w-4 bg-[#1d1d1f]" : "w-1.5 bg-[#d1d1d6]"
+                    index === safeIndex ? "w-4 bg-[#3182f6]" : "w-1.5 bg-[#d1d6db]"
                   }`}
                   aria-label={`${index + 1}번째 추천`}
                 />
@@ -503,8 +506,8 @@ function TodayRecommendationSection({
           )}
         </div>
       ) : (
-        <div className="rounded-xl border border-[#e0e0e0] bg-white p-4 text-center">
-          <p className="text-[14px] font-semibold leading-[1.35] tracking-[-0.224px] text-[#1d1d1f]">
+        <div className="rounded-[20px] bg-white p-5 text-center">
+          <p className="text-[15px] font-semibold leading-[1.4] text-[#4e5968]">
             {locationLabel} 기준으로 추가 행동 요령이 없어요.
           </p>
         </div>
@@ -528,13 +531,13 @@ function RiskStatusSection({
 
   if (loading) {
     return (
-      <section className="rounded-[14px] border border-[#e0e0e0] bg-white p-3">
-        <div className="grid grid-cols-[84px_1fr_40px] items-center gap-3 max-[360px]:grid-cols-[72px_1fr_34px]">
-          <div className="h-19.5 w-19.5 animate-pulse bg-[#f5f5f7] max-[360px]:h-16.5 max-[360px]:w-16.5" />
+      <section className="rounded-[20px] bg-white p-4">
+        <div className="grid grid-cols-[84px_1fr] items-center gap-4 max-[360px]:grid-cols-[72px_1fr]">
+          <div className="h-19.5 w-19.5 animate-pulse rounded-[20px] bg-[#f2f4f6] max-[360px]:h-16.5 max-[360px]:w-16.5" />
           <div className="min-w-0 space-y-2">
-            <div className="h-4 w-24 animate-pulse rounded bg-[#f5f5f7]" />
-            <div className="h-7 w-20 animate-pulse rounded bg-[#f5f5f7]" />
-            <div className="h-4 w-full animate-pulse rounded bg-[#f5f5f7]" />
+            <div className="h-4 w-24 animate-pulse rounded bg-[#f2f4f6]" />
+            <div className="h-7 w-20 animate-pulse rounded bg-[#f2f4f6]" />
+            <div className="h-4 w-full animate-pulse rounded bg-[#f2f4f6]" />
           </div>
         </div>
       </section>
@@ -543,16 +546,16 @@ function RiskStatusSection({
 
   if (hasError) {
     return (
-      <section className="rounded-[14px] border border-[#e0e0e0] bg-white p-3">
-        <div className="grid grid-cols-[84px_1fr_40px] items-center gap-3 max-[360px]:grid-cols-[72px_1fr_34px]">
-          <div className="grid h-19.5 w-19.5 place-items-center bg-[#f5f5f7] max-[360px]:h-16.5 max-[360px]:w-16.5">
-            <span className="text-[28px] leading-none text-[#7a7a7a]">!</span>
+      <section className="rounded-[20px] bg-white p-4">
+        <div className="grid grid-cols-[84px_1fr] items-center gap-4 max-[360px]:grid-cols-[72px_1fr]">
+          <div className="grid h-19.5 w-19.5 place-items-center rounded-[20px] bg-[#f2f4f6] max-[360px]:h-16.5 max-[360px]:w-16.5">
+            <span className="text-[28px] leading-none text-[#8b95a1]">!</span>
           </div>
           <div className="min-w-0">
-            <p className="truncate text-[17px] font-semibold leading-[1.19] tracking-[-0.374px] text-[#1d1d1f]">
+            <p className="truncate text-[17px] font-bold leading-[1.3] tracking-[-0.01em] text-[#191f28]">
               위험도 확인 불가
             </p>
-            <p className="mt-2 break-keep text-[14px] font-semibold leading-[1.35] tracking-[-0.224px] text-[#7a7a7a] max-[360px]:text-[12px]">
+            <p className="mt-2 break-keep text-[14px] font-medium leading-[1.4] text-[#8b95a1] max-[360px]:text-[12px]">
               {locationLabel} 기준 분석 정보를 잠시 후 다시 확인해 주세요.
             </p>
           </div>
@@ -563,19 +566,19 @@ function RiskStatusSection({
 
   if (!status?.isRisk) {
     return (
-      <section className="rounded-[14px] border border-[#b7e3c0] bg-[#f1fbf3] p-3">
-        <div className="grid grid-cols-[84px_1fr_40px] items-center gap-3 max-[360px]:grid-cols-[72px_1fr_34px]">
-          <div className="grid h-19.5 w-19.5 place-items-center bg-white max-[360px]:h-16.5 max-[360px]:w-16.5">
+      <section className="rounded-[20px] bg-[#eafaf0] p-4">
+        <div className="grid grid-cols-[84px_1fr] items-center gap-4 max-[360px]:grid-cols-[72px_1fr]">
+          <div className="grid h-19.5 w-19.5 place-items-center rounded-[20px] bg-white max-[360px]:h-16.5 max-[360px]:w-16.5">
             <ConditionIcon index={0} scale={0.18} />
           </div>
           <div className="min-w-0">
-            <p className="truncate text-[17px] font-semibold leading-[1.19] tracking-[-0.374px] text-[#1d1d1f]">
+            <p className="truncate text-[15px] font-semibold leading-[1.3] text-[#4e5968]">
               외출 전 체크
             </p>
-            <p className="mt-1 text-[26px] font-semibold leading-[1.1] tracking-[-0.374px] text-[#24a148]">
+            <p className="mt-1 text-[26px] font-bold leading-[1.1] tracking-[-0.02em] text-[#00b843]">
               양호
             </p>
-            <p className="mt-2 break-keep text-[14px] font-semibold leading-[1.35] tracking-[-0.224px] text-[#1d1d1f] max-[360px]:text-[12px]">
+            <p className="mt-1.5 break-keep text-[14px] font-medium leading-[1.4] text-[#4e5968] max-[360px]:text-[12px]">
               현재 추가 주의 요인이 없어요.
             </p>
           </div>
@@ -585,36 +588,24 @@ function RiskStatusSection({
   }
 
   return (
-    <section className="rounded-[14px] border border-[#ff8a8a] bg-[#fff1f1] p-3">
-      <div className="grid grid-cols-[84px_1fr_40px] items-center gap-3 max-[360px]:grid-cols-[72px_1fr_34px]">
-        <div className="grid h-19.5 w-19.5 place-items-center bg-white max-[360px]:h-16.5 max-[360px]:w-16.5">
+    <section className="rounded-[20px] bg-[#fdecee] p-4">
+      <div className="grid grid-cols-[84px_1fr] items-center gap-4 max-[360px]:grid-cols-[72px_1fr]">
+        <div className="grid h-19.5 w-19.5 place-items-center rounded-[20px] bg-white max-[360px]:h-16.5 max-[360px]:w-16.5">
           <ConditionIcon index={1} scale={0.18} />
         </div>
         <div className="min-w-0">
-          <p className="truncate text-[17px] font-semibold leading-[1.19] tracking-[-0.374px] text-[#1d1d1f]">
+          <p className="truncate text-[15px] font-semibold leading-[1.3] text-[#4e5968]">
             외출 전 체크
           </p>
-          <p className="mt-1 text-[26px] font-semibold leading-[1.1] tracking-[-0.374px] text-red-500">
+          <p className="mt-1 text-[26px] font-bold leading-[1.1] tracking-[-0.02em] text-[#f04452]">
             주의 필요
           </p>
-          <p className="mt-2 break-keep text-[14px] font-semibold leading-[1.35] tracking-[-0.224px] text-[#1d1d1f] max-[360px]:text-[12px]">
+          <p className="mt-1.5 break-keep text-[14px] font-medium leading-[1.4] text-[#4e5968] max-[360px]:text-[12px]">
             아래 행동요령을 참고해 주세요.
           </p>
         </div>
-        <WarningTriangle />
       </div>
     </section>
-  );
-}
-
-function WarningTriangle() {
-  return (
-    <div className="relative h-10 w-10">
-      <div className="absolute inset-x-0 top-0 mx-auto h-0 w-0 border-x-20 border-b-38 border-x-transparent border-b-red-400" />
-      <span className="absolute left-1/2 top-2.25 -translate-x-1/2 text-[22px] font-semibold leading-none text-white">
-        !
-      </span>
-    </div>
   );
 }
 
@@ -636,17 +627,19 @@ function AirQualityCard({
   iconIndex: number;
 }) {
   return (
-    <div className="relative flex min-h-29.5 flex-col rounded-xl border border-[#e0e0e0] bg-white p-2.5">
-      <div className={`absolute left-0 top-0 h-1 w-1/2 rounded-tl-xl ${accent}`} />
-      <p className="text-[12px] font-semibold leading-tight tracking-[-0.12px] text-[#1d1d1f]">
-        {title}
-        <span className="text-[9px] tracking-[-0.08px]">({sub})</span>
-      </p>
-      <p className={`mt-4 text-[20px] font-semibold leading-none tracking-[-0.224px] ${tone}`}>
+    <div className="flex min-h-30 flex-col rounded-[20px] bg-white p-4 active:scale-[0.98] transition-transform">
+      <div className="flex items-center gap-1.5">
+        <span className={`h-1.5 w-1.5 shrink-0 rounded-full ${accent}`} />
+        <p className="text-[13px] font-semibold leading-tight text-[#4e5968]">
+          {title}
+          <span className="ml-0.5 text-[10px] font-medium text-[#b0b8c1]">{sub}</span>
+        </p>
+      </div>
+      <p className={`mt-2.5 text-[24px] font-bold leading-none tracking-[-0.02em] ${tone}`}>
         {label}
       </p>
-      <div className="mt-auto flex items-end justify-between gap-2">
-        <span className="text-[11px] font-semibold leading-tight tracking-[-0.12px] text-[#1d1d1f]">
+      <div className="mt-auto flex items-end justify-between gap-2 pt-2">
+        <span className="text-[12px] font-medium leading-tight text-[#8b95a1]">
           {value}
         </span>
         <ConditionIcon index={iconIndex} scale={0.16} />

@@ -1,5 +1,6 @@
 'use client'
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import { getCachedProfile } from "#/lib/cache";
@@ -8,6 +9,12 @@ import { type NotificationHistory, type Profile } from "#/service/types";
 import { ALERT_HISTORY_UPDATED_EVENT } from "./AlertPoller";
 
 const cleanName = (name: string) => name.replace(/^\d+/, "");
+
+const NAV_ITEMS = [
+  { label: "커뮤니티", path: "/community" },
+  { label: "프로필", path: "/profile" },
+  { label: "가족", path: "/family" },
+];
 
 export default function Navigation() {
   const router = useRouter();
@@ -51,52 +58,69 @@ export default function Navigation() {
   }
 
   return (
-    <header className="w-full shrink-0 bg-white px-5 pb-3 pt-5">
+    <header className="w-full shrink-0 bg-white px-5 pb-2.5 pt-4">
       <div className="flex items-center justify-between">
         <button
           type="button"
           onClick={() => router.push("/home")}
-          className="text-left text-[26px] font-semibold leading-none tracking-[-0.374px] text-[#1d1d1f] active:scale-95"
+          className="active:scale-95"
+          aria-label="홈"
         >
-          Happy Process☀️
+          <Image src="/logo.png" alt="Happy Process" width={132} height={34} priority />
         </button>
-        <button
-          type="button"
-          onClick={() => router.push("/profile")}
-          className="flex items-center gap-2 text-[13px] font-semibold tracking-[-0.224px] text-[#1d1d1f] active:scale-95"
-        >
-          {profile ? `${cleanName(profile.name)}님` : "프로필"}
-          <span className="text-[24px] text-[#7a7a7a]">👤</span>
-        </button>
-      </div>
 
-      <div className="mt-4 flex items-center justify-between gap-3 border-b border-[#1d1d1f] pb-3">
-        <div className="min-w-0" />
-        <nav className="flex shrink-0 items-center gap-3 text-[14px] font-normal tracking-[-0.224px] text-[#1d1d1f]">
-          <button type="button" onClick={() => router.push("/community")} className="active:scale-95">
-            커뮤니티
-          </button>
-          <button type="button" onClick={() => router.push("/profile")} className="active:scale-95">
-            프로필
-          </button>
-          <button type="button" onClick={() => router.push("/family")} className="active:scale-95">
-            가족
-          </button>
+        <div className="flex items-center gap-2">
           <button
             type="button"
             onClick={() => router.push("/alarm")}
-            className="relative text-[20px] leading-none active:scale-95"
+            className="relative grid h-9 w-9 place-items-center rounded-full active:scale-90"
             aria-label="알림"
           >
-            🔔
+            <Image src="/bell.png" alt="알림" width={21} height={21} />
             {unread > 0 && (
-              <span className="absolute -right-1 -top-1 min-w-4.25 rounded-full bg-[#0066cc] px-1 text-center text-[10px] font-semibold leading-[17px] text-white">
+              <span className="absolute right-1 top-1 min-w-[16px] rounded-full bg-[#3182f6] px-1 text-center text-[10px] font-bold leading-[16px] text-white">
                 {unread > 99 ? "99+" : unread}
               </span>
             )}
           </button>
-        </nav>
+
+          <button
+            type="button"
+            onClick={() => router.push("/profile")}
+            className="flex items-center gap-1.5 rounded-full bg-[#f2f4f6] py-1 pl-3 pr-1 text-[13px] font-semibold text-[#4e5968] active:scale-95"
+          >
+            {profile ? `${cleanName(profile.name)}님` : "프로필"}
+            <Image
+              src="/person.png"
+              alt=""
+              width={26}
+              height={26}
+              className="rounded-full"
+            />
+          </button>
+        </div>
       </div>
+
+      <nav className="mt-3 flex items-center gap-5 text-[15px] font-semibold tracking-[-0.01em]">
+        {NAV_ITEMS.map(({ label, path }) => {
+          const active = pathname.startsWith(path);
+          return (
+            <button
+              key={path}
+              type="button"
+              onClick={() => router.push(path)}
+              className={`relative pb-1 active:scale-95 ${
+                active ? "text-[#191f28]" : "text-[#8b95a1]"
+              }`}
+            >
+              {label}
+              {active && (
+                <span className="absolute -bottom-px left-0 h-[2.5px] w-full rounded-full bg-[#3182f6]" />
+              )}
+            </button>
+          );
+        })}
+      </nav>
     </header>
   );
 }
