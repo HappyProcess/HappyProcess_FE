@@ -88,6 +88,11 @@ export const toggleLike = async (postId: number): Promise<boolean> => {
   return res.data.isLiked;
 };
 
+// 게시글 삭제 (작성자 본인만) — 첨부 이미지/댓글/좋아요도 함께 삭제됨(cascade)
+export const deletePost = async (postId: number) => {
+  return api.delete(`/posts/${postId}`);
+};
+
 // 댓글 작성
 export const addComment = async (postId: number, content: string): Promise<number> => {
   const res = await api.post(`/posts/${postId}/comments`, { content });

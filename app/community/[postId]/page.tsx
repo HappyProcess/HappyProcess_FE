@@ -5,6 +5,7 @@ import { parseError } from "#/lib/parseError";
 import {
   addComment,
   deleteComment,
+  deletePost,
   getPost,
   toggleLike,
   updateComment,
@@ -29,6 +30,8 @@ export default function PostDetailPage() {
   const [submitting, setSubmitting] = useState(false);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editingText, setEditingText] = useState("");
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     setMyName(cleanName(localStorage.getItem("userName") ?? ""));
@@ -123,6 +126,20 @@ export default function PostDetailPage() {
     }
   };
 
+  const onDeletePost = async () => {
+    if (deleting) return;
+    setDeleting(true);
+    try {
+      await deletePost(postId);
+      toast.success("게시글을 삭제했어요.");
+      router.push("/community");
+    } catch (err) {
+      toast.error(parseError(err));
+      setDeleting(false);
+      setConfirmDelete(false);
+    }
+  };
+
   if (loading && !post) {
     return <p className="bg-[#f2f4f6] px-5 py-20 text-center text-[14px] text-[#8b95a1]">불러오는 중...</p>;
   }
@@ -154,10 +171,16 @@ export default function PostDetailPage() {
           목록
         </button>
         {isMine(post.writerName) && (
-          <button
-            className="rounded-full bg-[rgba(100,168,255,0.15)] px-3.5 py-1.5 text-[13px] font-semibold text-[#2272eb] active:scale-95"
-            onClick={() => router.push(`/community/${postId}/edit`)}
-          >수정</button>
+          <div className="flex items-center gap-2">
+            <button
+              className="rounded-full bg-[rgba(100,168,255,0.15)] px-3.5 py-1.5 text-[13px] font-semibold text-[#2272eb] active:scale-95"
+              onClick={() => router.push(`/community/${postId}/edit`)}
+            >수정</button>
+            <button
+              className="rounded-full bg-[rgba(240,68,82,0.1)] px-3.5 py-1.5 text-[13px] font-semibold text-[#f04452] active:scale-95"
+              onClick={() => setConfirmDelete(true)}
+            >삭제</button>
+          </div>
         )}
       </div>
 
@@ -288,6 +311,42 @@ export default function PostDetailPage() {
           </div>
         </div>
       </section>
+
+      {confirmDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center px-8">
+          <button
+            className="absolute inset-0 bg-[rgba(2,9,19,0.5)] motion-safe:animate-[fadeIn_150ms_ease-out]"
+            onClick={() => !deleting && setConfirmDelete(false)}
+            aria-label="닫기"
+          />
+          <div className="relative w-full max-w-xs rounded-[16px] bg-white p-6 motion-safe:animate-[fadeIn_150ms_ease-out]">
+            <h2 className="text-[18px] font-bold tracking-[-0.01em] text-[#191f28]">
+              게시글을 삭제할까요?
+            </h2>
+            <p className="mt-2 text-[14px] leading-[1.5] text-[#6b7684]">
+              삭제하면 댓글과 공감, 첨부 사진도 함께 사라져요. 되돌릴 수 없어요.
+            </p>
+            <div className="mt-5 flex gap-2">
+              <button
+                type="button"
+                onClick={() => setConfirmDelete(false)}
+                disabled={deleting}
+                className="flex-1 rounded-[14px] bg-[#f2f4f6] py-3 text-[15px] font-semibold text-[#4e5968] transition-transform active:scale-[0.98] disabled:opacity-60"
+              >
+                취소
+              </button>
+              <button
+                type="button"
+                onClick={onDeletePost}
+                disabled={deleting}
+                className="flex-1 rounded-[14px] bg-[#f04452] py-3 text-[15px] font-semibold text-white transition-transform active:enabled:scale-[0.98] disabled:opacity-60"
+              >
+                {deleting ? "삭제 중..." : "삭제"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
