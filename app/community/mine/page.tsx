@@ -78,12 +78,12 @@ export default function MyActivityPage() {
         <h1 className="text-[20px] font-bold tracking-[-0.02em] text-[#191f28]">내 활동</h1>
       </div>
 
-      <div className="mb-3 flex gap-1 rounded-[12px] bg-[#e9ebee] p-1">
+      <div className="mb-3 flex gap-1 rounded-[12px] bg-[#e5e8eb] p-1">
         {TABS.map(({ key, label }) => (
           <button
             key={key}
             className={`grow rounded-[10px] py-2 text-[14px] font-semibold transition-colors active:scale-[0.98] ${
-              tab === key ? "bg-white text-[#191f28] shadow-[0_1px_3px_rgba(0,0,0,0.08)]" : "text-[#8b95a1]"
+              tab === key ? "bg-white text-[#191f28] shadow-[0_2px_4px_rgba(0,0,0,0.06)]" : "text-[#8b95a1]"
             }`}
             onClick={() => setTab(key)}
           >{label}</button>
@@ -91,13 +91,13 @@ export default function MyActivityPage() {
       </div>
 
       {error && (
-        <p className="rounded-[16px] bg-white px-4 py-6 text-center text-[14px] text-[#f04452] shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
+        <p className="rounded-[16px] bg-white px-4 py-6 text-center text-[14px] text-[#f04452]">
           {error}
         </p>
       )}
 
       {!error && isEmpty && !loading && (
-        <p className="rounded-[16px] bg-white px-4 py-10 text-center text-[14px] text-[#8b95a1] shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
+        <p className="rounded-[16px] bg-white px-4 py-10 text-center text-[14px] text-[#8b95a1]">
           {tab === "posts" && "아직 작성한 글이 없어요."}
           {tab === "likes" && "아직 공감한 글이 없어요."}
           {tab === "comments" && "아직 작성한 댓글이 없어요."}
@@ -109,7 +109,7 @@ export default function MyActivityPage() {
           ? comments.map((comment) => (
               <li
                 key={comment.commentId}
-                className="rounded-[16px] bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.05)]"
+                className="rounded-[16px] bg-white p-4"
               >
                 <p className="whitespace-pre-wrap text-[14px] text-[#191f28]">{comment.content}</p>
                 <p className="mt-1.5 text-[12px] text-[#8b95a1]">{formatDateTime(comment.createdAt)}</p>
@@ -118,7 +118,7 @@ export default function MyActivityPage() {
           : posts.map((post) => (
               <li
                 key={post.postId}
-                className="flex items-center justify-between gap-3 rounded-[16px] bg-white p-4 shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-transform active:scale-[0.99]"
+                className="flex items-center justify-between gap-3 rounded-[16px] bg-white p-4 transition-transform active:scale-[0.99]"
                 onClick={() => router.push(`/community/${post.postId}`)}
               >
                 <div className="min-w-0 grow">
@@ -144,7 +144,7 @@ export default function MyActivityPage() {
 
       {!loading && page < totalPages - 1 && (
         <button
-          className="mt-2 rounded-[14px] bg-white py-3 text-[14px] font-semibold text-[#4e5968] shadow-[0_2px_12px_rgba(0,0,0,0.05)] active:scale-[0.99]"
+          className="mt-2 rounded-[14px] bg-white py-3 text-[14px] font-semibold text-[#4e5968] active:scale-[0.99]"
           onClick={() => fetchPage(page + 1, true)}
         >
           더보기

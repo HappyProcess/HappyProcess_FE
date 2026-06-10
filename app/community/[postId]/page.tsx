@@ -155,14 +155,14 @@ export default function PostDetailPage() {
         </button>
         {isMine(post.writerName) && (
           <button
-            className="rounded-full bg-white px-3.5 py-1.5 text-[13px] font-semibold text-[#3182f6] shadow-[0_1px_3px_rgba(0,0,0,0.08)] active:scale-95"
+            className="rounded-full bg-[rgba(100,168,255,0.15)] px-3.5 py-1.5 text-[13px] font-semibold text-[#2272eb] active:scale-95"
             onClick={() => router.push(`/community/${postId}/edit`)}
           >수정</button>
         )}
       </div>
 
       <section className="flex flex-col gap-3">
-        <div className="rounded-[20px] bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
+        <div className="rounded-[20px] bg-white p-5">
           <h1 className="text-[22px] font-bold tracking-[-0.02em] text-[#191f28]">{post.title}</h1>
           <div className="mt-3 flex flex-row items-center gap-2.5">
             <Image src="/person.png" alt="" width={40} height={40} className="rounded-full bg-[#f2f4f6]" />
@@ -180,7 +180,7 @@ export default function PostDetailPage() {
           )}
         </div>
 
-        <div className="rounded-[20px] bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
+        <div className="rounded-[20px] bg-white p-5">
           <div className="whitespace-pre-wrap text-[16px] leading-[1.6] text-[#191f28]">
             {post.content}
           </div>
@@ -210,7 +210,7 @@ export default function PostDetailPage() {
           </div>
         </div>
 
-        <div className="rounded-[20px] bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
+        <div className="rounded-[20px] bg-white p-5">
           <p className="text-[15px] font-bold text-[#191f28]">댓글 {post.commentCount}</p>
 
           <ul className="mt-3 flex flex-col gap-4">
