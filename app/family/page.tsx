@@ -142,7 +142,7 @@ export default function FamilyPage() {
   }
 
   return (
-    <div className="flex min-h-full w-full flex-col overflow-x-clip bg-[#f2f4f6] px-5 pb-8 pt-2">
+    <div className="flex w-full flex-col overflow-x-clip bg-[#f2f4f6] px-5 pb-8 pt-2">
       <section className="flex items-center justify-between">
         <div>
           <h1 className="text-[24px] font-bold leading-tight tracking-[-0.02em] text-[#191f28]">
@@ -254,7 +254,7 @@ function FamilyMemberCard({
 
 function FamilyProfileSkeleton({ onBack }: { onBack: () => void }) {
   return (
-    <div className="flex min-h-full w-full flex-col overflow-x-clip bg-[#f2f4f6] px-5 pb-8 pt-2">
+    <div className="flex w-full flex-col overflow-x-clip bg-[#f2f4f6] px-5 pb-8 pt-2">
       <div className="mb-4 flex items-center justify-between gap-3">
         <BackButton onBack={onBack} />
       </div>
@@ -436,7 +436,7 @@ function FamilyProfileView({
   };
 
   return (
-    <div className="flex min-h-full w-full flex-col overflow-x-clip bg-[#f2f4f6] px-5 pb-8 pt-2">
+    <div className="flex w-full flex-col overflow-x-clip bg-[#f2f4f6] px-5 pb-8 pt-2">
       <div className="mb-4 flex items-center justify-between gap-3">
         <BackButton onBack={onBack} />
       </div>

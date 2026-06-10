@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Roboto } from "next/font/google";
 import "./globals.css";
 
@@ -15,6 +15,14 @@ import { Toaster } from "react-hot-toast";
 export const metadata: Metadata = {
   title: "HappyProcess",
   description: "HappyProcess",
+};
+
+// 모바일에서 입력창 포커스 시 화면 확대(zoom) 방지 — 전역 적용
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({children,}: Readonly<{children: React.ReactNode;}>) {

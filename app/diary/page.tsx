@@ -46,7 +46,7 @@ export default function DiaryPage() {
   const hasToday = diaries.some((d) => d.entryDate === today);
 
   return (
-    <div className="flex min-h-full flex-col bg-[#f2f4f6] px-5 pb-8 pt-2">
+    <div className="flex w-full flex-col bg-[#f2f4f6] px-5 pb-8 pt-2">
       <header className="pb-3">
         <h1 className="text-[24px] font-bold tracking-[-0.02em] text-[#191f28]">증상 일기</h1>
       </header>
